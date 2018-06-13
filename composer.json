@@ -1,0 +1,33 @@
+{
+  "name": "boxtal/boxtal-prestashop-poc",
+  "description": "Shipping plugin using boxtal API for Prestashop",
+  "homepage": "https://github.com/boxtal/boxtal-prestashop-poc",
+  "keywords": ["envoimoinscher", "boxtal", "boxtale", "php", "emc", "class", "api", "prestashop"],
+  "license": "GPL-3.0+",
+  "authors": [
+    {
+      "name": "API Boxtal",
+      "email": "api@boxtal.com"
+    }
+  ],
+  "type": "prestashop-plugin",
+  "repositories": [
+    {
+      "type": "github",
+      "url": "https://github.com/Boxtale/boxtal-php-poc.git",
+      "no-api": true
+    }
+  ],
+  "require": {
+    "php": ">=5.3",
+    "boxtal/boxtal-php-poc": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0",
+    "wimg/php-compatibility": "^8.0",
+    "squizlabs/php_codesniffer": "^2.2 || ^3.0.2",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
+    "friendsofphp/php-cs-fixer": "^1.10"
+  },
+  "prefer-stable" : true
+}
