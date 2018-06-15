@@ -79,11 +79,11 @@ RUN chown -R docker:docker $HOME
 RUN gulp css
 RUN gulp js
 
-RUN mkdir $HOME/src/Boxtal/BoxtalPhp \
- && cp -R $HOME/vendor/boxtal/boxtal-php-poc/src/* $HOME/src/Boxtal/BoxtalPhp
+RUN mkdir $HOME/src/lib \
+ && cp -R $HOME/vendor/boxtal/boxtal-php-poc/src/* $HOME/src/lib
 
-RUN mkdir -p /var/www/html/modules/boxtal-prestashop \
- && cp -R $HOME/src/* /var/www/html/modules/boxtal-prestashop \
+RUN mkdir -p /var/www/html/modules/boxtal \
+ && cp -R $HOME/src/* /var/www/html/modules/boxtal \
  && chown -R www-data:www-data /var/www/html \
  && find /var/www/html -type d -exec chmod 775 {} \; \
  && find /var/www/html -type f -exec chmod 644 {} \;

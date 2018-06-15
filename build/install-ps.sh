@@ -42,6 +42,8 @@ install_ps() {
   rm -rf $PS_CORE_DIR/install
   mv $PS_CORE_DIR/admin $PS_CORE_DIR/adminboxtal
   sed -i "s/define('_PS_MODE_DEV_', false)/define('_PS_MODE_DEV_', true)/" $PS_CORE_DIR/config/defines.inc.php
+  mysql -u dbadmin -pdbpass -D "prestashop" -e "UPDATE ps_configuration SET value=0 WHERE name='PS_SMARTY_CACHE';"
+  mysql -u dbadmin -pdbpass -D "prestashop" -e "UPDATE ps_configuration SET value=1 WHERE name='PS_SMARTY_FORCE_COMPILE';"
 }
 
 clean_ps_dir
