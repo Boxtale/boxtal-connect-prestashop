@@ -12,10 +12,10 @@ else
   TMPSITEURL="localhost:$PORT"
 fi
 
-TMPSITETITLE='Boxtal Prestashop test site'
-TMPSITEADMINLOGIN='admin'
-TMPSITEADMINPWD='admin'
-TMPSITEADMINEMAIL='test_prestashop@boxtal.com'
+TMPSITETITLE="Prestatest"
+TMPSITEADMINLOGIN="admin"
+TMPSITEADMINPWD="admin"
+TMPSITEADMINEMAIL="test_prestashop@boxtal.com"
 PS_CORE_DIR=/var/www/html
 
 download() {
@@ -38,7 +38,7 @@ install_ps() {
   unzip -q /tmp/prestashop/prestashop.zip -d /tmp/prestashop/src
   mv /tmp/prestashop/src/* $PS_CORE_DIR
   mysqladmin -u dbadmin -pdbpass create prestashop
-  php $PS_CORE_DIR/install/index_cli.php --domain=$TMPSITEURL --db_name=prestashop --db_user=dbadmin --db_password=dbpass --email=admin@boxtal.com --password=admin --name="$TMPSITETITLE"
+  php $PS_CORE_DIR/install/index_cli.php --domain=$TMPSITEURL --db_name=prestashop --db_user=dbadmin --db_password=dbpass --name="$TMPSITETITLE" --email="admin@boxtal.com" --password=admin
   rm -rf $PS_CORE_DIR/install
   mv $PS_CORE_DIR/admin $PS_CORE_DIR/adminboxtal
   sed -i "s/define('_PS_MODE_DEV_', false)/define('_PS_MODE_DEV_', true)/" $PS_CORE_DIR/config/defines.inc.php
