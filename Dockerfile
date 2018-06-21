@@ -3,7 +3,7 @@ ARG PHP_VERSION
 ARG PS_VERSION
 ARG PORT
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
  && apt-get update && apt-get install -y --no-install-recommends \
     apache2 \
     apt-transport-https \
