@@ -46,6 +46,7 @@ before_script:
   - bash test/bin/build-test.sh $PS_VERSION true
   - bash build/sync.sh .
   - bash build/travis.sh
+  - echo "test"
 
 script:
   - if [[ $PHPUNIT_VERSION = "travis" ]] && [[ $PS_MULTISITE = "0" ]]; then phpunit -v --debug; fi
