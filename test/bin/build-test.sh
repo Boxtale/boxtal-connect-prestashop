@@ -6,15 +6,6 @@ PS_DIR='/var/www/html'
 UNIT_TESTS_DIR='/var/www/html/boxtal-unit-tests'
 PS_REPO_DIR='/tmp/ps'
 
-if [ ${TRAVIS} = "false" ]; then
-	HOME='/home/docker'
-else
-	HOME='/home/travis/build/Boxtale/boxtal-prestashop-poc'
-	install_ps
-fi
-
-SOURCE_TEST_DIR=$HOME/test/unit-tests
-
 install_ps() {
   $HOME/build/install-ps.sh $PS_VERSION 80
 }
@@ -44,6 +35,16 @@ copy_unit_tests() {
   sudo mkdir -p $UNIT_TESTS_DIR
   sudo cp -R $HOME/test/unit-tests/test-*.php $UNIT_TESTS_DIR
 }
+
+
+if [ ${TRAVIS} = "false" ]; then
+	HOME='/home/docker'
+else
+	HOME='/home/travis/build/Boxtale/boxtal-prestashop-poc'
+	install_ps
+fi
+
+SOURCE_TEST_DIR=$HOME/test/unit-tests
 
 install_unit_tests
 copy_unit_tests
