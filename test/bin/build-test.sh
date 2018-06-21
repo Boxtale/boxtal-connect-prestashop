@@ -8,11 +8,16 @@ PS_REPO_DIR='/tmp/ps'
 
 if [ ${TRAVIS} = "false" ]; then
 	HOME='/home/docker'
+	install_ps
 else
 	HOME='/home/travis/build/Boxtale/boxtal-prestashop-poc'
 fi
 
 SOURCE_TEST_DIR=$HOME/test/unit-tests
+
+install_ps() {
+  $HOME/build/install-ps.sh $PS_VERSION 80
+}
 
 install_unit_tests() {
   # init ps repo
