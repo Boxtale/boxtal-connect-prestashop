@@ -16,27 +16,28 @@ class MiscUtil
     /**
      * Is set or null.
      *
-     * @param object $object.
-     * @param string $property.
+     * @param array  $array    array to test.
+     * @param string $property property to test.
      *
      * @return string
      */
-    public static function isSetOrNull($object, $property = null)
+    public static function isSetOrNull($array, $property = null)
     {
-        return isset($object[$property]) ? $object[$property] : null;
+        return isset($array[$property]) ? $array[$property] : null;
     }
 
     /**
      * Is set or null.
      *
-     * @param object $object.
-     * @param string $property.
+     * @param array  $array    array to test.
+     * @param string $property property to test.
      *
      * @return string
      */
-    public static function notEmptyOrNull($object, $property = null)
+    public static function notEmptyOrNull($array, $property = null)
     {
-        $isSet = self::isSetOrNull($object, $property);
+        $isSet = self::isSetOrNull($array, $property);
+
         return $isSet !== null && $isSet !== '' ? $isSet : null;
     }
 }

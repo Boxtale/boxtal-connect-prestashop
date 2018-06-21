@@ -11,11 +11,10 @@ namespace Boxtal\BoxtalPrestashop\Notice;
  * Custom notice where message and status determine display.
  *
  * @class       CustomNotice
- * @package     Boxtal\BoxtalPrestashop\Notice
- * @category    Class
- * @author      API Boxtal
+ *
  */
-class CustomNotice extends AbstractNotice {
+class CustomNotice extends AbstractNotice
+{
 
     /**
      * Notice message.
@@ -34,16 +33,18 @@ class CustomNotice extends AbstractNotice {
     /**
      * Construct function.
      *
-     * @param string $key key for notice.
+     * @param string $key  key for notice.
      * @param array  $args additional args.
+     *
      * @void
      */
-    public function __construct( $key, $args ) {
-        parent::__construct( $key );
+    public function __construct($key, $args)
+    {
+        parent::__construct($key);
         $this->type         = 'custom';
-        $this->autodestruct = isset( $args['autodestruct'] ) ? $args['autodestruct'] : true;
-        $this->status       = isset( $args['status'] ) ? $args['status'] : 'info';
-        $this->message      = isset( $args['message'] ) ? $args['message'] : '';
+        $this->autodestruct = isset($args['autodestruct']) ? $args['autodestruct'] : true;
+        $this->status       = isset($args['status']) ? $args['status'] : 'info';
+        $this->message      = isset($args['message']) ? $args['message'] : '';
         $this->template = 'custom';
     }
 }

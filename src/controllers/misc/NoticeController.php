@@ -14,11 +14,10 @@ use function PHPSTORM_META\map;
  * Controller for notices.
  *
  * @class       NoticeController
- * @package     Boxtal\BoxtalPrestashop\Controllers\Misc
- * @category    Class
- * @author      API Boxtal
+ *
  */
-class NoticeController {
+class NoticeController
+{
 
     /**
      * Array of notices - name => callback.
@@ -32,38 +31,40 @@ class NoticeController {
      *
      * @return array $notices instances of notices.
      */
-    public static function getNotices() {
+    public static function getNotices()
+    {
         $sql = new \DbQuery();
         $sql->select('n.key, n.value');
         $sql->from('bx_notices', 'n');
         $notices = \Db::getInstance()->executeS($sql);
         $noticeInstances = array();
         if (is_array($notices)) {
-            foreach ( $notices as $notice ) {
+            foreach ($notices as $notice) {
                 $key = $notice['key'];
                 $classname = 'Boxtal\BoxtalPrestashop\Notice\\';
-                if ( ! in_array( $key, self::$coreNotices, true ) ) {
+                if (! in_array($key, self::$coreNotices, true)) {
                     $value = unserialize($notice['value']);
-                    if ( false !== $value ) {
-                        $class             = new CustomNotice( $key, $value );
+                    if (false !== $value) {
+                        $class             = new CustomNotice($key, $value);
                         $noticeInstances[] = $class;
                     } else {
-                        self::removeNotice( $key );
+                        self::removeNotice($key);
                     }
                 } else {
-                    $classname .= ucwords( str_replace( '-', '', $key ) ) . 'Notice';
-                    if ( class_exists( $classname, true ) ) {
+                    $classname .= ucwords(str_replace('-', '', $key)).'Notice';
+                    if (class_exists($classname, true)) {
                         $value = unserialize($notice['value']);
-                        if ( false !== $value && null !== $value) {
-                            $class = new $classname( $key, $value );
+                        if (false !== $value && null !== $value) {
+                            $class = new $classname($key, $value);
                         } else {
-                            $class = new $classname( $key );
+                            $class = new $classname($key);
                         }
                         $noticeInstances[] = $class;
                     }
                 }
             }
         }
+
         return $noticeInstances;
     }
 
@@ -72,14 +73,16 @@ class NoticeController {
      *
      * @param string $type type of notice.
      * @param mixed  $args additional args.
+     *
      * @void
      */
-    public static function addNotice( $type, $args = array() ) {
-        if ( ! in_array( $type, self::$coreNotices, true ) ) {
-            $key           = uniqid( 'bx_', false );
+    public static function addNotice($type, $args = array())
+    {
+        if (! in_array($type, self::$coreNotices, true)) {
+            $key           = uniqid('bx_', false);
             $value         = serialize($args);
             \Db::getInstance()->execute(
-                "INSERT INTO `". _DB_PREFIX_ ."bx_notices` (`key`, `value`)
+                "INSERT INTO `"._DB_PREFIX_."bx_notices` (`key`, `value`)
                 VALUES ('".pSQL($key)."', '".pSQL($value)."')"
             );
         } else {
@@ -95,15 +98,15 @@ class NoticeController {
                 }
             }
 
-            if ( ! $alreadyExists ) {
+            if (! $alreadyExists) {
                 if (!empty($args)) {
                     \Db::getInstance()->execute(
-                        "INSERT INTO `". _DB_PREFIX_ ."bx_notices` (`key`, `value`)
+                        "INSERT INTO `"._DB_PREFIX_."bx_notices` (`key`, `value`)
                     VALUES ('".pSQL($type)."', '".pSQL(serialize($args))."')"
                     );
                 } else {
                     \Db::getInstance()->execute(
-                        "INSERT INTO `". _DB_PREFIX_ ."bx_notices` (`key`)
+                        "INSERT INTO `"._DB_PREFIX_."bx_notices` (`key`)
                     VALUES ('".pSQL($type)."')"
                     );
                 }
@@ -115,22 +118,26 @@ class NoticeController {
      * Remove notice.
      *
      * @param string $key notice key.
+     *
      * @void
      */
-    public static function removeNotice( $key ) {
+    public static function removeNotice($key)
+    {
         \DB::getInstance()->execute(
-            'DELETE IGNORE FROM `' . _DB_PREFIX_ . 'bx_notices` WHERE `key`="'.$key.'";'
+            'DELETE IGNORE FROM `'._DB_PREFIX_.'bx_notices` WHERE `key`="'.$key.'";'
         );
     }
 
     /**
      * Whether there are active notices.
      *
-     * @void
+     * @return boolean
      */
-    public static function hasNotices() {
+    public static function hasNotices()
+    {
         $notices = self::getNotices();
-        return !empty( $notices );
+
+        return !empty($notices);
     }
 
     /**
@@ -138,10 +145,10 @@ class NoticeController {
      *
      * @void
      */
-    public static function removeAllNotices() {
+    public static function removeAllNotices()
+    {
         \DB::getInstance()->execute(
-            'DELETE FROM `' . _DB_PREFIX_ . 'bw_notices`;'
+            'DELETE FROM `'._DB_PREFIX_.'bw_notices`;'
         );
     }
 }
-

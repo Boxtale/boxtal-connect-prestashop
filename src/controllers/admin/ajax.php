@@ -12,6 +12,11 @@ use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
 class BoxtalAjaxModuleAdminController extends ModuleAdminController
 {
 
+    /**
+     * Processes request.
+     *
+     * @void
+     */
     public function postProcess()
     {
 
@@ -19,7 +24,7 @@ class BoxtalAjaxModuleAdminController extends ModuleAdminController
 
         $json = false;
 
-        switch($endpoint) {
+        switch ($endpoint) {
             case 'hideNotice':
                 $json = $this->hideNoticeCallback();
                 break;
@@ -32,7 +37,7 @@ class BoxtalAjaxModuleAdminController extends ModuleAdminController
                 break;
         }
 
-        header( 'Content-Type: application/json; charset=utf-8' );
+        header('Content-Type: application/json; charset=utf-8');
         die(json_encode($json));
     }
 
@@ -50,6 +55,7 @@ class BoxtalAjaxModuleAdminController extends ModuleAdminController
         $noticeId = Tools::getValue('noticeId');
         $noticeController = new NoticeController();
         $noticeController->removeNotice($noticeId);
+
         return true;
     }
 
@@ -58,23 +64,24 @@ class BoxtalAjaxModuleAdminController extends ModuleAdminController
      *
      * @void
      */
-    public function pairingUpdateValidateCallback() {
-        if ( ! isset( $_REQUEST['approve'] ) ) {
-            wp_send_json_error( 'missing input' );
+    public function pairingUpdateValidateCallback()
+    {
+        if (! isset($_REQUEST['approve'])) {
+            wp_send_json_error('missing input');
         }
-        $approve = sanitize_text_field( wp_unslash( $_REQUEST['approve'] ) );
+        $approve = sanitize_text_field(wp_unslash($_REQUEST['approve']));
 
-        $lib = new ApiClient( Auth_Util::get_access_key(), Auth_Util::get_secret_key() );
+        $lib = new ApiClient(Auth_Util::get_access_key(), Auth_Util::get_secret_key());
         //phpcs:ignore
         $response = $lib->restClient->request( RestClient::$PATCH, get_option( 'BW_PAIRING_UPDATE' ), array( 'approve' => $approve ) );
 
-        if ( ! $response->isError() ) {
+        if (! $response->isError()) {
             Auth_Util::end_pairing_update();
-            Notice_Controller::remove_notice( 'pairing-update' );
-            Notice_Controller::add_notice( 'pairing', array( 'result' => 1 ) );
-            wp_send_json( true );
+            Notice_Controller::remove_notice('pairing-update');
+            Notice_Controller::add_notice('pairing', array( 'result' => 1 ));
+            wp_send_json(true);
         } else {
-            wp_send_json_error( 'pairing validation failed' );
+            wp_send_json_error('pairing validation failed');
         }
     }
 }

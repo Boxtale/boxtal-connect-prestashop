@@ -13,5 +13,6 @@
   <rule ref="PHPCompatibility" />
   <rule ref="Symfony">
     <exclude name="PSR1.Files.SideEffects.FoundWithSymbols" />
+    <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />
   </rule>
 </ruleset>

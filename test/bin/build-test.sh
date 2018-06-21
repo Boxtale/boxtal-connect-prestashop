@@ -14,14 +14,6 @@ fi
 
 SOURCE_TEST_DIR=$HOME/test/unit-tests
 
-download() {
-    if [ `which curl` ]; then
-        curl -s "$1" > "$2";
-    elif [ `which wget` ]; then
-        wget -nv -O "$2" "$1"
-    fi
-}
-
 install_unit_tests() {
   # init ps repo
   sudo mkdir -p $PS_REPO_DIR

@@ -16,7 +16,7 @@ class OrderUtil
     /**
      * Get order data.
      *
-     * @return
+     * @return array|false|null
      */
     public static function getOrders()
     {
@@ -27,21 +27,24 @@ class OrderUtil
         $sql->innerJoin('address', 'a', 'o.id_address_delivery = a.id_address');
         $sql->innerJoin('country', 'co', 'a.id_country = co.id_country');
         $sql->innerJoin('state', 's', 'a.id_state = s.id_state');
+
         return \Db::getInstance()->executeS($sql);
     }
 
     /**
      * Get order data.
      *
-     * @param $orderId int order id
-     * @return
+     * @param int $orderId order id
+     *
+     * @return array|false|null
      */
     public static function getItemsFromOrder($orderId)
     {
         $sql = new \DbQuery();
         $sql->select('od.product_weight, od.product_price, od.product_quantity, od.product_name');
         $sql->from('order_detail', 'od');
-        $sql->where('od.id_order = ' . $orderId);
+        $sql->where('od.id_order = '.$orderId);
+
         return \Db::getInstance()->executeS($sql);
     }
 }

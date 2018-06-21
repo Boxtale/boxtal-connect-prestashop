@@ -16,6 +16,11 @@ use Boxtal\BoxtalPrestashop\Util\OrderUtil;
 class BoxtalOrderModuleFrontController extends ModuleFrontController
 {
 
+    /**
+     * Processes request.
+     *
+     * @void
+     */
     public function postProcess()
     {
 
@@ -70,23 +75,23 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
                 'phone'        => MiscUtil::notEmptyOrNull($order, 'phone'),
                 'email'        => MiscUtil::notEmptyOrNull($order, 'email'),
             );
-            $items = OrderUtil::getItemsFromOrder((int)MiscUtil::notEmptyOrNull($order, 'id_order'));
+            $items = OrderUtil::getItemsFromOrder((int) MiscUtil::notEmptyOrNull($order, 'id_order'));
             $products = array();
             foreach ($items as $item) {
                 $product                = array();
-                $product['weight']      = 0 !== (float)$item['product_weight'] ? (float)$item['product_weight'] : null;
-                $product['quantity']    = (int)$item['product_quantity'];
-                $product['price']       = (float)$item['product_price'];
+                $product['weight']      = 0 !== (float) $item['product_weight'] ? (float) $item['product_weight'] : null;
+                $product['quantity']    = (int) $item['product_quantity'];
+                $product['price']       = (float) $item['product_price'];
                 $product['description'] = $item['product_name'];
                 $products[]             = $product;
             }
 
-            $parcel_point          = null;
+            $parcelPoint          = null;
             /*
                         $parcel_point_code     = Order_Util::get_meta($order, 'bw_parcel_point_code');
                         $parcel_point_operator = Order_Util::get_meta($order, 'bw_parcel_point_operator');
                         if ($parcel_point_code && $parcel_point_operator) {
-                            $parcel_point = array(
+                            $parcelPoint = array(
                                 'code'     => $parcel_point_code,
                                 'operator' => $parcel_point_operator,
                             );
@@ -96,7 +101,7 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
                 'reference'   => MiscUtil::notEmptyOrNull($order, 'id_order'),
                 'recipient'   => $recipient,
                 'products'    => $products,
-                'parcelPoint' => $parcel_point,
+                'parcelPoint' => $parcelPoint,
             );
         }
 

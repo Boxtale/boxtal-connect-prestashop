@@ -16,8 +16,8 @@ class ConfigurationUtil
     /**
      * Get option.
      *
-     * @param string $name option name.
-     * @param mixed $default option default value.
+     * @param string $name    option name.
+     * @param mixed  $default option default value.
      *
      * @return string option value.
      */

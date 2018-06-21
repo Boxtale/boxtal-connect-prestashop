@@ -17,14 +17,17 @@ class AuthUtil
      * API request validation.
      *
      * @param string $body encrypted body.
+     *
      * @return mixed
      */
-    public static function authenticate($body) {
-        $publicKey = file_get_contents(realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'resource' . DIRECTORY_SEPARATOR . 'publickey');
+    public static function authenticate($body)
+    {
+        $publicKey = file_get_contents(realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR.'resource'.DIRECTORY_SEPARATOR.'publickey');
         $decrypted  = '';
-        if ( openssl_public_decrypt( base64_decode( $body ), $decrypted, $publicKey ) ) {
+        if (openssl_public_decrypt(base64_decode($body), $decrypted, $publicKey)) {
             return true;
         }
+
         return ApiUtil::sendApiResponse(401);
     }
 
@@ -45,7 +48,7 @@ class AuthUtil
      */
     public static function canUsePlugin()
     {
-        return false !== self::isPluginPaired() && false === ConfigurationUtil::get( 'BX_PAIRING_UPDATE' );
+        return false !== self::isPluginPaired() && false === ConfigurationUtil::get('BX_PAIRING_UPDATE');
     }
 
     /**
@@ -53,9 +56,11 @@ class AuthUtil
      *
      * @param string $accessKey API access key.
      * @param string $secretKey API secret key.
+     *
      * @void
      */
-    public static function pairPlugin( $accessKey, $secretKey ) {
+    public static function pairPlugin($accessKey, $secretKey)
+    {
         ConfigurationUtil::set('BX_ACCESS_KEY', $accessKey);
         ConfigurationUtil::set('BX_SECRET_KEY', $secretKey);
     }
@@ -63,13 +68,13 @@ class AuthUtil
     /**
      * Start pairing update (puts plugin on hold).
      *
-     * @param string $callback_url callback url.
+     * @param string $callbackUrl callback url.
      *
      * @void
      */
-    public static function startPairingUpdate($callback_url)
+    public static function startPairingUpdate($callbackUrl)
     {
-        ConfigurationUtil::set('BX_PAIRING_UPDATE', $callback_url);
+        ConfigurationUtil::set('BX_PAIRING_UPDATE', $callbackUrl);
     }
 
     /**
@@ -86,6 +91,7 @@ class AuthUtil
      * Request body decryption.
      *
      * @param string $body encrypted body.
+     *
      * @return mixed
      */
     public static function decryptBody($body)

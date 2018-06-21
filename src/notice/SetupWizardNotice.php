@@ -11,9 +11,10 @@ namespace Boxtal\BoxtalPrestashop\Notice;
  * Setup wizard notice used to display setup wizard.
  *
  * @class       SetupWizardNotice
- * @package     Boxtal\BoxtalPrestashop\Notice
+ *
  */
-class SetupWizardNotice extends AbstractNotice {
+class SetupWizardNotice extends AbstractNotice
+{
 
     /**
      * Base connect link.
@@ -40,13 +41,15 @@ class SetupWizardNotice extends AbstractNotice {
      * Construct function.
      *
      * @param string $key key for notice.
+     *
      * @void
      */
-    public function __construct( $key ) {
-        parent::__construct( $key );
+    public function __construct($key)
+    {
+        parent::__construct($key);
         $this->type         = 'setupWizard';
         $this->autodestruct = false;
-        $this->setBaseConnectLink( 'http://localhost:4200/app/connect-shop' );
+        $this->setBaseConnectLink('http://localhost:4200/app/connect-shop');
         $this->returnUrl   = $this->getDashboardUrl();
         $this->connectLink = $this->getConnectUrl();
         $this->template = 'setupWizard';
@@ -57,7 +60,8 @@ class SetupWizardNotice extends AbstractNotice {
      *
      * @return string connect link
      */
-    public function getConnectUrl() {
+    public function getConnectUrl()
+    {
         $connectUrl = $this->baseConnectLink;
         $sql = new \DbQuery();
         $sql->select('e.firstname, e.lastname, e.email');
@@ -68,7 +72,7 @@ class SetupWizardNotice extends AbstractNotice {
         $adminUser = \Db::getInstance()->executeS($sql)[0];
 
         $boxtal = \Boxtal::getInstance();
-        $isoCode = \Language::getIsoById( (int)$boxtal->getContext()->cookie->id_lang );
+        $isoCode = \Language::getIsoById((int) $boxtal->getContext()->cookie->id_lang);
 
         $params       = array(
             'firstName'   => $adminUser['firstname'],
@@ -79,7 +83,8 @@ class SetupWizardNotice extends AbstractNotice {
             'connectType' => 'prestashop',
             'locale'      => $isoCode,
         );
-        $connectUrl .= '?' . http_build_query( $params );
+        $connectUrl .= '?'.http_build_query($params);
+
         return $connectUrl;
     }
 
@@ -91,6 +96,7 @@ class SetupWizardNotice extends AbstractNotice {
     public function getDashboardUrl()
     {
         $boxtal = \Boxtal::getInstance();
+
         return $boxtal->getContext()->link->getAdminLink('AdminDashboard');
     }
 
@@ -98,9 +104,11 @@ class SetupWizardNotice extends AbstractNotice {
      * Build connect link.
      *
      * @param string $url base connect link.
+     *
      * @void
      */
-    public function setBaseConnectLink( $url ) {
+    public function setBaseConnectLink($url)
+    {
         $this->baseConnectLink = $url;
     }
 
@@ -108,9 +116,11 @@ class SetupWizardNotice extends AbstractNotice {
      * Set return url.
      *
      * @param string $url new return url.
+     *
      * @void
      */
-    public function setReturnUrl( $url ) {
+    public function setReturnUrl($url)
+    {
         $this->returnUrl = $url;
     }
 }

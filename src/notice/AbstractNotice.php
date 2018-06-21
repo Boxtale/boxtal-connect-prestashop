@@ -14,9 +14,10 @@ use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
  * Base methods for notices.
  *
  * @class       AbstractNotice
- * @package     Boxtal\BoxtalPrestashop\Notice
+ *
  */
-abstract class AbstractNotice {
+abstract class AbstractNotice
+{
 
     /**
      * Boxtal module instance.
@@ -49,7 +50,7 @@ abstract class AbstractNotice {
     /**
      * Notice autodestruct.
      *
-     * @var boolean
+     * @var bool
      */
     protected $autodestruct;
 
@@ -57,9 +58,11 @@ abstract class AbstractNotice {
      * Construct function.
      *
      * @param string $key key for notice.
+     *
      * @void
      */
-    public function __construct( $key ) {
+    public function __construct($key)
+    {
         $this->key = $key;
     }
 
@@ -68,13 +71,13 @@ abstract class AbstractNotice {
      *
      * @void
      */
-    public function render() {
+    public function render()
+    {
         $notice = $this;
-        if ( $notice->isValid() ) {
+        if ($notice->isValid()) {
             $boxtal = \Boxtal::getInstance();
-            include realpath( dirname( __DIR__ ) ) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'templates'
-                . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'notice' . DIRECTORY_SEPARATOR . $this->template . '.php';
-            if ( $notice->autodestruct ) {
+            include realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'notice'.DIRECTORY_SEPARATOR.$this->template.'.php';
+            if ($notice->autodestruct) {
                 $notice->remove();
             }
         } else {
@@ -87,16 +90,18 @@ abstract class AbstractNotice {
      *
      * @void
      */
-    public function remove() {
-        NoticeController::removeNotice( $this->key );
+    public function remove()
+    {
+        NoticeController::removeNotice($this->key);
     }
 
     /**
      * Check if notice is still valid.
      *
-     * @boolean
+     * @return boolean
      */
-    public function isValid() {
+    public function isValid()
+    {
         return true;
     }
 }

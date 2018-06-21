@@ -19,7 +19,9 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Boxtal <api@boxtal.com>
+ *
  * @copyright 2007-2018 PrestaShop SA / 2018-2018 Boxtal
+ *
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
@@ -32,7 +34,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-require_once  __DIR__ . '/autoloader.php';
+require_once  __DIR__.'/autoloader.php';
 
 /**
  * Class Boxtal
@@ -81,8 +83,8 @@ class Boxtal extends Module
             }
 
             if (AuthUtil::canUsePlugin()) {
-                require_once __DIR__ . '/controllers/admin/ajax.php';
-                require_once __DIR__ . '/controllers/front/order.php';
+                require_once __DIR__.'/controllers/admin/ajax.php';
+                require_once __DIR__.'/controllers/front/order.php';
             }
         }
     }
@@ -101,7 +103,7 @@ class Boxtal extends Module
         }
 
         \Db::getInstance()->execute(
-            "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "bx_notices` (
+            "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_notices` (
             `id_notice` int(10) unsigned NOT NULL AUTO_INCREMENT,
             `id_shop_group` int(11) unsigned,
             `id_shop` int(11) unsigned,
@@ -109,7 +111,7 @@ class Boxtal extends Module
             `value` text,
             PRIMARY KEY (`id_notice`),
             UNIQUE (`key`)
-            ) ENGINE=" . _MYSQL_ENGINE_ . " DEFAULT CHARSET=utf8"
+            ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
 
         return true;
@@ -131,10 +133,11 @@ class Boxtal extends Module
         ConfigurationUtil::delete('BX_NOTICES');
         \DB::getInstance()->execute(
             'SET FOREIGN_KEY_CHECKS = 0;
-            DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'bx_notices`;
-            DELETE FROM `' . _DB_PREFIX_ . 'configuration` WHERE name like "BX_%";
+            DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_notices`;
+            DELETE FROM `'._DB_PREFIX_.'configuration` WHERE name like "BX_%";
             SET FOREIGN_KEY_CHECKS = 1;'
         );
+
         return true;
     }
 
@@ -158,7 +161,7 @@ class Boxtal extends Module
         $controller = $this->getContext()->controller;
 
         $notices = NoticeController::getNotices();
-        if ( ! empty( $notices ) ) {
+        if (! empty($notices)) {
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
                     'bx-notice',
@@ -166,8 +169,8 @@ class Boxtal extends Module
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addJs(_MODULE_DIR_ . '/boxtal/views/js/notices.min.js');
-                $controller->addCSS(_MODULE_DIR_ .'/boxtal/views/css/notices.css', 'all');
+                $controller->addJs(_MODULE_DIR_.'/boxtal/views/js/notices.min.js');
+                $controller->addCSS(_MODULE_DIR_.'/boxtal/views/css/notices.css', 'all');
             }
         }
     }
@@ -177,9 +180,10 @@ class Boxtal extends Module
      *
      * @void
      */
-    public function hookDisplayAdminAfterHeader() {
+    public function hookDisplayAdminAfterHeader()
+    {
         $notices = NoticeController::getNotices();
-        foreach ( $notices as $notice ) {
+        foreach ($notices as $notice) {
             $notice->render();
         }
     }
@@ -189,7 +193,8 @@ class Boxtal extends Module
      *
      * @return \Context context
      */
-    public function getContext() {
+    public function getContext()
+    {
         return $this->context;
     }
 }
