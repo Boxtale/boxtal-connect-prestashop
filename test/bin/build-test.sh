@@ -19,6 +19,8 @@ install_unit_tests() {
   git checkout tags/$PS_VERSION
   cd $HOME
   sudo mkdir -p $PS_DIR/tests
+  echo ls -l $PS_REPO_DIR
+  echo ls -l $PS_REPO_DIR/PrestaShop
   sudo cp -R $PS_REPO_DIR/PrestaShop/tests/. $PS_DIR/tests
   sudo cp -R $PS_REPO_DIR/PrestaShop/composer.json $PS_DIR
   sudo composer install --prefer-dist -d $PS_DIR
