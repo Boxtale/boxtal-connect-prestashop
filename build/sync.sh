@@ -4,8 +4,8 @@ HOME=${1-/home/docker}
 
 sudo chmod -R +x $HOME/test/bin
 sudo chown -R www-data:www-data /var/www/html
-gulp css
-gulp js
+sudo gulp css
+sudo gulp js
 sudo mkdir -p src/lib
 sudo cp -R vendor/boxtal/boxtal-php-poc/src/* src/lib
 sudo -H -u www-data bash -c "rm -rf /var/www/html/modules/boxtal"
