@@ -1,7 +1,6 @@
 FROM buildpack-deps:stretch-scm
 ARG PHP_VERSION
 ARG PS_VERSION
-ARG PORT
 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
  && apt-get update && apt-get install -y --no-install-recommends \
@@ -33,9 +32,7 @@ RUN sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /et
 RUN apt-get update && apt-get install -y --no-install-recommends \
     google-chrome-stable
 
-RUN sed -i "s/Listen 80/Listen $PORT/" /etc/apache2/ports.conf \
- && sed -i "s/:80/:$PORT/" /etc/apache2/sites-enabled/000-default.conf \
- && sed -i "172,\$s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+RUN sed -i "172,\$s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
 
 RUN echo "mysql-server-5.6 mysql-server/root_password password password" | sudo debconf-set-selections \
  && echo "mysql-server-5.6 mysql-server/root_password_again password password" | sudo debconf-set-selections \
@@ -64,7 +61,7 @@ RUN composer dump-autoload --optimize
 COPY build/install-ps.sh $HOME/build/
 RUN /etc/init.d/apache2 start \
  && /etc/init.d/mysql start \
- && /bin/bash ./build/install-ps.sh $PS_VERSION $PORT
+ && /bin/bash ./build/install-ps.sh $PS_VERSION
 
 COPY package.json $HOME
 COPY package-lock.json $HOME

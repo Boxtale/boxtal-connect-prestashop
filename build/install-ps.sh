@@ -4,13 +4,6 @@ echo "starting prestashop install"
 set -ex
 
 PS_VERSION=${1-latest}
-PORT=${2-80}
-
-if [ $PORT = "80" ]; then
-  TMPSITEURL="localhost"
-else
-  TMPSITEURL="localhost:$PORT"
-fi
 
 TMPSITETITLE="Prestatest"
 TMPSITEADMINLOGIN="admin"
