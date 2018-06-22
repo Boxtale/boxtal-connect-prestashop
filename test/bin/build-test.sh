@@ -21,7 +21,7 @@ install_unit_tests() {
   sudo mkdir -p $PS_DIR/tests
   sudo cp -R $PS_REPO_DIR/tests/. $PS_DIR/tests
   sudo cp -R $PS_REPO_DIR/composer.json $PS_DIR
-  sudo composer install --prefer-dist -d $PS_DIR
+  composer install --prefer-dist -d $PS_DIR
 
   # add test database
   mysqladmin -u dbadmin -pdbpass create test_prestashop
