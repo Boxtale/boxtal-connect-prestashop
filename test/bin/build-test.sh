@@ -33,6 +33,9 @@ copy_unit_tests() {
   sudo cp -R $HOME/test/unit-tests/bootstrap.php $PS_DIR
 
   sudo mkdir -p $UNIT_TESTS_DIR
+  ls -l $HOME
+  ls -l $HOME/test
+  ls -l $HOME/test/unit-tests
   sudo cp -R $HOME/test/unit-tests/test-*.php $UNIT_TESTS_DIR
 }
 
