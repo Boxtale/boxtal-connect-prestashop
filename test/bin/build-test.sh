@@ -28,15 +28,6 @@ install_unit_tests() {
   mysqldump  -u dbadmin -pdbpass prestashop | mysql -u dbadmin -pdbpass test_prestashop
 }
 
-copy_unit_tests() {
-  sudo cp -R $HOME/test/unit-tests/phpunit.xml $PS_DIR
-  sudo cp -R $HOME/test/unit-tests/bootstrap.php $PS_DIR
-
-  sudo mkdir -p $UNIT_TESTS_DIR
-  sudo cp -R $HOME/test/unit-tests/Test*.php $UNIT_TESTS_DIR
-}
-
-
 if [ ${TRAVIS} = "false" ]; then
 	HOME='/home/docker'
 else
@@ -47,4 +38,3 @@ fi
 SOURCE_TEST_DIR=$HOME/test/unit-tests
 
 install_unit_tests
-copy_unit_tests
