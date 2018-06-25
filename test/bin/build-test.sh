@@ -27,7 +27,7 @@ install_unit_tests() {
   sudo find /var/www -type f -exec chmod 644 {} \;
   COMPOSER=$PS_DIR/composer.json
   sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR"
-  sudo -H -u www-data bash -c "composer require phpunit/phpunit:~6.2 --dev -d $PS_DIR -n --ignore-platform-reqs --update-with-all-dependencies"
+  sudo -H -u www-data bash -c "composer require phpunit/phpunit:^5.0 --dev -d $PS_DIR -n --ignore-platform-reqs --update-with-all-dependencies"
   echo "yes\n"
 
   # add test database
