@@ -6,18 +6,21 @@ PS_DIR='/var/www/html'
 UNIT_TESTS_DIR='/var/www/html/boxtal-unit-tests'
 PS_REPO_DIR='/tmp/ps'
 
-install_ps() {
-  $HOME/build/install-ps.sh $PS_VERSION
-}
-
-install_unit_tests() {
-  # init ps repo
+clone_ps_repo() {
   sudo mkdir -p $PS_REPO_DIR
   sudo chmod -R 777 $PS_REPO_DIR
   git clone https://github.com/PrestaShop/PrestaShop.git $PS_REPO_DIR
   cd $PS_REPO_DIR
   git checkout tags/$PS_VERSION
   cd $HOME
+}
+
+install_ps() {
+  sudo cp $PS_REPO_DIR/tests/parameters.yml.travis $PS_REPO_DIR/app/config/parameters.yml
+  $HOME/build/install-ps.sh $PS_VERSION
+}
+
+install_unit_tests() {
   sudo mkdir -p $PS_DIR/tests
   sudo cp -R $PS_REPO_DIR/tests/. $PS_DIR/tests
   sudo cp -R $PS_REPO_DIR/composer.json $PS_DIR
@@ -32,6 +35,8 @@ install_unit_tests() {
   mysqladmin -u dbadmin -pdbpass create test_prestashop
   mysqldump  -u dbadmin -pdbpass prestashop | mysql -u dbadmin -pdbpass test_prestashop
 }
+
+clone_ps_repo
 
 if [ ${TRAVIS} = "false" ]; then
 	HOME='/home/docker'

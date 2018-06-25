@@ -8,17 +8,12 @@ addons:
 
 # PHP version used in first build configuration.
 php:
-  - 5.6
+  - 7.2
 
 # Prestashop version used in first build configuration.
 env:
-  matrix:
-    - PS_VERSION=1.7.3.3 PS_MULTISITE=0
-
-matrix:
-  include:
-  - php: 7.2
-    env: PS_VERSION=1.7.3.3 PS_MULTISITE=0 RUN_CODE_COVERAGE=1 RUN_PHPCS=1
+  global:
+    - PS_VERSION=1.7.3.3 PS_MULTISITE=0 RUN_CODE_COVERAGE=1 RUN_PHPCS=1
 
 before_install:
   - sudo add-apt-repository -y ppa:ondrej/php
