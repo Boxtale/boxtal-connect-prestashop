@@ -1,16 +1,13 @@
 # Travis CI Configuration File
 
-# Tell Travis CI we're using PHP
 language: php
 
 addons:
   chrome: stable
 
-# PHP version used in first build configuration.
 php:
   - 7.2
 
-# Prestashop version used in first build configuration.
 env:
   global:
     - PS_VERSION=1.7.3.3 PS_MULTISITE=0 RUN_CODE_COVERAGE=1 RUN_PHPCS=1

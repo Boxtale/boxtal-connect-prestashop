@@ -16,7 +16,7 @@ clone_ps_repo() {
 }
 
 install_ps() {
-  sudo cp $PS_REPO_DIR/tests/parameters.yml.travis $PS_REPO_DIR/app/config/parameters.yml
+  sudo cp test/unit-tests/parameters.yml.travis $PS_REPO_DIR/app/config/parameters.yml
   $HOME/build/install-ps.sh $PS_VERSION
 }
 
