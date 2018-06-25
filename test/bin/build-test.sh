@@ -26,6 +26,7 @@ install_unit_tests() {
   sudo find $PS_DIR -type f -exec chmod 644 {} \;
   COMPOSER=$PS_DIR/composer.json
   sudo -H -u www-data bash -c "composer install --prefer-dist --dev -d $PS_DIR"
+  sudo -H -u www-data bash -c "composer install phpunit/phpunit:~6.2"
 
   # add test database
   mysqladmin -u dbadmin -pdbpass create test_prestashop
