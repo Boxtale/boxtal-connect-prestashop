@@ -7,6 +7,7 @@ UNIT_TESTS_DIR='/var/www/html/boxtal-unit-tests'
 
 clone_ps_repo() {
   sudo mkdir -p $PS_REPO_DIR
+  sudo chmod 777 $PS_REPO_DIR
   git clone https://github.com/PrestaShop/PrestaShop.git $PS_REPO_DIR
   cd $PS_REPO_DIR
   git checkout tags/$PS_VERSION
