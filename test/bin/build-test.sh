@@ -27,7 +27,7 @@ install_unit_tests() {
   sudo find /var/www -type f -exec chmod 644 {} \;
   COMPOSER=$PS_DIR/composer.json
   # sudo -H -u www-data bash -c "composer install --prefer-dist --dev -d $PS_DIR"
-  sudo -H -u www-data bash -c "composer require phpunit/phpunit:~6.2 --dev -d $PS_DIR -q"
+  sudo -H -u www-data bash -c "composer require phpunit/phpunit:~6.2 --dev -d $PS_DIR -n --ignore-platform-reqs "
 
   # add test database
   mysqladmin -u dbadmin -pdbpass create test_prestashop
