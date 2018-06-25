@@ -21,7 +21,11 @@ install_unit_tests() {
   sudo mkdir -p $PS_DIR/tests
   sudo cp -R $PS_REPO_DIR/tests/. $PS_DIR/tests
   sudo cp -R $PS_REPO_DIR/composer.json $PS_DIR
-  composer install --prefer-dist -d $PS_DIR
+  sudo chown -R www-data:www-data $PS_DIR
+  sudo find $PS_DIR -type d -exec chmod 775 {} \;
+  sudo find $PS_DIR -type f -exec chmod 644 {} \;
+  COMPOSER=$PS_DIR/composer.json
+  sudo -H -u www-data bash -c "composer install --prefer-dist --dev -d $PS_DIR"
 
   # add test database
   mysqladmin -u dbadmin -pdbpass create test_prestashop

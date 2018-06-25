@@ -7,4 +7,4 @@ if [[ $(docker inspect -f {{.State.Running}} boxtal_prestashop) = "false" ]]; th
     exit
 fi
 
-docker exec boxtal_prestashop /home/docker/test/bin/build-test.sh $PS_VERSION false
+docker exec  -u docker boxtal_prestashop /home/docker/test/bin/build-test.sh $PS_VERSION false
