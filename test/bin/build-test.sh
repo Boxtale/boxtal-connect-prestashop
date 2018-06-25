@@ -4,11 +4,9 @@ PS_VERSION=${1-1.7.3.3}
 TRAVIS=${2-false}
 PS_DIR='/var/www/html'
 UNIT_TESTS_DIR='/var/www/html/boxtal-unit-tests'
-PS_REPO_DIR='/tmp/ps'
 
 clone_ps_repo() {
   sudo mkdir -p $PS_REPO_DIR
-  sudo chmod -R 777 $PS_REPO_DIR
   git clone https://github.com/PrestaShop/PrestaShop.git $PS_REPO_DIR
   cd $PS_REPO_DIR
   git checkout tags/$PS_VERSION
@@ -16,7 +14,6 @@ clone_ps_repo() {
 }
 
 install_ps() {
-  sudo cp test/unit-tests/parameters.yml.travis $PS_REPO_DIR/app/config/parameters.yml
   $HOME/build/install-ps.sh $PS_VERSION
 }
 
@@ -45,6 +42,7 @@ else
 	install_ps
 fi
 
+PS_REPO_DIR=$HOME/ps
 SOURCE_TEST_DIR=$HOME/test/unit-tests
 
 install_unit_tests
