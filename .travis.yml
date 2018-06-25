@@ -29,7 +29,6 @@ before_install:
 
 install:
   - sudo apt-get install apache2 php${TRAVIS_PHP_VERSION} php${TRAVIS_PHP_VERSION}-mysql php${TRAVIS_PHP_VERSION}-mbstring php${TRAVIS_PHP_VERSION}-soap php${TRAVIS_PHP_VERSION}-curl php${TRAVIS_PHP_VERSION}-dom
-  - if [[ $PHPUNIT_VERSION != "travis" ]]; then composer require phpunit/phpunit:${PHPUNIT_VERSION}; fi
   - composer install --prefer-dist
   - if [[ $RUN_E2E = "1" ]]; then npm install; fi
   - if [[ $RUN_E2E = "1" ]]; then npm install -g gulp; fi
