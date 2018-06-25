@@ -13,7 +13,7 @@ php:
 # Prestashop version used in first build configuration.
 env:
   global:
-    - PHPUNIT_VERSION="travis"
+    - PHPUNIT_VERSION="test"
   matrix:
     - PS_VERSION=1.7.3.3 PS_MULTISITE=0
 
@@ -50,8 +50,8 @@ before_script:
 script:
   - if [[ $PHPUNIT_VERSION = "travis" ]] && [[ $PS_MULTISITE = "0" ]]; then phpunit -c /var/www/html/phpunit.xml -v --debug; fi
   - if [[ $PHPUNIT_VERSION = "travis" ]] && [[ $PS_MULTISITE = "1" ]]; then phpunit -c /var/www/html/phpunit-multisite.xml -v --debug; fi
-  - if [[ $PHPUNIT_VERSION != "travis" ]] && [[ $PS_MULTISITE = "0" ]]; then vendor/bin/phpunit -c /var/www/html/phpunit.xml -v --debug; fi
-  - if [[ $PHPUNIT_VERSION != "travis" ]] && [[ $PS_MULTISITE = "1" ]]; then vendor/bin/phpunit -c /var/www/html/phpunit-multisite.xml -v --debug; fi
+  - if [[ $PHPUNIT_VERSION != "travis" ]] && [[ $PS_MULTISITE = "0" ]]; then /var/www/html/vendor/phpunit/phpunit/phpunit -c /var/www/html/phpunit.xml -v --debug; fi
+  - if [[ $PHPUNIT_VERSION != "travis" ]] && [[ $PS_MULTISITE = "1" ]]; then /var/www/html/vendor/phpunit/phpunit/phpunit -c /var/www/html/phpunit-multisite.xml -v --debug; fi
   - if [[ $RUN_PHPCS = "1" ]]; then bash build/phpcs.sh true; fi
   - if [[ $RUN_E2E = "1" ]]; then bash test/bin/run-e2e-test.sh true $PS_MULTISITE; fi
 
