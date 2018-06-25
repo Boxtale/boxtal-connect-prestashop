@@ -33,16 +33,16 @@ install_unit_tests() {
   mysqldump  -u dbadmin -pdbpass prestashop | mysql -u dbadmin -pdbpass test_prestashop
 }
 
-clone_ps_repo
-
 if [ ${TRAVIS} = "false" ]; then
 	HOME='/home/docker'
+	PS_REPO_DIR=$HOME/ps
 else
 	HOME='/home/travis/build/Boxtale/boxtal-prestashop-poc'
+	PS_REPO_DIR=$HOME/ps
+  clone_ps_repo
 	install_ps
 fi
 
-PS_REPO_DIR=$HOME/ps
 SOURCE_TEST_DIR=$HOME/test/unit-tests
 
 install_unit_tests
