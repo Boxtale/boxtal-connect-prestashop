@@ -75,7 +75,6 @@ abstract class AbstractNotice
     {
         $notice = $this;
         if ($notice->isValid()) {
-            $boxtal = \Boxtal::getInstance();
             include realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'notice'.DIRECTORY_SEPARATOR.$this->template.'.php';
             if ($notice->autodestruct) {
                 $notice->remove();

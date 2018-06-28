@@ -1,0 +1,64 @@
+ARG PHP_VERSION
+ARG PS_VERSION
+FROM 890731937511.dkr.ecr.eu-west-1.amazonaws.com/boxtal-prestashop:$PHP_VERSION-$PS_VERSION
+ARG LEGACY_VERSION
+ARG BOXTAL_LOGIN
+ARG BOXTAL_PWD
+
+USER root
+
+COPY legacy/ /var/www/html/modules/envoimoinscher/
+
+RUN chown -R www-data:www-data /var/www/html/modules/envoimoinscher \
+ && find /var/www/html/modules/envoimoinscher -type d -exec chmod 775 {} \; \
+ && find /var/www/html/modules/envoimoinscher -type f -exec chmod 644 {} \;
+
+RUN /etc/init.d/mysql start \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_module (name, active, version) VALUES ('envoimoinscher', 1, \"$LEGACY_VERSION\");" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_ADDRESS', '4 boulevard des Capucines');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_ANN', '6');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_ASSU', NULL);" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_AVERAGE_WEIGHT', '1');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_CITY', 'Paris');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_CIV', 'M');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_CMD', '3');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_COMPANY', 'PrestaTest');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_COMPL', NULL);" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_CONTENT_AS_DESC', '0');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_COUNTRY', 'FR');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_DISABLE_CART', '0');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_DISPO_HDE', '12:00');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_DISPO_HLE', '17:00');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_ENABLED_LOGS', '1');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_ENV', 'TEST');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_ENVO', '4');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_FILTER_CARRIERS', 'all');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_FILTER_START_DATE', 'all');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_FILTER_STATUS', '6;13;1;12;9;10;3;8;4;5;11;2;7');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_FILTER_TYPE_ORDER', '0;1;2');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_FNAME', 'Jon');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_INDI', '1');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_LAST_CARRIER_UPDATE', '2017-05-04');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_LIV', '5');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_LNAME', 'Snow');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_LOGIN', \"$BOXTAL_LOGIN\");" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_MAIL', 'jsnow@boxtal.com');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_MASS', '0');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_NATURE', '40100');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_ORDER', '0');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_PASS', \"$BOXTAL_PWD\");" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_PICKUP_J1', '2');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_PICKUP_J2', '3');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_PICKUP_SPLIT', '17');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_POSTALCODE', '75009');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_SRV_MODE', 'config');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_TEL', '06 12 34 12 34');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_TRACK_MODE', '2');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_TYPE', 'colis');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_USER', '1');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_WRAPPING', '1-Boîte');" \
+ && mysql -u dbadmin -pdbpass -e "INSERT INTO prestashop.ps_configuration (name, value) VALUES ('EMC_LABEL_DELIVERY_DATE', 'a:1:{s:2:\"fr\";s:26:\"Livraison prévue : {DATE}\";}');"
+
+RUN /etc/init.d/mysql start \
+ && MODULE_ID=$(mysql -u dbadmin -pdbpass -s -N -e "SELECT id_module FROM prestashop.ps_module WHERE name='envoimoinscher';") \
+ && echo $MODULE_ID

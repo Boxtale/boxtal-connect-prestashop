@@ -9,7 +9,7 @@ use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
 /**
  * Ajax admin controller class.
  */
-class BoxtalAjaxModuleAdminController extends ModuleAdminController
+class BoxtalAjaxModuleAdminController extends \ModuleAdminController
 {
 
     /**
