@@ -20,6 +20,48 @@ class NoticeController
 {
 
     /**
+     * Notice name.
+     *
+     * @var string
+     */
+    public static $update = 'update';
+
+    /**
+     * Notice name.
+     *
+     * @var string
+     */
+    public static $setupWizard = 'setupWizard';
+
+    /**
+     * Notice name.
+     *
+     * @var string
+     */
+    public static $setupFailure = 'setupFailure';
+
+    /**
+     * Notice name.
+     *
+     * @var string
+     */
+    public static $pairing = 'pairing';
+
+    /**
+     * Notice name.
+     *
+     * @var string
+     */
+    public static $pairingUpdate = 'pairingUpdate';
+
+    /**
+     * Notice name.
+     *
+     * @var string
+     */
+    public static $custom = 'custom';
+
+    /**
      * Array of notices - name => callback.
      *
      * @var array
@@ -27,16 +69,13 @@ class NoticeController
     private static $coreNotices = array( 'update', 'setupWizard', 'pairing', 'pairingUpdate' );
 
     /**
-     * Get notices.
+     * Get notice instances.
      *
      * @return array $notices instances of notices.
      */
-    public static function getNotices()
+    public static function getNoticeInstances()
     {
-        $sql = new \DbQuery();
-        $sql->select('n.key, n.value');
-        $sql->from('bx_notices', 'n');
-        $notices = \Db::getInstance()->executeS($sql);
+        $notices = self::getNoticeKeys();
         $noticeInstances = array();
         if (is_array($notices)) {
             foreach ($notices as $notice) {
@@ -69,6 +108,18 @@ class NoticeController
     }
 
     /**
+     * Get notice keys.
+     *
+     * @return array of notice keys.
+     */
+    public static function getNoticeKeys() {
+        $sql = new \DbQuery();
+        $sql->select('n.key, n.value');
+        $sql->from('bx_notices', 'n');
+        return \Db::getInstance()->executeS($sql);
+    }
+
+    /**
      * Add notice.
      *
      * @param string $type type of notice.
@@ -86,11 +137,7 @@ class NoticeController
                 VALUES ('".pSQL($key)."', '".pSQL($value)."')"
             );
         } else {
-            $sql = new \DbQuery();
-            $sql->select('n.key');
-            $sql->from('bx_notices', 'n');
-            $notices = \Db::getInstance()->executeS($sql);
-
+            $notices = self::getNoticeKeys();
             $alreadyExists = false;
             foreach ($notices as $notice) {
                 if ($notice['key'] === $type) {
@@ -135,9 +182,25 @@ class NoticeController
      */
     public static function hasNotices()
     {
-        $notices = self::getNotices();
+        $notices = self::getNoticeKeys();
 
         return !empty($notices);
+    }
+
+    /**
+     * Whether given notice is active.
+     *
+     * @param string $notice notice key.
+     * @return boolean
+     */
+    public static function hasNotice( $notice ) {
+        $notices = self::getNoticeKeys();
+        foreach ( $notices as $noticeKey ) {
+            if ( $notice === $noticeKey ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

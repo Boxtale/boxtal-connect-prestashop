@@ -29,15 +29,11 @@ class BoxtalShopModuleFrontController extends ModuleFrontController
         $body = AuthUtil::decryptBody($entityBody);
 
         $route = Tools::getValue('route'); // Get route
-        $html = '';
 
         if ('shop' === $route) {
-            $html .= $this->pairingHandler($body);
-        } else {
-            exit;
+            $this->pairingHandler($body);
         }
-
-        die($html);
+        ApiUtil::sendApiResponse(400);
     }
 
     /**
@@ -72,22 +68,22 @@ class BoxtalShopModuleFrontController extends ModuleFrontController
         if (null !== $accessKey && null !== $secretKey) {
             if (! AuthUtil::isPluginPaired()) { // initial pairing.
                 AuthUtil::pairPlugin($accessKey, $secretKey);
-                NoticeController::removeNotice('setupWizard');
-                NoticeController::addNotice('pairing', array( 'result' => 1 ));
+                NoticeController::removeNotice(NoticeController::$setupWizard);
+                NoticeController::addNotice(NoticeController::$pairing, array( 'result' => 1 ));
                 ApiUtil::sendApiResponse(200);
             } else { // pairing update.
                 if (null !== $callbackUrl) {
                     AuthUtil::pairPlugin($accessKey, $secretKey);
-                    NoticeController::removeNotice('pairing');
+                    NoticeController::removeNotice(NoticeController::$pairing);
                     AuthUtil::startPairingUpdate($callbackUrl);
-                    NoticeController::addNotice('pairingUpdate');
+                    NoticeController::addNotice(NoticeController::$pairingUpdate);
                     ApiUtil::sendApiResponse(200);
                 } else {
                     ApiUtil::sendApiResponse(403);
                 }
             }
         } else {
-            NoticeController::addNotice('pairing', array( 'result' => 0 ));
+            NoticeController::addNotice(NoticeController::$pairing, array( 'result' => 0 ));
             ApiUtil::sendApiResponse(400);
         }
     }

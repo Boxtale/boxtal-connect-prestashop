@@ -36,7 +36,7 @@ class ConfigurationUtil
      */
     public static function set($name, $value)
     {
-        \Configuration::set($name, $value);
+        \Configuration::updateValue($name, $value);
     }
 
     /**

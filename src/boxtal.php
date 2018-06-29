@@ -75,11 +75,16 @@ class Boxtal extends Module
         $this->description = $this->l('Ship your orders with multiple carriers and save up to 75% on your shipping costs without commitments or any contracts.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
+        if ( Auth_Util::is_plugin_paired() && Notice_Controller::has_notice( Notice_Controller::$setup_wizard ) ) {
+            Notice_Controller::remove_notice( Notice_Controller::$setup_wizard );
+        } elseif ( ! Auth_Util::is_plugin_paired() && ! Notice_Controller::has_notice( Notice_Controller::$setup_wizard ) ) {
+
+
         if ($this->active) {
-            if (!AuthUtil::isPluginPaired()) {
-                NoticeController::addNotice('setupWizard');
-            } else {
-                NoticeController::removeNotice('setupWizard');
+            if (AuthUtil::isPluginPaired() && NoticeController::hasNotice(NoticeController::$setupWizard)) {
+                NoticeController::removeNotice(NoticeController::$setupWizard);
+            } elseif (!AuthUtil::isPluginPaired() && !NoticeController::hasNotice(NoticeController::$setupWizard)) {
+                NoticeController::addNotice(NoticeController::$setupWizard);
             }
 
             if (AuthUtil::canUsePlugin()) {

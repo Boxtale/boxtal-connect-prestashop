@@ -145,6 +145,6 @@ class AuthUtil
      */
     public static function getSecretKey()
     {
-        return ConfigurationUtil::get('BW_SECRET_KEY');
+        return ConfigurationUtil::get('BX_SECRET_KEY');
     }
 }
