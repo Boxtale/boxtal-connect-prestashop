@@ -21,13 +21,11 @@ switch ($notice->status) {
         break;
 }
 ?>
-<div class="bootstrap">
-    <div class="<?php echo $classes; ?>">
-        <?php echo $notice->message; ?>
-        <p>
-            <a class="bw-hide-notice" rel="<?php echo $notice->key; ?>">
-                <?php echo $boxtal->l('Hide this notice'); ?>
-            </a>
-        </p>
-    </div>
+<div class="<?php echo $classes; ?>">
+    <?php echo $notice->message; ?>
+    <p>
+        <a class="bx-hide-notice" rel="<?php echo $notice->key; ?>">
+            <?php echo $boxtal->l('Hide this notice'); ?>
+        </a>
+    </p>
 </div>

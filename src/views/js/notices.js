@@ -2,36 +2,36 @@
     var Components = {};
 
     Components.notices = {
-        trigger: '.bw-notice',
+        trigger: '.bx-notice',
 
         init: function() {
             const triggers = document.querySelectorAll(this.trigger);
             const self = this;
 
             if (triggers.length) {
-                self.on("body", "click", ".bw-hide-notice", function() {
+                self.on("body", "click", ".bx-hide-notice", function() {
                     const httpRequest = new XMLHttpRequest();
                     const notice = this;
                     httpRequest.onreadystatechange = function(data) {
                         if (httpRequest.readyState === 4) {
                             if (httpRequest.status === 200) {
-                                notice.closest(".bw-notice").style.display = 'none';
+                                notice.closest(".bx-notice").style.display = 'none';
                             } else {
                                 console.log("Error: " + httpRequest.status);
                             }
                         }
                     };
-                    httpRequest.open("POST", ajaxurl);
+                    httpRequest.open("POST", ajaxLink);
                     httpRequest.setRequestHeader(
                         "Content-Type",
                         "application/x-www-form-urlencoded"
                     );
                     httpRequest.responseType = "json";
-                    const noticeId = notice.getAttribute("rel");
-                    httpRequest.send("action=hide_notice&notice_id=" + encodeURIComponent(noticeId) + "&security=" + encodeURIComponent(ajax_nonce));
+                    const noticeKey = notice.getAttribute("rel");
+                    httpRequest.send("action=hideNotice&noticeKey=" + encodeURIComponent(noticeKey));
                 });
 
-                self.on("body", "click", ".bw-pairing-update-validate", function() {
+                self.on("body", "click", ".bx-pairing-update-validate", function() {
                     const httpRequest = new XMLHttpRequest();
                     const notice = this;
                     httpRequest.onreadystatechange = function() {
@@ -49,8 +49,8 @@
                         "application/x-www-form-urlencoded"
                     );
                     httpRequest.responseType = "json";
-                    const approve = notice.getAttribute("bw-pairing-update-validate");
-                    httpRequest.send("action=pairing_update_validate&approve=" + encodeURIComponent(approve) + "&security=" + encodeURIComponent(ajax_nonce));
+                    const approve = notice.getAttribute("bx-pairing-update-validate");
+                    httpRequest.send("action=pairingUpdateValidate&approve=" + encodeURIComponent(approve));
                 });
             }
         },
@@ -62,8 +62,8 @@
                 const possibleTargets = element.querySelectorAll(selector);
                 const target = event.target;
 
-                for (let i = 0, l = possibleTargets.length; i < l; i++) {
-                    let el = target;
+                for (var i = 0, l = possibleTargets.length; i < l; i++) {
+                    var el = target;
                     const p = possibleTargets[i];
 
                     while(el && el !== element) {

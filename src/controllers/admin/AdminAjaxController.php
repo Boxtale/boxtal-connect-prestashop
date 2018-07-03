@@ -9,7 +9,7 @@ use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
 /**
  * Ajax admin controller class.
  */
-class BoxtalAjaxModuleAdminController extends \ModuleAdminController
+class AdminAjaxController extends \ModuleAdminController
 {
 
     /**
@@ -20,11 +20,13 @@ class BoxtalAjaxModuleAdminController extends \ModuleAdminController
     public function postProcess()
     {
 
-        $endpoint = Tools::getValue('endpoint'); // Get endpoint
+        parent::postProcess();
+
+        $action = Tools::getValue('action'); // Get action
 
         $json = false;
 
-        switch ($endpoint) {
+        switch ($action) {
             case 'hideNotice':
                 $json = $this->hideNoticeCallback();
                 break;
@@ -49,12 +51,11 @@ class BoxtalAjaxModuleAdminController extends \ModuleAdminController
     public function hideNoticeCallback()
     {
 
-        if (!Tools::getValue('noticeId')) {
+        if (!Tools::getValue('noticeKey')) {
             return false;
         }
-        $noticeId = Tools::getValue('noticeId');
-        $noticeController = new NoticeController();
-        $noticeController->removeNotice($noticeId);
+        $noticeKey = Tools::getValue('noticeKey');
+        NoticeController::removeNotice($noticeKey);
 
         return true;
     }

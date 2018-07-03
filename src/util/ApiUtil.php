@@ -24,6 +24,7 @@ class ApiUtil
     public static function sendApiResponse($code, $body = null)
     {
         http_response_code($code);
+        header( 'Content-Type: application/json; charset=utf-8' );
         if (null !== $body) {
             echo AuthUtil::encryptBody($body);
         }

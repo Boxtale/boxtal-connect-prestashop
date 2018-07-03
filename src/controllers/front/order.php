@@ -29,15 +29,12 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
         AuthUtil::authenticate($entityBody);
 
         $route = Tools::getValue('route'); // Get route
-        $html = '';
 
         if ('order' === $route) {
-            $html .= $this->apiCallbackHandler();
-        } else {
-            exit;
+            $this->apiCallbackHandler();
         }
 
-        die($html);
+        ApiUtil::sendApiResponse(400);
     }
 
     /**

@@ -75,11 +75,6 @@ class Boxtal extends Module
         $this->description = $this->l('Ship your orders with multiple carriers and save up to 75% on your shipping costs without commitments or any contracts.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
-        if ( Auth_Util::is_plugin_paired() && Notice_Controller::has_notice( Notice_Controller::$setup_wizard ) ) {
-            Notice_Controller::remove_notice( Notice_Controller::$setup_wizard );
-        } elseif ( ! Auth_Util::is_plugin_paired() && ! Notice_Controller::has_notice( Notice_Controller::$setup_wizard ) ) {
-
-
         if ($this->active) {
             if (AuthUtil::isPluginPaired() && NoticeController::hasNotice(NoticeController::$setupWizard)) {
                 NoticeController::removeNotice(NoticeController::$setupWizard);
@@ -88,7 +83,7 @@ class Boxtal extends Module
             }
 
             if (AuthUtil::canUsePlugin()) {
-                require_once __DIR__.'/controllers/admin/ajax.php';
+                require_once __DIR__ . '/controllers/admin/AdminAjaxController.php';
                 require_once __DIR__.'/controllers/front/order.php';
             }
         }
@@ -118,6 +113,18 @@ class Boxtal extends Module
             UNIQUE (`key`)
             ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
+
+        // add invisible tab for admin ajax controller
+        $invisibleTab = new \Tab();
+        $invisibleTab->active = 1;
+        $invisibleTab->class_name = 'AdminAjax';
+        $invisibleTab->name = array();
+        foreach (\Language::getLanguages(true) as $lang) {
+            $invisibleTab->name[$lang['id_lang']] = $this->l('Ajax route');
+        }
+        $invisibleTab->id_parent = -1;
+        $invisibleTab->module = $this->name;
+        $invisibleTab->add();
 
         return true;
     }
@@ -165,8 +172,7 @@ class Boxtal extends Module
     {
         $controller = $this->getContext()->controller;
 
-        $notices = NoticeController::getNotices();
-        if (! empty($notices)) {
+        if (NoticeController::hasNotices()) {
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
                     'bx-notice',
@@ -187,7 +193,7 @@ class Boxtal extends Module
      */
     public function hookDisplayAdminAfterHeader()
     {
-        $notices = NoticeController::getNotices();
+        $notices = NoticeController::getNoticeInstances();
         foreach ($notices as $notice) {
             $notice->render();
         }
