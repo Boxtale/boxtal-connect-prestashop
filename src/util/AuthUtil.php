@@ -28,7 +28,7 @@ class AuthUtil
             return true;
         }
 
-        return ApiUtil::sendApiResponse(401);
+        ApiUtil::sendApiResponse(401);
     }
 
     /**
@@ -122,8 +122,8 @@ class AuthUtil
 
         return json_encode(
             array(
-                'encryptedKey'  => self::encryptPublicKey( $key ),
-                'encryptedData' => self::encryptRc4( $body, $key ),
+                'encryptedKey'  => MiscUtil::base64OrNull(self::encryptPublicKey( $key )),
+                'encryptedData' => MiscUtil::base64OrNull(self::encryptRc4( (is_array($body) ? json_encode($body) : $body), $key ))
             )
         );
     }
@@ -131,7 +131,7 @@ class AuthUtil
     /**
      * Get random encryption key.
      *
-     * @return string bytes chain
+     * @return string
      */
     public static function getRandomKey() {
         //phpcs:ignore
@@ -139,48 +139,33 @@ class AuthUtil
         if ( false === $random_key ) {
             return null;
         }
-        return $random_key;
+        return bin2hex($random_key);
     }
 
     /**
      * Encrypt with public key.
      *
      * @param string $str string to encrypt.
-     * @return string bytes chain
+     * @return array bytes array
      */
     public static function encryptPublicKey( $str ) {
         // phpcs:ignore
-        $public_key = file_get_contents(realpath(plugin_dir_path(__DIR__)) . DIRECTORY_SEPARATOR . 'resource' . DIRECTORY_SEPARATOR . 'publickey');
+        $public_key = file_get_contents(realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'resource' . DIRECTORY_SEPARATOR . 'publickey');
         $encrypted  = '';
         if ( openssl_public_encrypt( $str, $encrypted, $public_key ) ) {
-            return base64_encode( $encrypted );
+            return $encrypted;
         }
         return null;
-    }
-
-    /**
-     * Json + RC4 data encryption.
-     *
-     * @param mixed  $data data.
-     * @param string $key iv.
-     * @return string
-     */
-    public static function encryptRc4( $data, $key ) {
-        if ( is_array( $data ) ) {
-            $data = wp_json_encode( $data );
-        }
-
-        return base64_encode( self::rc4( $key, $data ) );
     }
 
     /**
      * RC4 symmetric cipher encryption/decryption
      *
      * @param string $str string to be encrypted/decrypted.
-     * @param string $key secret key for encryption/decryption.
-     * @return string
+     * @param array $key secret key for encryption/decryption.
+     * @return array bytes array
      */
-    public static function rc4( $str, $key ) {
+    public static function encryptRc4( $str, $key ) {
         $s = array();
         for ( $i = 0; $i < 256; $i++ ) {
             $s[ $i ] = $i;

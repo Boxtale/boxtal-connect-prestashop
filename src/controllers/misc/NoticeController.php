@@ -66,7 +66,7 @@ class NoticeController
      *
      * @var array
      */
-    private static $coreNotices = array( 'update', 'setupWizard', 'pairing', 'pairingUpdate' );
+    private static $coreNotices = array( 'update', 'setupWizard', 'pairing', 'pairingUpdate', 'setupFailure' );
 
     /**
      * Get notice instances.

@@ -51,8 +51,7 @@ RUN curl -sS https://getcomposer.org/installer | \
 ENV HOME=/home/docker
 WORKDIR $HOME
 COPY composer.json $HOME
-COPY composer.lock $HOME
-RUN composer install --no-scripts --no-autoloader --no-dev
+RUN composer install --no-scripts --no-autoloader --no-dev --prefer-source
 RUN chown -R docker:docker $HOME
 COPY build/entrypoint.sh $HOME/build/
 ENTRYPOINT $HOME/build/entrypoint.sh

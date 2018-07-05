@@ -26,6 +26,8 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
+use Boxtal\BoxtalPhp\ApiClient;
+use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
@@ -79,7 +81,31 @@ class Boxtal extends Module
             if (AuthUtil::isPluginPaired() && NoticeController::hasNotice(NoticeController::$setupWizard)) {
                 NoticeController::removeNotice(NoticeController::$setupWizard);
             } elseif (!AuthUtil::isPluginPaired() && !NoticeController::hasNotice(NoticeController::$setupWizard)) {
-                NoticeController::addNotice(NoticeController::$setupWizard);
+                $lib    = new ApiClient( null, null );
+                $params = array(
+                    'locale' => \Language::getIsoById((int) $this->getContext()->cookie->id_lang)
+                );
+                $response = $lib->restClient->request(
+                    RestClient::$GET,
+                    $lib->getApiUrl() . '/v2/sellershop/module/config',
+                    $params
+                );
+
+                if ( ! $response->isError() ) {
+                    $res = json_decode( $response->response );
+                    if ( property_exists( $res, 'mapsEndpointUrl' ) && property_exists( $res, 'signupPageUrl' ) ) {
+                        ConfigurationUtil::set( 'BX_MAP_URL', $res->mapsEndpointUrl );
+                        ConfigurationUtil::set( 'BX_SIGNUP_URL', $res->signupPageUrl );
+                        NoticeController::addNotice( NoticeController::$setupWizard );
+                        if ( NoticeController::hasNotice( NoticeController::$setupFailure ) ) {
+                            NoticeController::removeNotice( NoticeController::$setupFailure );
+                        }
+                    } else {
+                        NoticeController::addNotice( NoticeController::$setupFailure );
+                    }
+                } else {
+                    NoticeController::addNotice( NoticeController::$setupFailure );
+                }
             }
 
             if (AuthUtil::canUsePlugin()) {

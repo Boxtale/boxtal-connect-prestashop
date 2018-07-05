@@ -21,7 +21,7 @@ class OrderUtil
     public static function getOrders()
     {
         $sql = new \DbQuery();
-        $sql->select('o.id_order, c.firstname, c.lastname, c.company, a.address1, a.address2, a.city, a.postcode, co.iso_code as coutry_iso, s.iso_code as state_iso, c.email, a.phone');
+        $sql->select('o.id_order, c.firstname, c.lastname, c.company, a.address1, a.address2, a.city, a.postcode, co.iso_code as country_iso, s.iso_code as state_iso, c.email, a.phone');
         $sql->from('orders', 'o');
         $sql->innerJoin('customer', 'c', 'o.id_customer = c.id_customer');
         $sql->innerJoin('address', 'a', 'o.id_address_delivery = a.id_address');

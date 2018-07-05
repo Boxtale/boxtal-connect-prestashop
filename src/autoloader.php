@@ -32,17 +32,18 @@ function boxtalAutoload($className)
         return;
     }
 
-    if ('BoxtalPhp' === $fileParts[1]) {
-        $filePath = __DIR__.'lib/'.$fileParts[1].'.php';
-    } elseif ('BoxtalPrestashop' === $fileParts[1]) {
-        $path = '';
-        for ($i = count($fileParts) - 1; $i > 1; $i--) {
-            if (count($fileParts) - 1 === $i) {
-                $path .= $fileParts[$i].'.php';
-            } else {
-                $path = strtolower($fileParts[$i]).'/'.$path;
-            }
+    $path = '';
+    for ($i = count($fileParts) - 1; $i > 1; $i--) {
+        if (count($fileParts) - 1 === $i) {
+            $path .= $fileParts[$i].'.php';
+        } else {
+            $path = strtolower($fileParts[$i]).'/'.$path;
         }
+    }
+
+    if ('BoxtalPhp' === $fileParts[1]) {
+        $filePath = __DIR__.'/lib/'.$path;
+    } elseif ('BoxtalPrestashop' === $fileParts[1]) {
         $filePath = __DIR__.'/'.$path;
     }
 

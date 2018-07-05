@@ -40,4 +40,14 @@ class MiscUtil
 
         return $isSet !== null && $isSet !== '' ? $isSet : null;
     }
+
+    /**
+     * Return base64 encoded value if not null.
+     *
+     * @param mixed $value value to be encoded.
+     * @return mixed $value
+     */
+    public static function base64OrNull( $value ) {
+        return null === $value ? null : base64_encode($value);
+    }
 }
