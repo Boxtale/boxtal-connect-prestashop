@@ -24,6 +24,7 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
 
+        var_dump($_SERVER['REQUEST_METHOD']);
         $entityBody = file_get_contents('php://input');
 
         AuthUtil::authenticate($entityBody);

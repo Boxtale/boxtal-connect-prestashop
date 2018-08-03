@@ -5,6 +5,8 @@
 
 
 use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalPrestashop\Util\AuthUtil;
+use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
 
 /**
  * Ajax admin controller class.
@@ -72,14 +74,14 @@ class AdminAjaxController extends \ModuleAdminController
         }
         $approve = sanitize_text_field(wp_unslash($_REQUEST['approve']));
 
-        $lib = new ApiClient(Auth_Util::get_access_key(), Auth_Util::get_secret_key());
+        $lib = new ApiClient(AuthUtil::getAccessKey(), AuthUtil::getSecretKey());
         //phpcs:ignore
-        $response = $lib->restClient->request( RestClient::$PATCH, get_option( 'BW_PAIRING_UPDATE' ), array( 'approve' => $approve ) );
+        $response = $lib->restClient->request( RestClient::$PATCH, ConfigurationUtil::get( 'BW_PAIRING_UPDATE' ), array( 'approve' => $approve ) );
 
         if (! $response->isError()) {
-            Auth_Util::end_pairing_update();
-            Notice_Controller::remove_notice('pairing-update');
-            Notice_Controller::add_notice('pairing', array( 'result' => 1 ));
+            AuthUtil::endPairingUpdate();
+            NoticeController::removeNotice(NoticeController::$pairingUpdate);
+            NoticeController::addNotice(NoticeController::$pairing, array( 'result' => 1 ));
             wp_send_json(true);
         } else {
             wp_send_json_error('pairing validation failed');

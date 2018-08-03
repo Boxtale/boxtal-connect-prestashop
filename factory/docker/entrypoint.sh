@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 if ! [ -z "$APIURL" ]; then
+    sudo sed -i "s/apiUrl\\\": \\\"https:\/\/api.boxtal.com\\\"/apiUrl\\\": \\\"$APIURL\\\"/" /home/docker/src/lib/config.json
     ESCAPED_APIURL=$(sed 's|/|\\/|g' <<< $APIURL)
     sudo -u www-data -H sh -c "sed -i \"s/apiUrl\\\": \\\"https:\/\/api.boxtal.com\\\"/apiUrl\\\": \\\"$ESCAPED_APIURL\\\"/\"  /var/www/html/modules/boxtal/lib/config.json"
 fi

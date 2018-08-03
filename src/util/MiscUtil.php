@@ -50,4 +50,17 @@ class MiscUtil
     public static function base64OrNull( $value ) {
         return null === $value ? null : base64_encode($value);
     }
+
+    /**
+     * Converts StdClass object to associative array.
+     *
+     * @param mixed $value value to be converted.
+     * @return array $value
+     */
+    public static function convertStdClassToArray( $value ) {
+        if (!is_object($value)) {
+            return $value;
+        }
+        return json_decode(json_encode($value), true);
+    }
 }

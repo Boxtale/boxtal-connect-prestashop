@@ -15,7 +15,7 @@ clone_ps_repo() {
 }
 
 install_ps() {
-  $HOME/build/install-ps.sh $PS_VERSION
+  $HOME/factory/common/install-ps.sh $PS_VERSION
 }
 
 install_unit_tests() {

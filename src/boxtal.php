@@ -29,8 +29,11 @@
 use Boxtal\BoxtalPhp\ApiClient;
 use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalPrestashop\Init\EnvironmentCheck;
+use Boxtal\BoxtalPrestashop\Init\SetupWizard;
 use Boxtal\BoxtalPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalPrestashop\Util\EnvironmentUtil;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -77,40 +80,20 @@ class Boxtal extends Module
         $this->description = $this->l('Ship your orders with multiple carriers and save up to 75% on your shipping costs without commitments or any contracts.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
+        $this->min_php_version = '5.3.0';
+
         if ($this->active) {
-            if (AuthUtil::isPluginPaired() && NoticeController::hasNotice(NoticeController::$setupWizard)) {
-                NoticeController::removeNotice(NoticeController::$setupWizard);
-            } elseif (!AuthUtil::isPluginPaired() && !NoticeController::hasNotice(NoticeController::$setupWizard)) {
-                $lib    = new ApiClient( null, null );
-                $params = array(
-                    'locale' => \Language::getIsoById((int) $this->getContext()->cookie->id_lang)
-                );
-                $response = $lib->restClient->request(
-                    RestClient::$GET,
-                    $lib->getApiUrl() . '/v2/sellershop/module/config',
-                    $params
-                );
+            new EnvironmentCheck($this);
 
-                if ( ! $response->isError() ) {
-                    $res = json_decode( $response->response );
-                    if ( property_exists( $res, 'mapsEndpointUrl' ) && property_exists( $res, 'signupPageUrl' ) ) {
-                        ConfigurationUtil::set( 'BX_MAP_URL', $res->mapsEndpointUrl );
-                        ConfigurationUtil::set( 'BX_SIGNUP_URL', $res->signupPageUrl );
-                        NoticeController::addNotice( NoticeController::$setupWizard );
-                        if ( NoticeController::hasNotice( NoticeController::$setupFailure ) ) {
-                            NoticeController::removeNotice( NoticeController::$setupFailure );
-                        }
-                    } else {
-                        NoticeController::addNotice( NoticeController::$setupFailure );
-                    }
-                } else {
-                    NoticeController::addNotice( NoticeController::$setupFailure );
+            if ( false === EnvironmentUtil::checkErrors( $this ) ) {
+                require_once __DIR__ . '/controllers/front/configuration.php';
+                new SetupWizard();
+                require_once __DIR__ . '/controllers/front/shop.php';
+
+                if (AuthUtil::canUsePlugin()) {
+                    require_once __DIR__ . '/controllers/admin/AdminAjaxController.php';
+                    require_once __DIR__ . '/controllers/front/order.php';
                 }
-            }
-
-            if (AuthUtil::canUsePlugin()) {
-                require_once __DIR__ . '/controllers/admin/AdminAjaxController.php';
-                require_once __DIR__.'/controllers/front/order.php';
             }
         }
     }

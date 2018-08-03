@@ -6,7 +6,6 @@
 namespace Boxtal\BoxtalPrestashop\Controllers\Misc;
 
 use Boxtal\BoxtalPrestashop\Notice\CustomNotice;
-use function PHPSTORM_META\map;
 
 /**
  * Notice controller class.
@@ -61,12 +60,20 @@ class NoticeController
      */
     public static $custom = 'custom';
 
+
+    /**
+     * Notice name.
+     *
+     * @var string
+     */
+    public static $environmentWarning = 'environmentWarning';
+
     /**
      * Array of notices - name => callback.
      *
      * @var array
      */
-    private static $coreNotices = array( 'update', 'setupWizard', 'pairing', 'pairingUpdate', 'setupFailure' );
+    private static $coreNotices = array( 'update', 'setupWizard', 'pairing', 'pairingUpdate', 'setupFailure', 'environmentWarning' );
 
     /**
      * Get notice instances.
@@ -211,7 +218,7 @@ class NoticeController
     public static function removeAllNotices()
     {
         \DB::getInstance()->execute(
-            'DELETE FROM `'._DB_PREFIX_.'bw_notices`;'
+            'DELETE FROM `'._DB_PREFIX_.'bx_notices`;'
         );
     }
 }

@@ -2,7 +2,6 @@
 
 HOME=${1-/home/docker}
 
-sudo chmod -R +x $HOME/test/bin
 sudo chown -R www-data:www-data /var/www/html
 sudo gulp css
 sudo gulp js

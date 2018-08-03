@@ -12,7 +12,8 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     nodejs \
     xvfb \
     xauth \
-    unzip
+    unzip \
+    vim
 
 RUN curl https://packages.sury.org/php/apt.gpg | apt-key add - \
  && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
@@ -53,14 +54,12 @@ WORKDIR $HOME
 COPY composer.json $HOME
 RUN composer install --no-scripts --no-autoloader --no-dev --prefer-source
 RUN chown -R docker:docker $HOME
-COPY build/entrypoint.sh $HOME/build/
-ENTRYPOINT $HOME/build/entrypoint.sh
 RUN composer dump-autoload --optimize
 
-COPY build/install-ps.sh $HOME/build/
+COPY factory/common/install-ps.sh $HOME/factory/common/
 RUN /etc/init.d/apache2 start \
  && /etc/init.d/mysql start \
- && /bin/bash ./build/install-ps.sh $PS_VERSION
+ && /bin/bash $HOME/factory/common/install-ps.sh $PS_VERSION
 
 COPY package.json $HOME
 COPY package-lock.json $HOME
@@ -85,3 +84,4 @@ RUN mkdir -p /var/www/html/modules/boxtal \
  && find /var/www/html -type f -exec chmod 644 {} \;
 
 USER docker
+ENTRYPOINT $HOME/factory/docker/entrypoint.sh
