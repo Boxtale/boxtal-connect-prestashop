@@ -41,6 +41,9 @@ class BoxtalConfigurationModuleFrontController extends ModuleFrontController
                 case RestClient::$PUT:
                     $this->updateHandler($body);
                     break;
+
+                default:
+                    break;
             }
         }
         ApiUtil::sendApiResponse(400);

@@ -3,6 +3,7 @@
  * Contains code for the order rest controller.
  */
 
+use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalPrestashop\Util\ApiUtil;
 use Boxtal\BoxtalPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalPrestashop\Util\MiscUtil;
@@ -24,7 +25,6 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
 
-        var_dump($_SERVER['REQUEST_METHOD']);
         $entityBody = file_get_contents('php://input');
 
         AuthUtil::authenticate($entityBody);
@@ -32,7 +32,14 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
         $route = Tools::getValue('route'); // Get route
 
         if ('order' === $route) {
-            $this->apiCallbackHandler();
+            switch($_SERVER['REQUEST_METHOD']) {
+                case RestClient::$PATCH:
+                    $this->apiCallbackHandler();
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         ApiUtil::sendApiResponse(400);
@@ -96,10 +103,15 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
                         }
             */
             $result[] = array(
-                'reference'   => MiscUtil::notEmptyOrNull($order, 'id_order'),
-                'recipient'   => $recipient,
-                'products'    => $products,
-                'parcelPoint' => $parcelPoint,
+                'reference'      => MiscUtil::notEmptyOrNull($order, 'reference'),
+                'status'         => MiscUtil::notEmptyOrNull($order, 'status'),
+                'shippingMethod' => MiscUtil::notEmptyOrNull($order, 'shippingMethod'),
+                'shippingAmount' => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'shippingAmount')),
+                'creationDate'   => MiscUtil::notEmptyOrNull($order, 'creationDate'),
+                'orderAmount'    => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'orderAmount')),
+                'recipient'      => $recipient,
+                'products'       => $products,
+                'parcelPoint'    => $parcelPoint,
             );
         }
 

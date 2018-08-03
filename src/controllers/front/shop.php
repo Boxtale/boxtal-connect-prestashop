@@ -3,6 +3,7 @@
  * Contains code for the shop rest controller.
  */
 
+use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalPrestashop\Util\ApiUtil;
 use Boxtal\BoxtalPrestashop\Util\AuthUtil;
@@ -31,7 +32,14 @@ class BoxtalShopModuleFrontController extends ModuleFrontController
         $route = Tools::getValue('route'); // Get route
 
         if ('shop' === $route) {
-            $this->pairingHandler($body);
+            switch($_SERVER['REQUEST_METHOD']) {
+                case RestClient::$PATCH:
+                    $this->pairingHandler($body);
+                    break;
+
+                default:
+                    break;
+            }
         }
         ApiUtil::sendApiResponse(400);
     }

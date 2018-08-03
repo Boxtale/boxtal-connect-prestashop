@@ -79,7 +79,7 @@ class ConfigurationUtil
 
         if ( ! $response->isError() ) {
             if ( self::parseConfiguration( $response->response ) ) {
-                //return true;
+                return true;
             }
             return false;
         }
@@ -143,10 +143,7 @@ class ConfigurationUtil
                 }
             }
             //phpcs:ignore
-            var_dump($body->parcelPointOperators);
-            var_dump(MiscUtil::convertStdClassToArray($body->parcelPointOperators));
-            die();
-            //self::set('BX_PP_OPERATORS', MiscUtil::convertStdClassToArray($body->parcelPointOperators));
+            self::set('BX_PP_OPERATORS', MiscUtil::convertStdClassToArray($body->parcelPointOperators));
             return true;
         }
         return false;
