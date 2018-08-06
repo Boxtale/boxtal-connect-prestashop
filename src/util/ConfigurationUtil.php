@@ -62,11 +62,12 @@ class ConfigurationUtil
      *
      * @return boolean
      */
-    public static function getConfiguration() {
-        $lib     = new ApiClient( null, null );
-        $locale = \Language::getIsoById((int)Boxtal::getInstance()->getContext()->cookie->id_lang);
+    public static function getConfiguration()
+    {
+        $lib     = new ApiClient(null, null);
+        $locale = \Language::getIsoById((int) Boxtal::getInstance()->getContext()->cookie->id_lang);
         $headers = array(
-            'Accept-Language' => $locale
+            'Accept-Language' => $locale,
         );
         //phpcs:disable
         $response = $lib->restClient->request(
@@ -77,12 +78,14 @@ class ConfigurationUtil
         );
         //phpcs:enable
 
-        if ( ! $response->isError() ) {
-            if ( self::parseConfiguration( $response->response ) ) {
+        if (! $response->isError()) {
+            if (self::parseConfiguration($response->response)) {
                 return true;
             }
+
             return false;
         }
+
         return false;
     }
 
@@ -90,11 +93,13 @@ class ConfigurationUtil
      * Parse configuration.
      *
      * @param object $body body.
+     *
      * @return boolean
      */
-    public static function parseConfiguration( $body ) {
-        if ( is_object( $body ) && property_exists( $body, 'mapsEndpointUrl' ) && property_exists( $body, 'mapsTokenUrl' )
-            && property_exists( $body, 'signupPageUrl' ) && property_exists( $body, 'parcelPointOperators' ) ) {
+    public static function parseConfiguration($body)
+    {
+        if (is_object($body) && property_exists($body, 'mapsEndpointUrl') && property_exists($body, 'mapsTokenUrl')
+            && property_exists($body, 'signupPageUrl') && property_exists($body, 'parcelPointOperators') ) {
             //phpcs:ignore
             self::set('BX_MAP_URL', $body->mapsEndpointUrl);
             //phpcs:ignore
@@ -102,23 +107,24 @@ class ConfigurationUtil
             //phpcs:ignore
             self::set('BX_SIGNUP_URL', $body->signupPageUrl);
 
-            $storedOperators = self::get( 'BX_PP_OPERATORS' );
-            if ( is_array( $storedOperators ) ) {
+            $storedOperators = self::get('BX_PP_OPERATORS');
+            if (is_array($storedOperators)) {
                 $removedOperators = $storedOperators;
                 //phpcs:ignore
                 foreach ( $body->parcelPointOperators as $newOperator ) {
-                    foreach ( $storedOperators as $key => $oldOperator ) {
-                        if ( $newOperator->code === $oldOperator->code ) {
-                            unset( $removedOperators[ $key ] );
+                    foreach ($storedOperators as $key => $oldOperator) {
+                        if ($newOperator->code === $oldOperator->code) {
+                            unset($removedOperators[$key]);
                         }
                     }
                 }
 
-                if ( count( $removedOperators ) > 0 ) {
+                if (count($removedOperators) > 0) {
                     NoticeController::addNotice(
-                        NoticeController::$custom, array(
+                        NoticeController::$custom,
+                        array(
                             'status'  => 'warning',
-                            'message' => Boxtal::getInstance()->l( 'There\'s been a change in Boxtal parcel point operator list, we\'ve adapted your shipping method configuration. Please check that everything is in order.' ),
+                            'message' => Boxtal::getInstance()->l('There\'s been a change in Boxtal parcel point operator list, we\'ve adapted your shipping method configuration. Please check that everything is in order.'),
                         )
                     );
                 }
@@ -127,25 +133,28 @@ class ConfigurationUtil
                 $addedOperators = $body->parcelPointOperators;
                 //phpcs:ignore
                 foreach ( $body->parcelPointOperators as $newOperator ) {
-                    foreach ( $storedOperators as $key => $oldOperator ) {
-                        if ( $newOperator->code === $oldOperator->code ) {
-                            unset( $addedOperators[ $key ] );
+                    foreach ($storedOperators as $key => $oldOperator) {
+                        if ($newOperator->code === $oldOperator->code) {
+                            unset($addedOperators[$key]);
                         }
                     }
                 }
-                if ( count( $addedOperators ) > 0 ) {
+                if (count($addedOperators) > 0) {
                     NoticeController::addNotice(
-                        NoticeController::$custom, array(
+                        NoticeController::$custom,
+                        array(
                             'status'  => 'info',
-                            'message' => Boxtal::getInstance()->l( 'There\'s been a change in Boxtal parcel point operator list, you can add the extra parcel point operator(s) to your shipping method configuration.' ),
+                            'message' => Boxtal::getInstance()->l('There\'s been a change in Boxtal parcel point operator list, you can add the extra parcel point operator(s) to your shipping method configuration.'),
                         )
                     );
                 }
             }
             //phpcs:ignore
-            self::set('BX_PP_OPERATORS', MiscUtil::convertStdClassToArray($body->parcelPointOperators));
+            self::set('BX_PP_OPERATORS', serialize(MiscUtil::convertStdClassToArray($body->parcelPointOperators)));
+
             return true;
         }
+
         return false;
     }
 }

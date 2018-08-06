@@ -119,10 +119,12 @@ class NoticeController
      *
      * @return array of notice keys.
      */
-    public static function getNoticeKeys() {
+    public static function getNoticeKeys()
+    {
         $sql = new \DbQuery();
         $sql->select('n.key, n.value');
         $sql->from('bx_notices', 'n');
+
         return \Db::getInstance()->executeS($sql);
     }
 
@@ -198,15 +200,18 @@ class NoticeController
      * Whether given notice is active.
      *
      * @param string $notice notice key.
+     *
      * @return boolean
      */
-    public static function hasNotice( $notice ) {
+    public static function hasNotice($notice)
+    {
         $notices = self::getNoticeKeys();
-        foreach ( $notices as $noticeKey ) {
-            if ( $notice === $noticeKey ) {
+        foreach ($notices as $noticeKey) {
+            if ($notice === $noticeKey) {
                 return true;
             }
         }
+
         return false;
     }
 

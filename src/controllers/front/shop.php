@@ -32,13 +32,15 @@ class BoxtalShopModuleFrontController extends ModuleFrontController
         $route = Tools::getValue('route'); // Get route
 
         if ('shop' === $route) {
-            switch($_SERVER['REQUEST_METHOD']) {
-                case RestClient::$PATCH:
-                    $this->pairingHandler($body);
-                    break;
+            if (isset($_SERVER['REQUEST_METHOD'])) {
+                switch ($_SERVER['REQUEST_METHOD']) {
+                    case RestClient::$PATCH:
+                        $this->pairingHandler($body);
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
         }
         ApiUtil::sendApiResponse(400);

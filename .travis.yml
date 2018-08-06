@@ -23,7 +23,6 @@ install:
   - if [[ $RUN_E2E = "1" ]]; then npm install; fi
   - if [[ $RUN_E2E = "1" ]]; then npm install -g gulp; fi
   - if [[ $RUN_E2E = "1" ]]; then npm install -g gulp-cli; fi
-  - sudo curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/bin/ --filename=composer
 
 before_script:
   - sudo a2enmod actions

@@ -60,8 +60,9 @@ class SetupWizardNotice extends AbstractNotice
         $params       = array(
             'email'       => $adminUser['email'],
             'shopUrl'     => \Tools::getHttpHost(true).__PS_BASE_URI__,
-            'shopType' => 'prestashop'
+            'shopType' => 'prestashop',
         );
+
         return $signupLink.'?'.http_build_query($params);
     }
 }

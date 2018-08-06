@@ -33,17 +33,19 @@ class BoxtalConfigurationModuleFrontController extends ModuleFrontController
         $route = Tools::getValue('route'); // Get route
 
         if ('configuration' === $route) {
-            switch($_SERVER['REQUEST_METHOD']) {
-                case RestClient::$DELETE:
-                    $this->deleteHandler($body);
-                    break;
+            if (isset($_SERVER['REQUEST_METHOD'])) {
+                switch ($_SERVER['REQUEST_METHOD']) {
+                    case RestClient::$DELETE:
+                        $this->deleteHandler($body);
+                        break;
 
-                case RestClient::$PUT:
-                    $this->updateHandler($body);
-                    break;
+                    case RestClient::$PUT:
+                        $this->updateHandler($body);
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
         }
         ApiUtil::sendApiResponse(400);
@@ -53,35 +55,37 @@ class BoxtalConfigurationModuleFrontController extends ModuleFrontController
      * Endpoint callback.
      *
      * @param object $body request body.
+     *
      * @void
      */
     public function deleteHandler($body)
     {
-        if ( null === $body ) {
-            ApiUtil::sendApiResponse( 400 );
+        if (null === $body) {
+            ApiUtil::sendApiResponse(400);
         }
 
         $this::deleteConfiguration();
-        ApiUtil::sendApiResponse( 200 );
+        ApiUtil::sendApiResponse(200);
     }
 
     /**
      * Endpoint callback.
      *
      * @param object $body request body.
+     *
      * @void
      */
     public function updateHandler($body)
     {
-        if ( null === $body ) {
-            ApiUtil::sendApiResponse( 400 );
+        if (null === $body) {
+            ApiUtil::sendApiResponse(400);
         }
 
-        if ( ConfigurationUtil::parseConfiguration( $body ) ) {
-            ApiUtil::sendApiResponse( 200 );
+        if (ConfigurationUtil::parseConfiguration($body)) {
+            ApiUtil::sendApiResponse(200);
         }
 
-        ApiUtil::sendApiResponse( 400 );
+        ApiUtil::sendApiResponse(400);
     }
 
     /**
@@ -89,15 +93,16 @@ class BoxtalConfigurationModuleFrontController extends ModuleFrontController
      *
      * @void
      */
-    private static function deleteConfiguration() {
-        ConfigurationUtil::delete( 'BX_ACCESS_KEY' );
-        ConfigurationUtil::delete( 'BX_SECRET_KEY' );
-        ConfigurationUtil::delete( 'BX_MAP_URL' );
-        ConfigurationUtil::delete( 'BX_TOKEN_URL' );
-        ConfigurationUtil::delete( 'BX_SIGNUP_URL' );
-        ConfigurationUtil::delete( 'BX_PP_OPERATORS' );
-        ConfigurationUtil::delete( 'BX_TRACKING_EVENT' );
-        ConfigurationUtil::delete( 'BX_PAIRING_UPDATE' );
+    private static function deleteConfiguration()
+    {
+        ConfigurationUtil::delete('BX_ACCESS_KEY');
+        ConfigurationUtil::delete('BX_SECRET_KEY');
+        ConfigurationUtil::delete('BX_MAP_URL');
+        ConfigurationUtil::delete('BX_TOKEN_URL');
+        ConfigurationUtil::delete('BX_SIGNUP_URL');
+        ConfigurationUtil::delete('BX_PP_OPERATORS');
+        ConfigurationUtil::delete('BX_TRACKING_EVENT');
+        ConfigurationUtil::delete('BX_PAIRING_UPDATE');
         NoticeController::removeAllNotices();
     }
 }

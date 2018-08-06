@@ -32,13 +32,15 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
         $route = Tools::getValue('route'); // Get route
 
         if ('order' === $route) {
-            switch($_SERVER['REQUEST_METHOD']) {
-                case RestClient::$PATCH:
-                    $this->apiCallbackHandler();
-                    break;
+            if (isset($_SERVER['REQUEST_METHOD'])) {
+                switch ($_SERVER['REQUEST_METHOD']) {
+                    case RestClient::$PATCH:
+                        $this->apiCallbackHandler();
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -103,6 +105,7 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
                         }
             */
             $result[] = array(
+                'id'      => MiscUtil::notEmptyOrNull($order, 'id_order'),
                 'reference'      => MiscUtil::notEmptyOrNull($order, 'reference'),
                 'status'         => MiscUtil::notEmptyOrNull($order, 'status'),
                 'shippingMethod' => MiscUtil::notEmptyOrNull($order, 'shippingMethod'),

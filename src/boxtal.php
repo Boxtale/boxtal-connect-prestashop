@@ -80,19 +80,19 @@ class Boxtal extends Module
         $this->description = $this->l('Ship your orders with multiple carriers and save up to 75% on your shipping costs without commitments or any contracts.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
-        $this->min_php_version = '5.3.0';
+        $this->minPhpVersion = '5.3.0';
 
         if ($this->active) {
             new EnvironmentCheck($this);
 
-            if ( false === EnvironmentUtil::checkErrors( $this ) ) {
-                require_once __DIR__ . '/controllers/front/configuration.php';
+            if (false === EnvironmentUtil::checkErrors($this)) {
+                require_once __DIR__.'/controllers/front/configuration.php';
                 new SetupWizard();
-                require_once __DIR__ . '/controllers/front/shop.php';
+                require_once __DIR__.'/controllers/front/shop.php';
+                require_once __DIR__.'/controllers/admin/AdminAjaxController.php';
 
                 if (AuthUtil::canUsePlugin()) {
-                    require_once __DIR__ . '/controllers/admin/AdminAjaxController.php';
-                    require_once __DIR__ . '/controllers/front/order.php';
+                    require_once __DIR__.'/controllers/front/order.php';
                 }
             }
         }
@@ -126,11 +126,13 @@ class Boxtal extends Module
         // add invisible tab for admin ajax controller
         $invisibleTab = new \Tab();
         $invisibleTab->active = 1;
+        //phpcs:ignore
         $invisibleTab->class_name = 'AdminAjax';
         $invisibleTab->name = array();
         foreach (\Language::getLanguages(true) as $lang) {
             $invisibleTab->name[$lang['id_lang']] = $this->l('Ajax route');
         }
+        //phpcs:ignore
         $invisibleTab->id_parent = -1;
         $invisibleTab->module = $this->name;
         $invisibleTab->add();

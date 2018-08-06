@@ -24,20 +24,23 @@ class EnvironmentCheck
      * Construct function.
      *
      * @param Boxtal $plugin plugin array.
+     *
      * @void
      */
-    public function __construct( $plugin ) {
-        $environmentWarning = EnvironmentUtil::checkErrors( $plugin );
+    public function __construct($plugin)
+    {
+        $environmentWarning = EnvironmentUtil::checkErrors($plugin);
 
-        if ( false !== $environmentWarning ) {
+        if (false !== $environmentWarning) {
             NoticeController::removeAllNotices();
             NoticeController::addNotice(
-                NoticeController::$environmentWarning, array(
+                NoticeController::$environmentWarning,
+                array(
                     'message' => $environmentWarning,
                 )
             );
-        } elseif ( NoticeController::hasNotice( NoticeController::$environmentWarning ) ) {
-            NoticeController::removeNotice( NoticeController::$environmentWarning );
+        } elseif (NoticeController::hasNotice(NoticeController::$environmentWarning)) {
+            NoticeController::removeNotice(NoticeController::$environmentWarning);
         }
     }
 }
