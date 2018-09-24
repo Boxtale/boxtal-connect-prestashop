@@ -10,7 +10,7 @@ use Boxtal\BoxtalPrestashop\Notice\CustomNotice;
 /**
  * Notice controller class.
  *
- * Controller for notices.
+ * parcelPoint for notices.
  *
  * @class       NoticeController
  *
@@ -37,7 +37,7 @@ class NoticeController
      *
      * @var string
      */
-    public static $setupFailure = 'setupFailure';
+    public static $configurationFailure = 'configurationFailure';
 
     /**
      * Notice name.
@@ -73,7 +73,7 @@ class NoticeController
      *
      * @var array
      */
-    private static $coreNotices = array( 'update', 'setupWizard', 'pairing', 'pairingUpdate', 'setupFailure', 'environmentWarning' );
+    private static $coreNotices = array( 'update', 'setupWizard', 'pairing', 'pairingUpdate', 'configurationFailure', 'environmentWarning' );
 
     /**
      * Get notice instances.
@@ -199,15 +199,15 @@ class NoticeController
     /**
      * Whether given notice is active.
      *
-     * @param string $notice notice key.
+     * @param string $noticeKey notice key.
      *
      * @return boolean
      */
-    public static function hasNotice($notice)
+    public static function hasNotice($noticeKey)
     {
         $notices = self::getNoticeKeys();
-        foreach ($notices as $noticeKey) {
-            if ($notice === $noticeKey) {
+        foreach ($notices as $notice) {
+            if ($noticeKey === $notice['key']) {
                 return true;
             }
         }

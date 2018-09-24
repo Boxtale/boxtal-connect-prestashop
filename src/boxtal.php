@@ -26,8 +26,7 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-use Boxtal\BoxtalPhp\ApiClient;
-use Boxtal\BoxtalPhp\RestClient;
+use Boxtal\BoxtalPrestashop\Controllers\Front\ParcelPointController;
 use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalPrestashop\Init\EnvironmentCheck;
 use Boxtal\BoxtalPrestashop\Init\SetupWizard;
@@ -81,18 +80,19 @@ class Boxtal extends Module
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         $this->minPhpVersion = '5.3.0';
+        $this->onboardingUrl = 'https://www.boxtal.com/onboarding';
 
         if ($this->active) {
-            new EnvironmentCheck($this);
+            $this->initEnvironmentCheck($this);
 
             if (false === EnvironmentUtil::checkErrors($this)) {
-                require_once __DIR__.'/controllers/front/configuration.php';
-                new SetupWizard();
-                require_once __DIR__.'/controllers/front/shop.php';
-                require_once __DIR__.'/controllers/admin/AdminAjaxController.php';
+                $this->initConfigurationController($this);
+                $this->initSetupWizard($this);
+                $this->initShopController($this);
+                $this->initAjaxController($this);
 
                 if (AuthUtil::canUsePlugin()) {
-                    require_once __DIR__.'/controllers/front/order.php';
+                    $this->initOrderController($this);
                 }
             }
         }
@@ -107,6 +107,10 @@ class Boxtal extends Module
     {
         if (!parent::install()
             || !$this->registerHook('displayBackOfficeHeader')
+            || !$this->registerHook('header')
+            || !$this->registerHook('displayCarrierList')
+            || !$this->registerHook('displayAfterCarrier')
+            || !$this->registerHook('updateCarrier')
             || !$this->registerHook('displayAdminAfterHeader')) {
             return false;
         }
@@ -123,6 +127,14 @@ class Boxtal extends Module
             ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
 
+        \Db::getInstance()->execute(
+            "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_carrier` (
+            `id_carrier` int(10) unsigned NOT NULL,
+            `parcel_point_operators` text,
+            PRIMARY KEY (`id_carrier`)
+            ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
+        );
+
         // add invisible tab for admin ajax controller
         $invisibleTab = new \Tab();
         $invisibleTab->active = 1;
@@ -130,12 +142,27 @@ class Boxtal extends Module
         $invisibleTab->class_name = 'AdminAjax';
         $invisibleTab->name = array();
         foreach (\Language::getLanguages(true) as $lang) {
-            $invisibleTab->name[$lang['id_lang']] = $this->l('Ajax route');
+            $invisibleTab->name[$lang['id_lang']] = 'Ajax route';
         }
         //phpcs:ignore
         $invisibleTab->id_parent = -1;
         $invisibleTab->module = $this->name;
-        $invisibleTab->add();
+        if (false === $invisibleTab->add()) {
+            return false;
+        }
+
+        // add the new tab
+        $tab = new Tab();
+        $tab->class_name = 'AdminShippingMethod';
+        $tab->id_parent = (int)Tab::getIdFromClassName('AdminParentShipping');
+        $tab->module = $this->name;
+        $tab->name = array();
+        foreach (\Language::getLanguages(true) as $lang) {
+            $tab->name[$lang['id_lang']] = 'Boxtal';
+        }
+        if (false === $tab->add()) {
+            return false;
+        }
 
         return true;
     }
@@ -157,6 +184,7 @@ class Boxtal extends Module
         \DB::getInstance()->execute(
             'SET FOREIGN_KEY_CHECKS = 0;
             DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_notices`;
+            DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_carrier`;
             DELETE FROM `'._DB_PREFIX_.'configuration` WHERE name like "BX_%";
             SET FOREIGN_KEY_CHECKS = 1;'
         );
@@ -198,6 +226,71 @@ class Boxtal extends Module
     }
 
     /**
+     * Header hook. Display includes JavaScript for maps.
+     *
+     * @void
+     */
+    public function hookHeader($params)
+    {
+        if (!AuthUtil::canUsePlugin()) {
+            return;
+        }
+
+        return ParcelPointController::addScripts();
+    }
+
+    /**
+     * Prestashop < 1.7. Used to display front-office relay point list.
+     *
+     * @param array $params Parameters array (cart object, address information)
+     * @return string html
+     */
+    public function hookDisplayCarrierList($params)
+    {
+        if (!AuthUtil::canUsePlugin()) {
+            return null;
+        }
+
+        return ParcelPointController::initPoints($params);
+    }
+
+    /**
+     * Prestashop > 1.7. Used to display front-office relay point list.
+     *
+     * @param array $params Parameters array (cart object, address information)
+     * @return string html
+     */
+    public function hookDisplayAfterCarrier($params)
+    {
+        if (!AuthUtil::canUsePlugin()) {
+            return null;
+        }
+
+        return ParcelPointController::initPoints($params);
+    }
+
+    /**
+     * Update carrier hook. Used to update carrier id.
+     *
+     * @param array $params List of params used in the operation.
+     * @void
+     */
+    public function hookUpdateCarrier($params)
+    {
+        $id_carrier_old = (int)$params['id_carrier'];
+        $id_carrier_new = (int)$params['carrier']->id;
+
+        $data = array('id_carrier' => $id_carrier_new);
+        \Db::getInstance()->update(
+            'bx_carrier',
+            $data,
+            'id_carrier = ' . $id_carrier_old,
+            0,
+            true
+        );
+    }
+
+    /**
      * DisplayAdminAfterHeader hook. Used to display notices.
      *
      * @void
@@ -218,5 +311,108 @@ class Boxtal extends Module
     public function getContext()
     {
         return $this->context;
+    }
+
+    /**
+     * Check PHP version.
+     *
+     * @param Boxtal $plugin plugin array.
+     * @return EnvironmentCheck $object static environment check instance.
+     */
+    function initEnvironmentCheck( $plugin ) {
+        static $object;
+
+        if ( null !== $object ) {
+            return $object;
+        }
+
+        $object =  new EnvironmentCheck($plugin);
+        return $object;
+    }
+
+    /**
+     * Init configuration controller.
+     *
+     * @param Boxtal $plugin plugin array.
+     * @void
+     */
+    function initConfigurationController( $plugin ) {
+        require_once __DIR__.'/controllers/front/configuration.php';
+    }
+
+    /**
+     * Init setup wizard.
+     *
+     * @param Boxtal $plugin plugin array.
+     * @return SetupWizard $object static setup wizard instance.
+     */
+    function initSetupWizard( $plugin ) {
+        static $object;
+
+        if ( null !== $object ) {
+            return $object;
+        }
+
+        $object =  new SetupWizard($plugin);
+        return $object;
+    }
+
+    /**
+     * Init shop controller.
+     *
+     * @param Boxtal $plugin plugin array.
+     * @void
+     */
+    function initShopController( $plugin ) {
+        require_once __DIR__.'/controllers/front/shop.php';
+    }
+
+    /**
+     * Init ajax controller.
+     *
+     * @param Boxtal $plugin plugin array.
+     * @void
+     */
+    function initAjaxController( $plugin ) {
+        require_once __DIR__.'/controllers/admin/AdminAjaxController.php';
+    }
+
+    /**
+     * Init order controller.
+     *
+     * @param Boxtal $plugin plugin array.
+     * @void
+     */
+    function initOrderController( $plugin ) {
+        require_once __DIR__.'/controllers/front/order.php';
+    }
+
+
+    /**
+     * Get smarty.
+     *
+     * @return object
+     */
+    function getSmarty() {
+        return $this->getContext()->smarty;
+    }
+
+    /**
+     * Get current controller.
+     *
+     * @return object
+     */
+    function getCurrentController() {
+        return $this->getContext()->controller;
+    }
+
+    /**
+     * Display template.
+     *
+     * @param string $templatePath path to template from module folder.
+     * @return string html
+     */
+    function displayTemplate($templatePath) {
+        return $this->display(__FILE__, '/views/templates/'.$templatePath);
     }
 }

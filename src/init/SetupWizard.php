@@ -27,17 +27,17 @@ class SetupWizard
      */
     public function __construct()
     {
-        if (AuthUtil::isPluginPaired() && NoticeController::hasNotice(NoticeController::$setupWizard)) {
-            NoticeController::removeNotice(NoticeController::$setupWizard);
-        } elseif (! AuthUtil::isPluginPaired() && ! NoticeController::hasNotice(NoticeController::$setupWizard)) {
-            if (ConfigurationUtil::getConfiguration()) {
-                NoticeController::addNotice(NoticeController::$setupWizard);
-                if (NoticeController::hasNotice(NoticeController::$setupFailure)) {
-                    NoticeController::removeNotice(NoticeController::$setupFailure);
-                }
-            } else {
-                NoticeController::addNotice(NoticeController::$setupFailure);
+        if (AuthUtil::isPluginPaired()) {
+            if (NoticeController::hasNotice(NoticeController::$setupWizard)) {
+                NoticeController::removeNotice(NoticeController::$setupWizard);
             }
+            if (ConfigurationUtil::hasConfiguration() && NoticeController::hasNotice(NoticeController::$configurationFailure)) {
+                NoticeController::removeNotice(NoticeController::$configurationFailure);
+            } elseif (! ConfigurationUtil::hasConfiguration() && ! NoticeController::hasNotice(NoticeController::$configurationFailure)) {
+                NoticeController::addNotice(NoticeController::$configurationFailure);
+            }
+        } elseif (! AuthUtil::isPluginPaired() && ! NoticeController::hasNotice(NoticeController::$setupWizard)) {
+            NoticeController::addNotice(NoticeController::$setupWizard);
         }
     }
 }

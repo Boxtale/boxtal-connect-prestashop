@@ -12,6 +12,13 @@ env:
   global:
     - PS_VERSION=1.7.3.3 PS_MULTISITE=0 RUN_CODE_COVERAGE=1 RUN_PHPCS=1
 
+matrix:
+  include:
+  - php: 5.6
+    env: PS_VERSION=1.6.1.4 PS_MULTISITE=0 RUN_CODE_COVERAGE=1 RUN_PHPCS=1
+  - php: 7.0
+    env: PS_VERSION=1.7.3.4 PS_MULTISITE=0 RUN_CODE_COVERAGE=1 RUN_PHPCS=1
+
 before_install:
   - sudo add-apt-repository -y ppa:ondrej/php
   - sudo add-apt-repository -y ppa:ondrej/apache2

@@ -28,7 +28,11 @@ install_ps() {
   download https://download.prestashop.com/download/releases/prestashop_${PS_VERSION}.zip  /tmp/prestashop.zip
   unzip -q /tmp/prestashop.zip -d /tmp/prestashop/
   mkdir -p /tmp/prestashop/src
-  unzip -q /tmp/prestashop/prestashop.zip -d /tmp/prestashop/src
+  if [ -f "/tmp/prestashop/prestashop.zip" ]; then
+    unzip -q /tmp/prestashop/prestashop.zip -d /tmp/prestashop/src
+  else
+    cp -R /tmp/prestashop/prestashop/* /tmp/prestashop/src
+  fi
   mv /tmp/prestashop/src/* $PS_CORE_DIR
   mysqladmin -u dbadmin -pdbpass create prestashop
   rm -rf $PS_CORE_DIR/app/cache/*

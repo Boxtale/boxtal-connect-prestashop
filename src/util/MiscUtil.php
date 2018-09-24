@@ -27,6 +27,19 @@ class MiscUtil
     }
 
     /**
+     * Property exists or null.
+     *
+     * @param object  $object    array to test.
+     * @param string $property property to test.
+     *
+     * @return string
+     */
+    public static function propertyExistsOrNull($object, $property = null)
+    {
+        return property_exists($object, $property) ? $object->$property : null;
+    }
+
+    /**
      * Is set or null.
      *
      * @param array  $array    array to test.

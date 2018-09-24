@@ -7,6 +7,7 @@ use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalPrestashop\Util\ApiUtil;
 use Boxtal\BoxtalPrestashop\Util\AuthUtil;
+use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
 
 /**
  * Shop class.
@@ -31,11 +32,26 @@ class BoxtalShopModuleFrontController extends ModuleFrontController
 
         $route = Tools::getValue('route'); // Get route
 
-        if ('shop' === $route) {
+        if ('pair' === $route) {
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
                     case RestClient::$PATCH:
                         $this->pairingHandler($body);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        } elseif ('configuration' === $route) {
+            if (isset($_SERVER['REQUEST_METHOD'])) {
+                switch ($_SERVER['REQUEST_METHOD']) {
+                    case RestClient::$DELETE:
+                        $this->deleteHandler($body);
+                        break;
+
+                    case RestClient::$PATCH:
+                        $this->updateHandler($body);
                         break;
 
                     default:
@@ -96,5 +112,42 @@ class BoxtalShopModuleFrontController extends ModuleFrontController
             NoticeController::addNotice(NoticeController::$pairing, array( 'result' => 0 ));
             ApiUtil::sendApiResponse(400);
         }
+    }
+
+    /**
+     * Endpoint callback.
+     *
+     * @param object $body request body.
+     *
+     * @void
+     */
+    public function deleteHandler($body)
+    {
+        if (null === $body) {
+            ApiUtil::sendApiResponse(400);
+        }
+
+        ConfigurationUtil::deleteConfiguration();
+        ApiUtil::sendApiResponse(200);
+    }
+
+    /**
+     * Endpoint callback.
+     *
+     * @param object $body request body.
+     *
+     * @void
+     */
+    public function updateHandler($body)
+    {
+        if (null === $body) {
+            ApiUtil::sendApiResponse(400);
+        }
+
+        if (ConfigurationUtil::parseConfiguration($body)) {
+            ApiUtil::sendApiResponse(200);
+        }
+
+        ApiUtil::sendApiResponse(400);
     }
 }

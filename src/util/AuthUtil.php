@@ -48,7 +48,7 @@ class AuthUtil
      */
     public static function canUsePlugin()
     {
-        return false !== self::isPluginPaired() && false === ConfigurationUtil::get('BX_PAIRING_UPDATE');
+        return false !== self::isPluginPaired() && null === ConfigurationUtil::get('BX_PAIRING_UPDATE');
     }
 
     /**

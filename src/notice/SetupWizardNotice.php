@@ -19,11 +19,11 @@ class SetupWizardNotice extends AbstractNotice
 {
 
     /**
-     * Connect link.
+     * Onboarding link.
      *
-     * @var string $connectLink url.
+     * @var string $onboarding_link url.
      */
-    public $signupLink;
+    public $onboardingLink;
 
     /**
      * Construct function.
@@ -37,32 +37,7 @@ class SetupWizardNotice extends AbstractNotice
         parent::__construct($key);
         $this->type         = 'setupWizard';
         $this->autodestruct = false;
-        $this->signupLink = $this->getSignupUrl();
+        $this->onboardingLink = ConfigurationUtil::getOnboardingLink();
         $this->template = 'setupWizard';
-    }
-
-    /**
-     * Build signup link.
-     *
-     * @return string signup link
-     */
-    public function getSignupUrl()
-    {
-        $signupLink = ConfigurationUtil::get('BX_SIGNUP_URL');
-        $sql = new \DbQuery();
-        $sql->select('e.email');
-        $sql->from('employee', 'e');
-        $sql->where('e.id_profile = 1');
-        $sql->orderBy('e.id_employee asc');
-        $sql->limit('limit(0,1)');
-        $adminUser = \Db::getInstance()->executeS($sql)[0];
-
-        $params       = array(
-            'email'       => $adminUser['email'],
-            'shopUrl'     => \Tools::getHttpHost(true).__PS_BASE_URI__,
-            'shopType' => 'prestashop',
-        );
-
-        return $signupLink.'?'.http_build_query($params);
     }
 }
