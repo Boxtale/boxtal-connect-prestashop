@@ -6,8 +6,10 @@
 use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalPrestashop\Util\ApiUtil;
 use Boxtal\BoxtalPrestashop\Util\AuthUtil;
+use Boxtal\BoxtalPrestashop\Util\CarrierUtil;
 use Boxtal\BoxtalPrestashop\Util\MiscUtil;
 use Boxtal\BoxtalPrestashop\Util\OrderUtil;
+use Boxtal\BoxtalPrestashop\Util\ProductUtil;
 
 /**
  * Order reset controller.
@@ -35,7 +37,7 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
                     case RestClient::$PATCH:
-                        $this->apiCallbackHandler();
+                        $this->retrieveOrdersHandler();
                         break;
 
                     default:
@@ -52,7 +54,7 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
      *
      * @void
      */
-    public function apiCallbackHandler()
+    public function retrieveOrdersHandler()
     {
         $response = $this->getOrders();
         ApiUtil::sendApiResponse(200, $response);
@@ -69,6 +71,12 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
         $result = array();
 
         foreach ($orders as $order) {
+            if (null !== MiscUtil::notEmptyOrNull($order, 'id_order')) {
+                $orderId = (int)MiscUtil::notEmptyOrNull($order, 'id_order');
+            } else {
+                continue;
+            }
+
             $recipient = array(
                 'firstname'    => MiscUtil::notEmptyOrNull($order, 'firstname'),
                 'lastname'     => MiscUtil::notEmptyOrNull($order, 'lastname'),
@@ -82,14 +90,15 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
                 'phone'        => MiscUtil::notEmptyOrNull($order, 'phone'),
                 'email'        => MiscUtil::notEmptyOrNull($order, 'email'),
             );
-            $items = OrderUtil::getItemsFromOrder((int) MiscUtil::notEmptyOrNull($order, 'id_order'));
+            $items = OrderUtil::getItemsFromOrder($orderId);
             $products = array();
             foreach ($items as $item) {
                 $product                = array();
                 $product['weight']      = 0 !== (float) $item['product_weight'] ? (float) $item['product_weight'] : null;
                 $product['quantity']    = (int) $item['product_quantity'];
                 $product['price']       = (float) $item['product_price'];
-                $product['description'] = $item['product_name'];
+                $description = ProductUtil::getProductDescriptionMultilingual((int)$item['product_id']);
+                $product['description'] = $description;
                 $products[]             = $product;
             }
 
@@ -104,11 +113,24 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
                             );
                         }
             */
+            $multilingualStatus = OrderUtil::getStatusMultilingual($orderId);
+            $multilingualShippingMethod = array();
+            $shippingMethodName = MiscUtil::notEmptyOrNull($order, 'shippingMethod');
+            foreach (\Language::getLanguages(true) as $lang) {
+                $multilingualShippingMethod[$lang['locale']] = $shippingMethodName;
+            }
+
             $result[] = array(
-                'id'      => MiscUtil::notEmptyOrNull($order, 'id_order'),
+                'internalReference'      => $orderId,
                 'reference'      => MiscUtil::notEmptyOrNull($order, 'reference'),
-                'status'         => MiscUtil::notEmptyOrNull($order, 'status'),
-                'shippingMethod' => MiscUtil::notEmptyOrNull($order, 'shippingMethod'),
+                'status'         => array(
+                    'key' => OrderUtil::getStatusId($orderId),
+                    'translations' => $multilingualStatus
+                ),
+                'shippingMethod' => array(
+                    'key' => CarrierUtil::getReferenceFromId(OrderUtil::getCarrierId($orderId)),
+                    'translations' => $multilingualShippingMethod
+                ),
                 'shippingAmount' => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'shippingAmount')),
                 'creationDate'   => MiscUtil::notEmptyOrNull($order, 'creationDate'),
                 'orderAmount'    => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'orderAmount')),
