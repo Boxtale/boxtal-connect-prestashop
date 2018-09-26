@@ -86,7 +86,6 @@ class Boxtal extends Module
             $this->initEnvironmentCheck($this);
 
             if (false === EnvironmentUtil::checkErrors($this)) {
-                $this->initConfigurationController($this);
                 $this->initSetupWizard($this);
                 $this->initShopController($this);
                 $this->initAjaxController($this);
@@ -328,16 +327,6 @@ class Boxtal extends Module
 
         $object =  new EnvironmentCheck($plugin);
         return $object;
-    }
-
-    /**
-     * Init configuration controller.
-     *
-     * @param Boxtal $plugin plugin array.
-     * @void
-     */
-    function initConfigurationController( $plugin ) {
-        require_once __DIR__.'/controllers/front/configuration.php';
     }
 
     /**

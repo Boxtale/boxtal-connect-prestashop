@@ -33,7 +33,9 @@ RUN sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /et
 RUN apt-get update && apt-get install -y --no-install-recommends \
     google-chrome-stable
 
-RUN sed -i "172,\$s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+RUN sed -i "172,\$s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf \
+    && sed -i "s/ServerAdmin/ServerName localhost\nServerAdmin/" /etc/apache2/sites-enabled/000-default.conf \
+    && sed -i "s/Include ports.conf/Include ports.conf\nServerName localhost\n/" /etc/apache2/apache2.conf
 
 RUN echo "mysql-server-5.6 mysql-server/root_password password password" | sudo debconf-set-selections \
  && echo "mysql-server-5.6 mysql-server/root_password_again password password" | sudo debconf-set-selections \
