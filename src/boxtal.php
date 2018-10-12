@@ -88,7 +88,8 @@ class Boxtal extends Module
             if (false === EnvironmentUtil::checkErrors($this)) {
                 $this->initSetupWizard($this);
                 $this->initShopController($this);
-                $this->initAjaxController($this);
+                $this->initAdminAjaxController($this);
+                $this->initFrontAjaxController($this);
 
                 if (AuthUtil::canUsePlugin()) {
                     $this->initOrderController($this);
@@ -215,6 +216,11 @@ class Boxtal extends Module
                 $controller->registerJavascript(
                     'bx-notice',
                     'modules/boxtal/views/js/notice.min.js',
+                    array('priority' => 100, 'server' => 'local')
+                );
+                $controller->registerStylesheet(
+                    'bx-notice',
+                    'modules/boxtal/views/css/notices.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
@@ -357,13 +363,23 @@ class Boxtal extends Module
     }
 
     /**
-     * Init ajax controller.
+     * Init admin ajax controller.
      *
      * @param Boxtal $plugin plugin array.
      * @void
      */
-    function initAjaxController( $plugin ) {
+    function initAdminAjaxController( $plugin ) {
         require_once __DIR__.'/controllers/admin/AdminAjaxController.php';
+    }
+
+    /**
+     * Init front ajax controller.
+     *
+     * @param Boxtal $plugin plugin array.
+     * @void
+     */
+    function initFrontAjaxController( $plugin ) {
+        require_once __DIR__.'/controllers/front/ajax.php';
     }
 
     /**

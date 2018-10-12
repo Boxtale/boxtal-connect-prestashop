@@ -10,67 +10,18 @@ const bxParcelPoint = {
       return;
     }
     self.initialized = true;
-    self.mapContainer = document.querySelector('#bw-map');
+    self.mapContainer = document.querySelector('#bx-map');
     if (!self.mapContainer) {
       self.initMap();
     }
-    self.initSelectedCarrier();
-  },
+    self.initCarriers();
 
-  initMap: function () {
-    const self = this;
-    const mapClose = document.createElement("div");
-    mapClose.setAttribute("class", "bw-close");
-    mapClose.setAttribute("title", translation.text.closeMap);
-    mapClose.addEventListener("click", function () {
-      self.closeMap()
-    });
-
-    const mapCanvas = document.createElement("div");
-    mapCanvas.setAttribute("id", "bw-map-canvas");
-
-    const mapContainer = document.createElement("div");
-    mapContainer.setAttribute("id", "bw-map-container");
-    mapContainer.appendChild(mapCanvas);
-
-    const mapPPContainer = document.createElement("div");
-    mapPPContainer.setAttribute("id", "bw-pp-container");
-
-    const mapInner = document.createElement("div");
-    mapInner.setAttribute("id", "bw-map-inner");
-    mapInner.appendChild(mapClose);
-    mapInner.appendChild(mapContainer);
-    mapInner.appendChild(mapPPContainer);
-
-    self.mapContainer = document.createElement("div");
-    self.mapContainer.setAttribute("id", "bw-map");
-    self.mapContainer.appendChild(mapInner);
-    document.body.appendChild(self.mapContainer);
-
-    mapboxgl.accessToken = 'whatever';
-    self.map = new mapboxgl.Map({
-      container: 'bw-map-canvas',
-      style: mapUrl,
-      zoom: 14
-    });
-    self.map.addControl(new mapboxgl.NavigationControl());
-  },
-
-  initSelectedCarrier: function() {
-    const self = this;
-    const selectedCarrierId = self.getSelectedCarrier();
-  console.log(selectedCarrierId);
     self.on("body", "click", self.trigger, function () {
-      self.mapContainer = document.querySelector('#bw-map');
-      if (!self.mapContainer) {
-        self.initMap();
-      }
-
-      self.on("body", "click", ".bw-parcel-point-button", function () {
+      self.on("body", "click", ".bx-parcel-point-button", function () {
         self.selectPoint(this.getAttribute("data-code"), this.getAttribute("data-label"), this.getAttribute("data-operator"))
           .then(function (label) {
             self.initSelectedParcelPoint();
-            const target = document.querySelector(".bw-parcel-name");
+            const target = document.querySelector(".bx-parcel-name");
             target.innerHTML = label;
             self.closeMap();
           })
@@ -81,26 +32,89 @@ const bxParcelPoint = {
       self.openMap();
       self.getPoints();
     });
+
+    self.on("body", "change", self.getAllCarrierInputsSelector(), function () {
+      self.initCarriers();
+    });
   },
 
-  getSelectedCarrier: function() {
+  initMap: function () {
+    const self = this;
+    const mapClose = document.createElement("div");
+    mapClose.setAttribute("class", "bx-close");
+    mapClose.setAttribute("title", bxTranslation.text.closeMap);
+    mapClose.addEventListener("click", function () {
+      self.closeMap()
+    });
+
+    const mapCanvas = document.createElement("div");
+    mapCanvas.setAttribute("id", "bx-map-canvas");
+
+    const mapContainer = document.createElement("div");
+    mapContainer.setAttribute("id", "bx-map-container");
+    mapContainer.appendChild(mapCanvas);
+
+    const mapPPContainer = document.createElement("div");
+    mapPPContainer.setAttribute("id", "bx-pp-container");
+
+    const mapInner = document.createElement("div");
+    mapInner.setAttribute("id", "bx-map-inner");
+    mapInner.appendChild(mapClose);
+    mapInner.appendChild(mapContainer);
+    mapInner.appendChild(mapPPContainer);
+
+    self.mapContainer = document.createElement("div");
+    self.mapContainer.setAttribute("id", "bx-map");
+    self.mapContainer.appendChild(mapInner);
+    document.body.appendChild(self.mapContainer);
+
+    mapboxgl.accessToken = 'whatever';
+    self.map = new mapboxgl.Map({
+      container: 'bx-map-canvas',
+      style: bxMapUrl,
+      zoom: 14
+    });
+    self.map.addControl(new mapboxgl.NavigationControl());
+  },
+
+  initCarriers: function() {
+    const self = this;
+    const carriers = self.getCarriers();
+    const selectedCarrierId = self.getSelectedCarrier();
+    for (let i = 0; i < carriers.length; i++) {
+      const carrier = carriers[i];
+      if (null === carrier.querySelector(".bx-extra-content")) {
+        const el = document.createElement("div");
+        el.setAttribute("class", "bx-extra-content");
+        carrier.appendChild(el);
+      }
+      const extraContent = carrier.querySelector(".bx-extra-content");
+      if (selectedCarrierId === self.getCarrierId(carrier)) {
+        extraContent.innerHTML = self.getSelectedCarrierText(selectedCarrierId);
+      } else {
+        extraContent.innerHTML = "";
+      }
+    }
+  },
+
+  getCarriers: function() {
     // for 1.7
-    var input = $(".delivery-option input[type='radio']:checked");
+    let carriers = document.querySelectorAll(".delivery-option");
 
     // for 1.6
-    if (input.length === 0) {
-      input = $(".delivery_option_radio input[type='radio']:checked");
+    if (null === carriers) {
+      carriers = document.querySelectorAll(".delivery_option_radio");
     }
 
     // for 1.5
-    if (input.length === 0) {
-      input = $(".delivery_option input[type='radio']:checked");
+    if (null === carriers) {
+      carriers = document.querySelectorAll(".delivery_option");
     }
-    return input;
+    return carriers;
   },
 
   openMap: function () {
-    this.mapContainer.classList.add("bw-modal-show");
+    this.mapContainer.classList.add("bx-modal-show");
     let offset = window.pageYOffset + (window.innerHeight - this.mapContainer.offsetHeight) / 2;
     if (offset < window.pageYOffset) {
       offset = window.pageYOffset;
@@ -110,15 +124,15 @@ const bxParcelPoint = {
   },
 
   closeMap: function () {
-    this.mapContainer.classList.remove("bw-modal-show");
+    this.mapContainer.classList.remove("bx-modal-show");
     this.clearMarkers();
   },
 
   initSelectedParcelPoint: function () {
-    const selectParcelPoint = document.querySelector(".bw-parcel-client");
-    selectParcelPoint.innerHTML = translation.text.selectedParcelPoint + " ";
+    const selectParcelPoint = document.querySelector(".bx-parcel-client");
+    selectParcelPoint.innerHTML = bxTranslation.text.selectedParcelPoint + " ";
     const selectParcelPointContent = document.createElement("span");
-    selectParcelPointContent.setAttribute("class", "bw-parcel-name");
+    selectParcelPointContent.setAttribute("class", "bx-parcel-name");
     selectParcelPoint.appendChild(selectParcelPointContent);
   },
 
@@ -140,7 +154,7 @@ const bxParcelPoint = {
     return new Promise(function (resolve, reject) {
       const carrier = self.getSelectedCarrier();
       if (!carrier) {
-        reject(translation.error.carrierNotFound);
+        reject(bxTranslation.error.carrierNotFound);
       }
       const httpRequest = new XMLHttpRequest();
       httpRequest.onreadystatechange = function () {
@@ -171,15 +185,15 @@ const bxParcelPoint = {
 
   addParcelPointMarker: function (point) {
     const self = this;
-    let info = "<div class='bw-marker-popup'><b>" + point.label + '</b><br/>' +
-      '<a href="#" class="bw-parcel-point-button" data-code="' + point.code + '" data-label="' + point.label + '" data-operator="' + point.operator + '"><b>' + translation.text.chooseParcelPoint + '</b></a><br/>' +
-      point.address.street + ", " + point.address.postcode + " " + point.address.city + "<br/>" + "<b>" + translation.text.openingHours +
-      "</b><br/>" + '<div class="bw-parcel-point-schedule">';
+    let info = "<div class='bx-marker-popup'><b>" + point.label + '</b><br/>' +
+      '<a href="#" class="bx-parcel-point-button" data-code="' + point.code + '" data-label="' + point.label + '" data-operator="' + point.operator + '"><b>' + bxTranslation.text.chooseParcelPoint + '</b></a><br/>' +
+      point.address.street + ", " + point.address.postcode + " " + point.address.city + "<br/>" + "<b>" + bxTranslation.text.openingHours +
+      "</b><br/>" + '<div class="bx-parcel-point-schedule">';
 
     for (let i = 0, l = point.schedule.length; i < l; i++) {
       const day = point.schedule[i];
 
-      info += '<span class="bw-parcel-point-day">' + translation.day[day.weekday] + '</span>';
+      info += '<span class="bx-parcel-point-day">' + bxTranslation.day[day.weekday] + '</span>';
 
       for (let j = 0, t = day.timePeriods.length; j < t; j++) {
         const timePeriod = day.timePeriods[j];
@@ -190,7 +204,7 @@ const bxParcelPoint = {
     info += '</div>';
 
     const el = document.createElement('div');
-    el.className = 'bw-marker';
+    el.className = 'bx-marker';
     el.style.backgroundImage = "url('" + imgDir + "markers/" + (point.index + 1) + ".png')";
     el.style.width = '28px';
     el.style.height = '35px';
@@ -199,8 +213,7 @@ const bxParcelPoint = {
       .setHTML(info);
 
     const marker = new mapboxgl.Marker({
-      element: el,
-
+      element: el
     })
       .setLngLat(new mapboxgl.LngLat(parseFloat(point.coordinates.longitude), parseFloat(point.coordinates.latitude)))
       .setPopup(popup)
@@ -212,7 +225,7 @@ const bxParcelPoint = {
   },
 
   addRightColMarkerEvent: function (marker, code) {
-    this.on("body", "click", ".bw-show-info-" + code, function () {
+    this.on("body", "click", ".bx-show-info-" + code, function () {
       marker.togglePopup();
     });
   },
@@ -229,7 +242,7 @@ const bxParcelPoint = {
     const self = this;
 
     const el = document.createElement('div');
-    el.className = 'bw-marker-recipient';
+    el.className = 'bx-marker-recipient';
     el.style.backgroundImage = "url('" + imgDir + "marker-recipient.png')";
     el.style.width = '30px';
     el.style.height = '35px';
@@ -268,15 +281,15 @@ const bxParcelPoint = {
       const point = parcelPoints[i];
       html += '<tr>';
       html += '<td><img src="' + imgDir + 'markers/' + (i + 1) + '.png" />';
-      html += '<div class="bw-parcel-point-title"><a class="bw-show-info-' + point.code + '">' + point.label + '</a></div><br/>';
+      html += '<div class="bx-parcel-point-title"><a class="bx-show-info-' + point.code + '">' + point.label + '</a></div><br/>';
       html += point.address.street + '<br/>';
       html += point.address.postcode + ' ' + point.address.city + '<br/>';
-      html += '<a class="bw-parcel-point-button" data-code="' + point.code + '" data-label="' + point.label + '" data-operator="' + point.operator + '"><b>' + translation.text.chooseParcelPoint + '</b></a>';
+      html += '<a class="bx-parcel-point-button" data-code="' + point.code + '" data-label="' + point.label + '" data-operator="' + point.operator + '"><b>' + bxTranslation.text.chooseParcelPoint + '</b></a>';
       html += '</td>';
       html += '</tr>';
     }
     html += '</tbody></table>';
-    document.querySelector('#bw-pp-container').innerHTML = html;
+    document.querySelector('#bx-pp-container').innerHTML = html;
   },
 
   selectPoint: function (code, label, operator) {
@@ -284,7 +297,7 @@ const bxParcelPoint = {
     return new Promise(function (resolve, reject) {
       const carrier = self.getSelectedCarrier();
       if (!carrier) {
-        reject(translation.error.carrierNotFound);
+        reject(bxTranslation.error.carrierNotFound);
       }
       const setPointRequest = new XMLHttpRequest();
       setPointRequest.onreadystatechange = function () {
@@ -313,16 +326,89 @@ const bxParcelPoint = {
     }
   },
 
-  getSelectedCarrier: function () {
+  getUniqueCarrier: function() {
+    return document.querySelector('input[type="hidden"].shipping_method');
+  },
+
+  hasUniqueCarrier: function() {
+    return null !== this.getUniqueCarrier();
+  },
+
+  getCarrierId: function(carrier) {
+    if (this.hasUniqueCarrier()) {
+      const uniqueCarrier = this.getUniqueCarrier();
+      return uniqueCarrier.getAttribute("value");
+    } else {
+      const input = carrier.querySelector("input[type=radio]");
+      return input.getAttribute("value");
+    }
+  },
+
+  getSelectedCarrier: function() {
     let carrier;
-    const uniqueCarrier = document.querySelector('input[type="hidden"].shipping_method');
-    if (uniqueCarrier) {
+    if (this.hasUniqueCarrier()) {
+      const uniqueCarrier = this.getUniqueCarrier();
       carrier = uniqueCarrier.getAttribute('value');
     } else {
-      const selectedCarrier = document.querySelector('input.shipping_method:checked');
+      const selectedCarrier = this.getSelectedInput();
       carrier = selectedCarrier.getAttribute('value');
     }
     return carrier;
+  },
+
+  getSelectedCarrierText: function(selectedCarrierId) {
+    if (null === selectedCarrierId) {
+      return "";
+    }
+
+    const getSelectedCarrierTextRequest = new XMLHttpRequest();
+    getSelectedCarrierTextRequest.onreadystatechange = function () {
+      if (getSelectedCarrierTextRequest.readyState === 4) {
+        console.log(getSelectedCarrierTextRequest);
+        if (200 !== getSelectedCarrierTextRequest.status) {
+          return "";
+        } else {
+          return getSelectedCarrierTextRequest.response;
+        }
+      }
+    };
+    console.log(bxAjaxUrl);
+    getSelectedCarrierTextRequest.open("POST", bxAjaxUrl);
+    getSelectedCarrierTextRequest.setRequestHeader(
+      "Content-Type",
+      "application/x-www-form-urlencoded"
+    );
+    getSelectedCarrierTextRequest.responseType = "json";
+    getSelectedCarrierTextRequest.send("route=getSelectedCarrierText&carrier=" + encodeURIComponent(selectedCarrierId));
+  },
+
+  getSelectedInput: function() {
+    // for 1.7
+    var input = document.querySelector(".delivery-option input[type='radio']:checked");
+
+    // for 1.6
+    if (null === input) {
+      input = document.querySelector(".delivery_option_radio input[type='radio']:checked");
+    }
+
+    // for 1.5
+    if (null === input) {
+      input = document.querySelector(".delivery_option input[type='radio']:checked");
+    }
+    return input;
+  },
+
+  getAllCarrierInputsSelector : function() {
+    // for 1.7
+    let inputs = ".delivery-option input[type='radio']";
+
+    // for 1.6
+    inputs += ", .delivery_option_radio input[type='radio']";
+
+    // for 1.5
+    inputs += ", .delivery_option input[type='radio']";
+
+    return inputs;
   },
 
   showError: function (error) {

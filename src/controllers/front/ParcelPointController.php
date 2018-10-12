@@ -32,6 +32,8 @@ class ParcelPointController
         'OrderController'
     );
 
+
+
     /**
      * Add scripts.
      *
@@ -39,9 +41,6 @@ class ParcelPointController
      */
     public static function addScripts()
     {
-        if (!self::isCheckoutPage()) {
-            return;
-        }
         $boxtal = \Boxtal::getInstance();
         $translation = array(
             'error' => array(
@@ -68,13 +67,18 @@ class ParcelPointController
         );
         $smarty = $boxtal->getSmarty();
         $smarty->assign('translation', \Tools::jsonEncode($translation));
-        $smarty->assign('mapUrl', \Tools::jsonEncode($translation));
+        $smarty->assign('mapUrl', self::getMapUrl());
 
         $controller = $boxtal->getCurrentController();
         if (method_exists($controller, 'registerJavascript')) {
             $controller->registerJavascript(
                 'bx-mapbox-gl',
                 'modules/'.$boxtal->name.'/views/js/mapbox-gl.min.js',
+                array('priority' => 100, 'server' => 'local')
+            );
+            $controller->registerStylesheet(
+                'bx-mapbox-gl',
+                'modules/'.$boxtal->name.'/views/css/mapbox-gl.css',
                 array('priority' => 100, 'server' => 'local')
             );
             $controller->registerJavascript(
@@ -84,6 +88,7 @@ class ParcelPointController
             );
         } else {
             $controller->addJs(_MODULE_DIR_ . '/' . $boxtal->name . '/views/js/mapbox-gl.min.js');
+            $controller->addCss(_MODULE_DIR_ . '/' . $boxtal->name . '/views/css/mapbox-gl.css', 'all');
             $controller->addJs(_MODULE_DIR_ . '/' . $boxtal->name . '/views/js/parcel-point.min.js');
         }
 
@@ -98,10 +103,6 @@ class ParcelPointController
     public static function initPoints($params)
     {
         CookieUtil::set('bxParcelPoints', null);
-
-        if (!self::isCheckoutPage()) {
-            return null;
-        }
 
         if (!isset($params['cart'])) {
             return null;
@@ -136,11 +137,12 @@ class ParcelPointController
         $controller = $boxtal->getCurrentController();
         $controllerClass = get_class($controller);
         $psOrderProcessType = (int)ConfigurationUtil::get('PS_ORDER_PROCESS_TYPE');
-        $step = (int)\Tools::getValue('step');
 
         if (1 === $psOrderProcessType && in_array($controllerClass, self::$parcelPointControllers, true)) {
             return true;
         }
+
+        $step = (int)\Tools::getValue('step');
 
         if (0 === $psOrderProcessType && 2 === $step) {
             return true;
@@ -151,5 +153,18 @@ class ParcelPointController
         }
 
         return false;
+    }
+
+    /**
+     * Get map url.
+     *
+     * @return string
+     */
+    public static function getMapUrl() {
+        $token = AuthUtil::getMapsToken();
+        if ( null !== $token ) {
+            return str_replace( '${access_token}', $token, ConfigurationUtil::get( 'BX_MAP_BOOTSTRAP_URL' ) );
+        }
+        return null;
     }
 }

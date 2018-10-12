@@ -1,4 +1,5 @@
 <script>
-  const translation = {$translation nofilter};
-  const mapUrl =
+  const bxTranslation = {$translation nofilter};
+  const bxMapUrl = "{$mapUrl}";
+  const bxAjaxUrl = "{$link->getModuleLink('boxtal', 'ajax', array()) nofilter}";
 </script>

@@ -4,6 +4,8 @@
  */
 
 namespace Boxtal\BoxtalPrestashop\Util;
+use Boxtal\BoxtalPhp\ApiClient;
+use Boxtal\BoxtalPhp\RestClient;
 
 /**
  * Auth util class.
@@ -219,5 +221,21 @@ class AuthUtil
     public static function getSecretKey()
     {
         return ConfigurationUtil::get('BX_SECRET_KEY');
+    }
+
+    /**
+     * Get maps token.
+     *
+     * @return string
+     */
+    public static function getMapsToken() {
+        $lib = new ApiClient( self::getAccessKey(), self::getSecretKey() );
+        //phpcs:ignore
+        $response = $lib->restClient->request( RestClient::$POST, ConfigurationUtil::get('BX_MAP_TOKEN_URL') );
+
+        if ( ! $response->isError() && property_exists( $response->response, 'accessToken' ) ) {
+            return $response->response->accessToken;
+        }
+        return null;
     }
 }
