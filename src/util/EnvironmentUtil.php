@@ -3,7 +3,7 @@
  * Contains code for environment util class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Util;
+namespace Boxtal\BoxtalConnectPrestashop\Util;
 
 use Boxtal;
 

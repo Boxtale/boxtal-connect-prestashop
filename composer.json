@@ -1,7 +1,7 @@
 {
-  "name": "boxtal/boxtal-prestashop-poc",
+  "name": "boxtal/boxtal-connect-prestashop",
   "description": "Shipping plugin using boxtal API for Prestashop",
-  "homepage": "https://github.com/boxtal/boxtal-prestashop-poc",
+  "homepage": "https://github.com/boxtal/boxtal-connect-prestashop",
   "keywords": ["envoimoinscher", "boxtal", "boxtale", "php", "emc", "class", "api", "prestashop"],
   "license": "GPL-3.0+",
   "authors": [

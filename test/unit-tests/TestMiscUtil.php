@@ -3,7 +3,7 @@
  * Misc util tests
  */
 
-use Boxtal\BoxtalPrestashop\Util\MiscUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\MiscUtil;
 use PHPUnit\Framework\TestCase;
 
 /**

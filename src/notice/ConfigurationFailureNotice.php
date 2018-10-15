@@ -3,7 +3,7 @@
  * Contains code for the configuration failure notice class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Notice;
+namespace Boxtal\BoxtalConnectPrestashop\Notice;
 
 /**
  * Configuration failure notice class.

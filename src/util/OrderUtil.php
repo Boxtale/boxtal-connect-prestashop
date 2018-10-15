@@ -3,7 +3,7 @@
  * Contains code for order util class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Util;
+namespace Boxtal\BoxtalConnectPrestashop\Util;
 
 /**
  * Order util class.
@@ -49,7 +49,7 @@ class OrderUtil
         $sql = new \DbQuery();
         $sql->select('od.product_id, od.product_weight, od.product_price, od.product_quantity, od.product_name');
         $sql->from('order_detail', 'od');
-        $sql->where('od.id_order = '.(int)$orderId);
+        $sql->where('od.id_order = '.(int) $orderId);
 
         return \Db::getInstance()->executeS($sql);
     }
@@ -102,7 +102,8 @@ class OrderUtil
         }
 
         $row = array_shift($result);
-        return (int)$row['current_state'];
+
+        return (int) $row['current_state'];
     }
 
     /**
@@ -125,6 +126,7 @@ class OrderUtil
         }
 
         $row = array_shift($result);
-        return (int)$row['id_carrier'];
+
+        return (int) $row['id_carrier'];
     }
 }

@@ -4,19 +4,19 @@
  */
 
 use Boxtal\BoxtalPhp\RestClient;
-use Boxtal\BoxtalPrestashop\Util\ApiUtil;
-use Boxtal\BoxtalPrestashop\Util\AuthUtil;
-use Boxtal\BoxtalPrestashop\Util\CarrierUtil;
-use Boxtal\BoxtalPrestashop\Util\MiscUtil;
-use Boxtal\BoxtalPrestashop\Util\OrderUtil;
-use Boxtal\BoxtalPrestashop\Util\ProductUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\CarrierUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\MiscUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\OrderUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ProductUtil;
 
 /**
  * Order reset controller.
  *
  * Opens API endpoint to sync orders.
  */
-class BoxtalOrderModuleFrontController extends ModuleFrontController
+class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
 {
 
     /**
@@ -72,7 +72,7 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
 
         foreach ($orders as $order) {
             if (null !== MiscUtil::notEmptyOrNull($order, 'id_order')) {
-                $orderId = (int)MiscUtil::notEmptyOrNull($order, 'id_order');
+                $orderId = (int) MiscUtil::notEmptyOrNull($order, 'id_order');
             } else {
                 continue;
             }
@@ -97,7 +97,7 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
                 $product['weight']      = 0 !== (float) $item['product_weight'] ? (float) $item['product_weight'] : null;
                 $product['quantity']    = (int) $item['product_quantity'];
                 $product['price']       = (float) $item['product_price'];
-                $description = ProductUtil::getProductDescriptionMultilingual((int)$item['product_id']);
+                $description = ProductUtil::getProductDescriptionMultilingual((int) $item['product_id']);
                 $product['description'] = $description;
                 $products[]             = $product;
             }
@@ -125,11 +125,11 @@ class BoxtalOrderModuleFrontController extends ModuleFrontController
                 'reference'      => MiscUtil::notEmptyOrNull($order, 'reference'),
                 'status'         => array(
                     'key' => OrderUtil::getStatusId($orderId),
-                    'translations' => $multilingualStatus
+                    'translations' => $multilingualStatus,
                 ),
                 'shippingMethod' => array(
                     'key' => CarrierUtil::getReferenceFromId(OrderUtil::getCarrierId($orderId)),
-                    'translations' => $multilingualShippingMethod
+                    'translations' => $multilingualShippingMethod,
                 ),
                 'shippingAmount' => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'shippingAmount')),
                 'creationDate'   => MiscUtil::notEmptyOrNull($order, 'creationDate'),

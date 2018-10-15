@@ -3,7 +3,7 @@
  * Configuration util tests
  */
 
-use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use PHPUnit\Framework\TestCase;
 
 /**

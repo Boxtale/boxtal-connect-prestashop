@@ -3,14 +3,14 @@
  * Contains code for the parcel point controller class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Controllers\Front;
-use Boxtal\BoxtalPhp\ApiClient;
-use Boxtal\BoxtalPrestashop\Util\AddressUtil;
-use Boxtal\BoxtalPrestashop\Util\AuthUtil;
-use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
-use Boxtal\BoxtalPrestashop\Util\CookieUtil;
-use Boxtal\BoxtalPrestashop\Util\ShippingMethodUtil;
+namespace Boxtal\BoxtalConnectPrestashop\Controllers\Front;
 
+use Boxtal\BoxtalPhp\ApiClient;
+use Boxtal\BoxtalConnectPrestashop\Util\AddressUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\CookieUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
 
 /**
  * Parcel point controller class.
@@ -29,7 +29,7 @@ class ParcelPointController
     private static $parcelPointControllers = array(
         'OrderOpcController',
         'BoxtalAjaxModuleFrontController',
-        'OrderController'
+        'OrderController',
     );
 
 
@@ -37,32 +37,32 @@ class ParcelPointController
     /**
      * Add scripts.
      *
-     * @void
+     * @return string html
      */
     public static function addScripts()
     {
-        $boxtal = \Boxtal::getInstance();
+        $boxtal = \BoxtalConnect::getInstance();
         $translation = array(
             'error' => array(
-                'carrierNotFound' => $boxtal->l( 'Unable to find carrier' ),
-                'addressNotFound' => $boxtal->l( 'Could not find address' ),
-                'mapServerError'  => $boxtal->l( 'Could not connect to map server' ),
+                'carrierNotFound' => $boxtal->l('Unable to find carrier'),
+                'addressNotFound' => $boxtal->l('Could not find address'),
+                'mapServerError'  => $boxtal->l('Could not connect to map server'),
             ),
             'text'  => array(
-                'openingHours'        => $boxtal->l( 'Opening hours' ),
-                'chooseParcelPoint'   => $boxtal->l( 'Choose this parcel point' ),
-                'yourAddress'         => $boxtal->l( 'Your address:' ),
-                'closeMap'            => $boxtal->l( 'Close map' ),
-                'selectedParcelPoint' => $boxtal->l( 'Your parcel point:' ),
+                'openingHours'        => $boxtal->l('Opening hours'),
+                'chooseParcelPoint'   => $boxtal->l('Choose this parcel point'),
+                'yourAddress'         => $boxtal->l('Your address:'),
+                'closeMap'            => $boxtal->l('Close map'),
+                'selectedParcelPoint' => $boxtal->l('Your parcel point:'),
             ),
             'day'   => array(
-                'MONDAY'    => $boxtal->l( 'monday' ),
-                'TUESDAY'   => $boxtal->l( 'tuesday' ),
-                'WEDNESDAY' => $boxtal->l( 'wednesday' ),
-                'THURSDAY'  => $boxtal->l( 'thursday' ),
-                'FRIDAY'    => $boxtal->l( 'friday' ),
-                'SATURDAY'  => $boxtal->l( 'saturday' ),
-                'SUNDAY'    => $boxtal->l( 'sunday' ),
+                'MONDAY'    => $boxtal->l('monday'),
+                'TUESDAY'   => $boxtal->l('tuesday'),
+                'WEDNESDAY' => $boxtal->l('wednesday'),
+                'THURSDAY'  => $boxtal->l('thursday'),
+                'FRIDAY'    => $boxtal->l('friday'),
+                'SATURDAY'  => $boxtal->l('saturday'),
+                'SUNDAY'    => $boxtal->l('sunday'),
             ),
         );
         $smarty = $boxtal->getSmarty();
@@ -87,9 +87,9 @@ class ParcelPointController
                 array('priority' => 100, 'server' => 'local')
             );
         } else {
-            $controller->addJs(_MODULE_DIR_ . '/' . $boxtal->name . '/views/js/mapbox-gl.min.js');
-            $controller->addCss(_MODULE_DIR_ . '/' . $boxtal->name . '/views/css/mapbox-gl.css', 'all');
-            $controller->addJs(_MODULE_DIR_ . '/' . $boxtal->name . '/views/js/parcel-point.min.js');
+            $controller->addJs(_MODULE_DIR_.'/'.$boxtal->name.'/views/js/mapbox-gl.min.js');
+            $controller->addCss(_MODULE_DIR_.'/'.$boxtal->name.'/views/css/mapbox-gl.css', 'all');
+            $controller->addJs(_MODULE_DIR_.'/'.$boxtal->name.'/views/js/parcel-point.min.js');
         }
 
         return $boxtal->displayTemplate('front/shipping-method/header.tpl');
@@ -97,6 +97,8 @@ class ParcelPointController
 
     /**
      * Add point info.
+     *
+     * @param array $params cart info
      *
      * @return string html
      */
@@ -108,20 +110,37 @@ class ParcelPointController
             return null;
         }
         $cart = $params['cart'];
-        $address = new \Address((int)$cart->id_address_delivery);
+        //phpcs:ignore
+        $address = new \Address((int) $cart->id_address_delivery);
 
         $parcelPointOperators = ShippingMethodUtil::getSelectedParcelPointOperators();
         if (!empty($parcelPointOperators)) {
-            $lib      = new ApiClient( AuthUtil::getAccessKey(), AuthUtil::getSecretKey() );
-            $response = $lib->getParcelPoints( AddressUtil::convert($address), $parcelPointOperators );
-            if ( ! $response->isError() && property_exists( $response->response, 'parcelPoints' ) && is_array( $response->response->parcelPoints ) && count( $response->response->parcelPoints ) > 0 ) {
+            $lib      = new ApiClient(AuthUtil::getAccessKey(), AuthUtil::getSecretKey());
+            $response = $lib->getParcelPoints(AddressUtil::convert($address), $parcelPointOperators);
+            if (! $response->isError() && property_exists($response->response, 'parcelPoints') && is_array($response->response->parcelPoints) && count($response->response->parcelPoints) > 0) {
                 $json = \Tools::jsonEncode($response->response);
                 CookieUtil::set('bxParcelPoints', $json);
-                $boxtal = \Boxtal::getInstance();
+                $boxtal = \BoxtalConnect::getInstance();
                 $smarty = $boxtal->getSmarty();
                 $smarty->assign('bxParcelPoints', $json);
+
                 return $boxtal->displayTemplate('front/shipping-method/parcelPoint.tpl');
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get map url.
+     *
+     * @return string
+     */
+    public static function getMapUrl()
+    {
+        $token = AuthUtil::getMapsToken();
+        if (null !== $token) {
+            return str_replace('${access_token}', $token, ConfigurationUtil::get('BX_MAP_BOOTSTRAP_URL'));
         }
 
         return null;
@@ -132,17 +151,18 @@ class ParcelPointController
      *
      * @return boolean
      */
-    private static function isCheckoutPage() {
-        $boxtal = \Boxtal::getInstance();
+    private static function isCheckoutPage()
+    {
+        $boxtal = \BoxtalConnect::getInstance();
         $controller = $boxtal->getCurrentController();
         $controllerClass = get_class($controller);
-        $psOrderProcessType = (int)ConfigurationUtil::get('PS_ORDER_PROCESS_TYPE');
+        $psOrderProcessType = (int) ConfigurationUtil::get('PS_ORDER_PROCESS_TYPE');
 
         if (1 === $psOrderProcessType && in_array($controllerClass, self::$parcelPointControllers, true)) {
             return true;
         }
 
-        $step = (int)\Tools::getValue('step');
+        $step = (int) \Tools::getValue('step');
 
         if (0 === $psOrderProcessType && 2 === $step) {
             return true;
@@ -153,18 +173,5 @@ class ParcelPointController
         }
 
         return false;
-    }
-
-    /**
-     * Get map url.
-     *
-     * @return string
-     */
-    public static function getMapUrl() {
-        $token = AuthUtil::getMapsToken();
-        if ( null !== $token ) {
-            return str_replace( '${access_token}', $token, ConfigurationUtil::get( 'BX_MAP_BOOTSTRAP_URL' ) );
-        }
-        return null;
     }
 }

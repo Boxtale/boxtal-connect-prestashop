@@ -3,9 +3,9 @@
  * Contains code for the setup wizard notice class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Notice;
+namespace Boxtal\BoxtalConnectPrestashop\Notice;
 
-use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 
 /**
  * Setup wizard notice class.

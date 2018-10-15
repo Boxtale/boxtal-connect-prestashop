@@ -3,11 +3,11 @@
  * Contains code for the setup wizard class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Init;
+namespace Boxtal\BoxtalConnectPrestashop\Init;
 
-use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
-use Boxtal\BoxtalPrestashop\Util\AuthUtil;
-use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 
 /**
  * Setup wizard class.

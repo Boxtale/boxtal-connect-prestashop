@@ -3,10 +3,10 @@
  * Contains code for the abstract notice class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Notice;
+namespace Boxtal\BoxtalConnectPrestashop\Notice;
 
-use Boxtal\BoxtalPrestashop\Controllers\Misc\Notice;
-use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\Notice;
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 
 /**
  * Abstract notice class.
@@ -75,7 +75,7 @@ abstract class AbstractNotice
     {
         $notice = $this;
         if ($notice->isValid()) {
-            $boxtal = \Boxtal::getInstance();
+            $boxtal = \BoxtalConnect::getInstance();
             $ajaxLink = \Context::getContext()->link->getAdminLink('AdminAjax');
             include realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'notice'.DIRECTORY_SEPARATOR.'wrapper.php';
             if ($notice->autodestruct) {

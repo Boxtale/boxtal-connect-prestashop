@@ -39,7 +39,7 @@ if [ ${TRAVIS} = "false" ]; then
 	HOME='/home/docker'
 	PS_REPO_DIR=$HOME/ps
 else
-	HOME='/home/travis/build/Boxtale/boxtal-prestashop-poc'
+	HOME='/home/travis/build/Boxtale/boxtal-connect-prestashop'
 	PS_REPO_DIR=$HOME/ps
   clone_ps_repo
 	install_ps

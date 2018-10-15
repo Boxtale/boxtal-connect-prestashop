@@ -3,7 +3,7 @@
  * Contains code for carrier util class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Util;
+namespace Boxtal\BoxtalConnectPrestashop\Util;
 
 /**
  * Carrier util class.
@@ -33,6 +33,7 @@ class CarrierUtil
         }
 
         $row = array_shift($result);
-        return (int)$row['id_reference'];
+
+        return (int) $row['id_reference'];
     }
 }

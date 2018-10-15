@@ -10,7 +10,7 @@ spl_autoload_register('boxtalAutoload');
  * Dynamically loads the class attempting to be instantiated elsewhere in the
  * plugin by looking at the $class_name parameter being passed as an argument.
  *
- * The argument should be in the form: Boxtal\BoxtalPrestashop\Namespace. The
+ * The argument should be in the form: Boxtal\BoxtalConnectPrestashop\Namespace. The
  * function will then break the fully-qualified class name into its pieces and
  * will then build a file to the path based on the namespace.
  *
@@ -21,7 +21,7 @@ function boxtalAutoload($className)
 {
 
     // If the specified $className does not include our namespace, duck out.
-    if (false === strpos($className, 'Boxtal\BoxtalPrestashop') && false === strpos($className, 'Boxtal\BoxtalPhp')) {
+    if (false === strpos($className, 'Boxtal\BoxtalConnectPrestashop') && false === strpos($className, 'Boxtal\BoxtalPhp')) {
         return;
     }
 
@@ -43,7 +43,7 @@ function boxtalAutoload($className)
 
     if ('BoxtalPhp' === $fileParts[1]) {
         $filePath = __DIR__.'/lib/'.$path;
-    } elseif ('BoxtalPrestashop' === $fileParts[1]) {
+    } elseif ('BoxtalConnectPrestashop' === $fileParts[1]) {
         $filePath = __DIR__.'/'.$path;
     }
 

@@ -3,10 +3,9 @@
  * Contains code for the shipping method admin controller.
  */
 
-use Boxtal\BoxtalPrestashop\Util\AuthUtil;
-use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
-use Boxtal\BoxtalPrestashop\Util\ShippingMethodUtil;
-
+use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
 
 /**
  * Ajax admin controller class.
@@ -14,6 +13,11 @@ use Boxtal\BoxtalPrestashop\Util\ShippingMethodUtil;
 class AdminShippingMethodController extends \ModuleAdminController
 {
 
+    /**
+     * Construct function.
+     *
+     * @void
+     */
     public function __construct()
     {
         $this->bootstrap = true;
@@ -21,13 +25,19 @@ class AdminShippingMethodController extends \ModuleAdminController
         parent::__construct();
     }
 
+    /**
+     * Controller init.
+     *
+     * @void
+     */
     public function init()
     {
         parent::init();
         $this->handleForm();
-        $boxtal = Boxtal::getInstance();
+        $boxtal = BoxtalConnect::getInstance();
         if (!AuthUtil::canUsePlugin()) {
             $this->content = $boxtal->displayTemplate('admin/accessDenied.tpl');
+
             return;
         }
 
@@ -35,9 +45,9 @@ class AdminShippingMethodController extends \ModuleAdminController
         $parcelPointOperators = unserialize(ConfigurationUtil::get('BX_PP_OPERATORS'));
         $smarty->assign('parcelPointOperators', $parcelPointOperators);
         $carriers = ShippingMethodUtil::getShippingMethods();
-        foreach ((array)$carriers as $c => $carrier) {
-            if (file_exists(_PS_SHIP_IMG_DIR_.(int)$carrier['id_carrier'].'.jpg')) {
-                $carriers[$c]['logo'] = _THEME_SHIP_DIR_.(int)$carrier['id_carrier'].'.jpg';
+        foreach ((array) $carriers as $c => $carrier) {
+            if (file_exists(_PS_SHIP_IMG_DIR_.(int) $carrier['id_carrier'].'.jpg')) {
+                $carriers[$c]['logo'] = _THEME_SHIP_DIR_.(int) $carrier['id_carrier'].'.jpg';
             }
             $carriers[$c]['parcel_point_operators'] = unserialize($carriers[$c]['parcel_point_operators']);
         }
@@ -45,21 +55,26 @@ class AdminShippingMethodController extends \ModuleAdminController
         $this->content = $boxtal->displayTemplate('admin/shipping-method/settings.tpl');
     }
 
-    public function handleForm()
+    /**
+     * Handles parcel point operators form.
+     *
+     * @void
+     */
+    private function handleForm()
     {
         if (\Tools::isSubmit('submitParcelPointOperators')) {
             $carriers = ShippingMethodUtil::getShippingMethods();
-            foreach ((array)$carriers as $carrier) {
-                if (\Tools::isSubmit('parcelPointOperators_'.(int)$carrier['id_carrier'])) {
+            foreach ((array) $carriers as $carrier) {
+                if (\Tools::isSubmit('parcelPointOperators_'.(int) $carrier['id_carrier'])) {
                     \Db::getInstance()->execute(
                         "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `parcel_point_operators`)
-                        VALUES ('".(int)$carrier['id_carrier']."', '".pSQL(serialize(\Tools::getValue('parcelPointOperators_'.(int)$carrier['id_carrier'])))."')
-                        ON DUPLICATE KEY UPDATE parcel_point_operators='".pSQL(serialize(\Tools::getValue('parcelPointOperators_'.(int)$carrier['id_carrier'])))."'"
+                        VALUES ('".(int) $carrier['id_carrier']."', '".pSQL(serialize(\Tools::getValue('parcelPointOperators_'.(int) $carrier['id_carrier'])))."')
+                        ON DUPLICATE KEY UPDATE parcel_point_operators='".pSQL(serialize(\Tools::getValue('parcelPointOperators_'.(int) $carrier['id_carrier'])))."'"
                     );
                 } else {
                     \Db::getInstance()->execute(
                         "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `parcel_point_operators`)
-                        VALUES ('".(int)$carrier['id_carrier']."', '".pSQL(serialize(\Tools::getValue('parcelPointOperators_'.(int)$carrier['id_carrier'])))."')
+                        VALUES ('".(int) $carrier['id_carrier']."', '".pSQL(serialize(\Tools::getValue('parcelPointOperators_'.(int) $carrier['id_carrier'])))."')
                         ON DUPLICATE KEY UPDATE parcel_point_operators='".pSQL(serialize(array()))."'"
                     );
                 }

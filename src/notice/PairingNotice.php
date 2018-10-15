@@ -3,7 +3,7 @@
  * Contains code for the pairing notice class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Notice;
+namespace Boxtal\BoxtalConnectPrestashop\Notice;
 
 /**
  * Pairing notice class.

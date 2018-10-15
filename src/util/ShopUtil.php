@@ -3,12 +3,12 @@
  * Contains code for shop util class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Util;
+namespace Boxtal\BoxtalConnectPrestashop\Util;
 
 use Boxtal;
 use Boxtal\BoxtalPhp\ApiClient;
 use Boxtal\BoxtalPhp\RestClient;
-use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 
 /**
  * Shop util class.
@@ -26,11 +26,12 @@ class ShopUtil
     public static function getCurrentShop()
     {
         if (isset(\Context::getContext()->shop)) {
-            $idShop = (int)\Context::getContext()->shop->id;
+            $idShop = (int) \Context::getContext()->shop->id;
         }
         if (!$idShop) {
-            $idShop = (int)\Configuration::get('PS_SHOP_DEFAULT');
+            $idShop = (int) \Configuration::get('PS_SHOP_DEFAULT');
         }
+
         return $idShop;
     }
 }

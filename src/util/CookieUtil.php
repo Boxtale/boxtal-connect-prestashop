@@ -3,7 +3,7 @@
  * Contains code for cookie util class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Util;
+namespace Boxtal\BoxtalConnectPrestashop\Util;
 
 /**
  * Cookie util class.
@@ -14,19 +14,10 @@ class CookieUtil
 {
 
     /**
-     * Get cookie.
-     *
-     * @return \Cookie cookie
-     */
-    private static function getCookie() {
-        $boxtal = \Boxtal::getInstance();
-        return $boxtal->getContext()->cookie;
-    }
-
-    /**
      * Get cookie variable value.
      *
      * @param string $key name of cookie variable.
+     *
      * @return mixed value
      */
     public static function get($key)
@@ -37,8 +28,9 @@ class CookieUtil
     /**
      * Set cookie variable value.
      *
-     * @param string $key name of cookie variable.
+     * @param string       $key   name of cookie variable.
      * @param string|array $value value of cookie variable.
+     *
      * @return mixed value
      */
     public static function set($key, $value)
@@ -47,4 +39,16 @@ class CookieUtil
         $cookie->$key = $value;
     }
 
+
+    /**
+     * Get cookie.
+     *
+     * @return \Cookie cookie
+     */
+    private static function getCookie()
+    {
+        $boxtal = \BoxtalConnect::getInstance();
+
+        return $boxtal->getContext()->cookie;
+    }
 }

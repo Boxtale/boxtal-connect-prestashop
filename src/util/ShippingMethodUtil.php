@@ -3,12 +3,12 @@
  * Contains code for shipping method util class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Util;
+namespace Boxtal\BoxtalConnectPrestashop\Util;
 
 use Boxtal;
 use Boxtal\BoxtalPhp\ApiClient;
 use Boxtal\BoxtalPhp\RestClient;
-use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 
 /**
  * Shipping method util class.
@@ -32,10 +32,10 @@ class ShippingMethodUtil
             return array();
         }
 
-        foreach ((array)$shippingMethods as $shippingMethod) {
+        foreach ((array) $shippingMethods as $shippingMethod) {
             if (isset($shippingMethod['parcel_point_operators'])) {
                 $shippingMethodOperators = unserialize($shippingMethod['parcel_point_operators']);
-                foreach ((array)$shippingMethodOperators as $shippingMethodOperator) {
+                foreach ((array) $shippingMethodOperators as $shippingMethodOperator) {
                     if (!in_array($shippingMethodOperator, $selectedParcelPointOperators, true)) {
                         foreach ($parcelPointOperators as $parcelPointOperator) {
                             if ($shippingMethodOperator === $parcelPointOperator['code']) {
@@ -44,19 +44,26 @@ class ShippingMethodUtil
                         }
                     }
                 }
-
             }
         }
+
         return $selectedParcelPointOperators;
     }
 
-    public static function getShippingMethods() {
+    /**
+     * Get parcel point operators associated with shipping methods.
+     *
+     * @return object shipping methods.
+     */
+    public static function getShippingMethods()
+    {
         $sql = new \DbQuery();
         $sql->select('c.id_carrier, c.name, bc.parcel_point_operators');
         $sql->from('carrier', 'c');
-        $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_shop = '.(int)ShopUtil::getCurrentShop().' AND cl.id_lang = '.(int)\Context::getContext()->language->id);
+        $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_shop = '.(int) ShopUtil::getCurrentShop().' AND cl.id_lang = '.(int) \Context::getContext()->language->id);
         $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier');
         $sql->where('c.deleted = 0');
+
         return \Db::getInstance()->executeS($sql);
     }
 }

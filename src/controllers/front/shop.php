@@ -4,10 +4,10 @@
  */
 
 use Boxtal\BoxtalPhp\RestClient;
-use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
-use Boxtal\BoxtalPrestashop\Util\ApiUtil;
-use Boxtal\BoxtalPrestashop\Util\AuthUtil;
-use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 
 /**
  * Shop class.

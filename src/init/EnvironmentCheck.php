@@ -3,11 +3,11 @@
  * Contains code for the environment check class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Init;
+namespace Boxtal\BoxtalConnectPrestashop\Init;
 
 use Boxtal;
-use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
-use Boxtal\BoxtalPrestashop\Util\EnvironmentUtil;
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Util\EnvironmentUtil;
 
 /**
  * Environment check class.

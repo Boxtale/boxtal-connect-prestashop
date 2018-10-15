@@ -26,13 +26,13 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-use Boxtal\BoxtalPrestashop\Controllers\Front\ParcelPointController;
-use Boxtal\BoxtalPrestashop\Controllers\Misc\NoticeController;
-use Boxtal\BoxtalPrestashop\Init\EnvironmentCheck;
-use Boxtal\BoxtalPrestashop\Init\SetupWizard;
-use Boxtal\BoxtalPrestashop\Util\AuthUtil;
-use Boxtal\BoxtalPrestashop\Util\ConfigurationUtil;
-use Boxtal\BoxtalPrestashop\Util\EnvironmentUtil;
+use Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController;
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Init\EnvironmentCheck;
+use Boxtal\BoxtalConnectPrestashop\Init\SetupWizard;
+use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\EnvironmentUtil;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -41,17 +41,17 @@ if (!defined('_PS_VERSION_')) {
 require_once  __DIR__.'/autoloader.php';
 
 /**
- * Class Boxtal
+ * Class boxtalconnect
  *
  *  Main module class.
  */
-class Boxtal extends Module
+class boxtalconnect extends Module
 {
 
     /**
      * Instance.
      *
-     * @var Boxtal
+     * @var boxtalconnect
      */
     private static $instance;
 
@@ -62,7 +62,7 @@ class Boxtal extends Module
      */
     public function __construct()
     {
-        $this->name = 'boxtal';
+        $this->name = 'boxtalconnect';
         $this->tab = 'shipping_logistics';
         $this->version = '1.0.0';
         $this->author = 'Boxtal';
@@ -75,7 +75,7 @@ class Boxtal extends Module
         $this::$instance = $this;
         parent::__construct();
 
-        $this->displayName = $this->l('Boxtal');
+        $this->displayName = $this->l('Boxtal Connect');
         $this->description = $this->l('Ship your orders with multiple carriers and save up to 75% on your shipping costs without commitments or any contracts.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
@@ -170,7 +170,7 @@ class Boxtal extends Module
     /**
      * Uninstall function.
      *
-     * @return void
+     * @return boolean
      */
     public function uninstall()
     {
@@ -195,7 +195,7 @@ class Boxtal extends Module
     /**
      * Get module instance.
      *
-     * @return Boxtal
+     * @return BoxtalConnect
      */
     public static function getInstance()
     {
@@ -233,7 +233,9 @@ class Boxtal extends Module
     /**
      * Header hook. Display includes JavaScript for maps.
      *
-     * @void
+     * @param mixed $params context values
+     *
+     * @return string html
      */
     public function hookHeader($params)
     {
@@ -248,6 +250,7 @@ class Boxtal extends Module
      * Prestashop < 1.7. Used to display front-office relay point list.
      *
      * @param array $params Parameters array (cart object, address information)
+     *
      * @return string html
      */
     public function hookDisplayCarrierList($params)
@@ -263,6 +266,7 @@ class Boxtal extends Module
      * Prestashop > 1.7. Used to display front-office relay point list.
      *
      * @param array $params Parameters array (cart object, address information)
+     *
      * @return string html
      */
     public function hookDisplayAfterCarrier($params)
@@ -278,18 +282,19 @@ class Boxtal extends Module
      * Update carrier hook. Used to update carrier id.
      *
      * @param array $params List of params used in the operation.
+     *
      * @void
      */
     public function hookUpdateCarrier($params)
     {
-        $id_carrier_old = (int)$params['id_carrier'];
-        $id_carrier_new = (int)$params['carrier']->id;
+        $idCarrierOld = (int) $params['id_carrier'];
+        $idCarrierNew = (int) $params['carrier']->id;
 
-        $data = array('id_carrier' => $id_carrier_new);
+        $data = array('id_carrier' => $idCarrierNew);
         \Db::getInstance()->update(
             'bx_carrier',
             $data,
-            'id_carrier = ' . $id_carrier_old,
+            'id_carrier = '.$idCarrierOld,
             0,
             true
         );
@@ -321,74 +326,88 @@ class Boxtal extends Module
     /**
      * Check PHP version.
      *
-     * @param Boxtal $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array.
+     *
      * @return EnvironmentCheck $object static environment check instance.
      */
-    function initEnvironmentCheck( $plugin ) {
+    public function initEnvironmentCheck($plugin)
+    {
         static $object;
 
-        if ( null !== $object ) {
+        if (null !== $object) {
             return $object;
         }
 
         $object =  new EnvironmentCheck($plugin);
+
         return $object;
     }
 
     /**
      * Init setup wizard.
      *
-     * @param Boxtal $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array.
+     *
      * @return SetupWizard $object static setup wizard instance.
      */
-    function initSetupWizard( $plugin ) {
+    public function initSetupWizard($plugin)
+    {
         static $object;
 
-        if ( null !== $object ) {
+        if (null !== $object) {
             return $object;
         }
 
         $object =  new SetupWizard($plugin);
+
         return $object;
     }
 
     /**
      * Init shop controller.
      *
-     * @param Boxtal $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array.
+     *
      * @void
      */
-    function initShopController( $plugin ) {
+    public function initShopController($plugin)
+    {
         require_once __DIR__.'/controllers/front/shop.php';
     }
 
     /**
      * Init admin ajax controller.
      *
-     * @param Boxtal $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array.
+     *
      * @void
      */
-    function initAdminAjaxController( $plugin ) {
+    public function initAdminAjaxController($plugin)
+    {
         require_once __DIR__.'/controllers/admin/AdminAjaxController.php';
     }
 
     /**
      * Init front ajax controller.
      *
-     * @param Boxtal $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array.
+     *
      * @void
      */
-    function initFrontAjaxController( $plugin ) {
+    public function initFrontAjaxController($plugin)
+    {
         require_once __DIR__.'/controllers/front/ajax.php';
     }
 
     /**
      * Init order controller.
      *
-     * @param Boxtal $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array.
+     *
      * @void
      */
-    function initOrderController( $plugin ) {
+    public function initOrderController($plugin)
+    {
         require_once __DIR__.'/controllers/front/order.php';
     }
 
@@ -398,7 +417,8 @@ class Boxtal extends Module
      *
      * @return object
      */
-    function getSmarty() {
+    public function getSmarty()
+    {
         return $this->getContext()->smarty;
     }
 
@@ -407,7 +427,8 @@ class Boxtal extends Module
      *
      * @return object
      */
-    function getCurrentController() {
+    public function getCurrentController()
+    {
         return $this->getContext()->controller;
     }
 
@@ -415,9 +436,11 @@ class Boxtal extends Module
      * Display template.
      *
      * @param string $templatePath path to template from module folder.
+     *
      * @return string html
      */
-    function displayTemplate($templatePath) {
+    public function displayTemplate($templatePath)
+    {
         return $this->display(__FILE__, '/views/templates/'.$templatePath);
     }
 }

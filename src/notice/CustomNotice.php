@@ -3,7 +3,7 @@
  * Contains code for the custom notice class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Notice;
+namespace Boxtal\BoxtalConnectPrestashop\Notice;
 
 /**
  * Custom notice class.

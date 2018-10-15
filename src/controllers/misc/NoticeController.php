@@ -3,9 +3,9 @@
  * Contains code for the notice controller class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Controllers\Misc;
+namespace Boxtal\BoxtalConnectPrestashop\Controllers\Misc;
 
-use Boxtal\BoxtalPrestashop\Notice\CustomNotice;
+use Boxtal\BoxtalConnectPrestashop\Notice\CustomNotice;
 
 /**
  * Notice controller class.
@@ -87,7 +87,7 @@ class NoticeController
         if (is_array($notices)) {
             foreach ($notices as $notice) {
                 $key = $notice['key'];
-                $classname = 'Boxtal\BoxtalPrestashop\Notice\\';
+                $classname = 'Boxtal\BoxtalConnectPrestashop\Notice\\';
                 if (! in_array($key, self::$coreNotices, true)) {
                     $value = unserialize($notice['value']);
                     if (false !== $value) {

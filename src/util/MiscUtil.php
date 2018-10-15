@@ -3,7 +3,7 @@
  * Contains code for misc util class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Util;
+namespace Boxtal\BoxtalConnectPrestashop\Util;
 
 /**
  * Misc util class.
@@ -29,7 +29,7 @@ class MiscUtil
     /**
      * Property exists or null.
      *
-     * @param object  $object    array to test.
+     * @param object $object   array to test.
      * @param string $property property to test.
      *
      * @return string

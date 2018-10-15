@@ -3,7 +3,7 @@
  * Contains code for product util class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Util;
+namespace Boxtal\BoxtalConnectPrestashop\Util;
 
 /**
  * Product util class.

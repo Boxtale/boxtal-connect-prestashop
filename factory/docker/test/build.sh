@@ -2,9 +2,9 @@
 
 PS_VERSION=${1-1.7.3.3}
 
-if [[ $(docker inspect -f {{.State.Running}} boxtal_prestashop) = "false" ]]; then
-    echo "boxtal_prestashop docker container is not running"
+if [[ $(docker inspect -f {{.State.Running}} boxtal_connect_prestashop) = "false" ]]; then
+    echo "boxtal_connect_prestashop docker container is not running"
     exit
 fi
 
-docker exec  -u docker boxtal_prestashop /home/docker/factory/common/test/build.sh $PS_VERSION false
+docker exec  -u docker boxtal_connect_prestashop /home/docker/factory/common/test/build.sh $PS_VERSION false

@@ -3,26 +3,29 @@
  * Contains code for the front ajax controller class.
  */
 
-namespace Boxtal\BoxtalPrestashop\Controllers\Front;
+namespace Boxtal\BoxtalConnectPrestashop\Controllers\Front;
 
 use Boxtal\BoxtalPhp\RestClient;
-use Boxtal\BoxtalPrestashop\Util\ApiUtil;
-
+use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
 
 /**
  * Front ajax controller class.
  *
- * @class       boxtalajaxModuleFrontController
+ * @class       boxtalconnectajaxModuleFrontController
  *
  */
-class boxtalajaxModuleFrontController extends \ModuleFrontController
+class boxtalconnectajaxModuleFrontController extends \ModuleFrontController
 {
 
+    /**
+     * Ajax front controller.
+     *
+     * @void
+     */
     public function initContent()
     {
         $this->ajax = true;
         $route = Tools::getValue('route'); // Get route
-        die(Tools::jsonEncode("test"));
         if ('getSelectedCarrierText' === $route) {
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
@@ -40,7 +43,15 @@ class boxtalajaxModuleFrontController extends \ModuleFrontController
         ApiUtil::sendApiResponse(400);
     }
 
-    public function getSelectedCarrierTextHandler($selectedCarrierId) {
+    /**
+     * Returns selected carrier text.
+     *
+     * @param string $selectedCarrierId selected carrier id
+     *
+     * @void
+     */
+    public function getSelectedCarrierTextHandler($selectedCarrierId)
+    {
         $text = "your parcel point!";
         ApiUtil::sendApiResponse(200, $text);
     }
