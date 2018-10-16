@@ -16,7 +16,7 @@ use Boxtal\BoxtalConnectPrestashop\Util\ProductUtil;
  *
  * Opens API endpoint to sync orders.
  */
-class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
+class boxtalconnectOrderModuleFrontController extends ModuleFrontController
 {
 
     /**

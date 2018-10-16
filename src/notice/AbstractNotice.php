@@ -20,11 +20,11 @@ abstract class AbstractNotice
 {
 
     /**
-     * Boxtal module instance.
+     * boxtalconnect instance.
      *
-     * @var \Boxtal
+     * @var \boxtalconnect
      */
-    protected $boxtal;
+    protected $boxtalConnect;
 
     /**
      * Notice key, used for remove method.
@@ -75,7 +75,7 @@ abstract class AbstractNotice
     {
         $notice = $this;
         if ($notice->isValid()) {
-            $boxtal = \BoxtalConnect::getInstance();
+            $boxtalConnect = \BoxtalConnect::getInstance();
             $ajaxLink = \Context::getContext()->link->getAdminLink('AdminAjax');
             include realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'notice'.DIRECTORY_SEPARATOR.'wrapper.php';
             if ($notice->autodestruct) {

@@ -23,9 +23,11 @@ class SetupWizard
     /**
      * Construct function.
      *
+     * @param \boxtalconnect plugin instance.
+     *
      * @void
      */
-    public function __construct()
+    public function __construct($plugin)
     {
         if (AuthUtil::isPluginPaired()) {
             if (NoticeController::hasNotice(NoticeController::$setupWizard)) {

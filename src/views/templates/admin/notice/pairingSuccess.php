@@ -4,10 +4,10 @@
  */
 ?>
 <div class="module_confirmation conf confirm alert alert-success">
-    <p><?php echo $boxtal->l("Congratulations! You've successfully paired your site with Boxtal.");?></p>
+    <p><?php echo $boxtalConnect->l("Congratulations! You've successfully paired your site with Boxtal.");?></p>
     <p>
         <a class="bx-hide-notice btn btn-primary-reverse btn-outline-primary" rel="pairing">
-            <?php echo $boxtal->l("Hide this notice");?>
+            <?php echo $boxtalConnect->l("Hide this notice");?>
         </a>
     </p>
 </div>

@@ -14,7 +14,7 @@ use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
  *
  * Opens API endpoint to pair.
  */
-class BoxtalShopModuleFrontController extends ModuleFrontController
+class boxtalconnectShopModuleFrontController extends ModuleFrontController
 {
 
     /**
@@ -29,6 +29,10 @@ class BoxtalShopModuleFrontController extends ModuleFrontController
 
         AuthUtil::authenticate($entityBody);
         $body = AuthUtil::decryptBody($entityBody);
+
+        if (null === $body) {
+            ApiUtil::sendApiResponse(400);
+        }
 
         $route = Tools::getValue('route'); // Get route
 

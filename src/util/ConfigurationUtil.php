@@ -100,7 +100,7 @@ class ConfigurationUtil
      */
     public static function parseConfiguration($body)
     {
-        return self::parseParcelPointOperators($body) && self::parseMapConfiguration($body);
+        return self::parseParcelPointNetworks($body) && self::parseMapConfiguration($body);
     }
 
     /**
@@ -110,7 +110,7 @@ class ConfigurationUtil
      */
     public static function hasConfiguration()
     {
-        return null !== self::get('BX_MAP_BOOTSTRAP_URL') && null !== self::get('BX_MAP_TOKEN_URL') && null !== self::get('BX_PP_OPERATORS');
+        return null !== self::get('BX_MAP_BOOTSTRAP_URL') && null !== self::get('BX_MAP_TOKEN_URL') && null !== self::get('BX_PP_NETWORKS');
     }
 
     /**
@@ -120,8 +120,8 @@ class ConfigurationUtil
      */
     public static function getOnboardingLink()
     {
-        $boxtal = \BoxtalConnect::getInstance();
-        $url    = $boxtal->onboardingUrl;
+        $boxtalConnect = \BoxtalConnect::getInstance();
+        $url    = $boxtalConnect->onboardingUrl;
         $sql = new \DbQuery();
         $sql->select('e.email');
         $sql->from('employee', 'e');
@@ -141,6 +141,29 @@ class ConfigurationUtil
         return $url.'?'.http_build_query($params);
     }
 
+    /**
+     * Get map logo href url.
+     *
+     * @return string map logo href url
+     */
+    public static function getMapLogoHrefUrl()
+    {
+        $url = self::get('BX_MAP_LOGO_HREF_URL');
+
+        return $url;
+    }
+
+    /**
+     * Get map logo image url.
+     *
+     * @return string map logo image url
+     */
+    public static function getMapLogoImageUrl()
+    {
+        $url = self::get('BX_MAP_LOGO_IMAGE_URL');
+
+        return $url;
+    }
 
     /**
      * Delete configuration.
@@ -153,7 +176,9 @@ class ConfigurationUtil
         self::delete('BX_SECRET_KEY');
         self::delete('BX_MAP_BOOTSTRAP_URL');
         self::delete('BX_MAP_TOKEN_URL');
-        self::delete('BX_PP_OPERATORS');
+        self::delete('BX_MAP_LOGO_IMAGE_URL');
+        self::delete('BX_MAP_LOGO_HREF_URL');
+        self::delete('BX_PP_NETWORKS');
         self::delete('BX_TRACKING_EVENT');
         self::delete('BX_PAIRING_UPDATE');
         NoticeController::removeAllNotices();
@@ -166,53 +191,53 @@ class ConfigurationUtil
      *
      * @return boolean
      */
-    private static function parseParcelPointOperators($body)
+    private static function parseParcelPointNetworks($body)
     {
-        if (is_object($body) && property_exists($body, 'parcelPointOperators')) {
-            $storedOperators = self::get('BX_PP_OPERATORS');
-            if (is_array($storedOperators)) {
-                $removedOperators = $storedOperators;
+        if (is_object($body) && property_exists($body, 'parcelPointNetworks')) {
+            $storedNetworks = self::get('BX_PP_NETWORKS');
+            if (is_array($storedNetworks)) {
+                $removedNetworks = $storedNetworks;
                 //phpcs:ignore
-                foreach ( $body->parcelPointOperators as $newOperator ) {
-                    foreach ($storedOperators as $key => $oldOperator) {
-                        if ($newOperator->code === $oldOperator->code) {
-                            unset($removedOperators[$key]);
+                foreach ( $body->parcelPointNetworks as $newNetwork => $newNetworkCarriers) {
+                    foreach ($storedNetworks as $oldNetwork => $oldNetworkCarriers) {
+                        if ($newNetwork === $oldNetwork) {
+                            unset($removedNetworks[$oldNetwork]);
                         }
                     }
                 }
 
-                if (count($removedOperators) > 0) {
+                if (count($removedNetworks) > 0) {
                     NoticeController::addNotice(
                         NoticeController::$custom,
                         array(
                             'status'  => 'warning',
-                            'message' => Boxtal::getInstance()->l('There\'s been a change in Boxtal\'s parcel point operator list, we\'ve adapted your shipping method configuration. Please check that everything is in order.'),
+                            'message' => boxtalconnect::getInstance()->l('There\'s been a change in Boxtal\'s parcel point network list, we\'ve adapted your shipping method configuration. Please check that everything is in order.'),
                         )
                     );
                 }
 
                 //phpcs:ignore
-                $addedOperators = $body->parcelPointOperators;
+                $addedNetworks = $body->parcelPointNetworks;
                 //phpcs:ignore
-                foreach ( $body->parcelPointOperators as $newOperator ) {
-                    foreach ($storedOperators as $key => $oldOperator) {
-                        if ($newOperator->code === $oldOperator->code) {
-                            unset($addedOperators[$key]);
+                foreach ( $body->parcelPointNetworks as $newNetwork => $newNetworkCarriers ) {
+                    foreach ($storedNetworks as $oldNetwork => $oldNetworkCarriers) {
+                        if ($newNetwork === $oldNetwork) {
+                            unset($addedNetworks[$oldNetwork]);
                         }
                     }
                 }
-                if (count($addedOperators) > 0) {
+                if (count($addedNetworks) > 0) {
                     NoticeController::addNotice(
                         NoticeController::$custom,
                         array(
                             'status'  => 'info',
-                            'message' => Boxtal::getInstance()->l('There\'s been a change in Boxtal\'s parcel point operator list, you can add the extra parcel point operator(s) to your shipping method configuration.'),
+                            'message' => boxtalconnect::getInstance()->l('There\'s been a change in Boxtal\'s parcel point network list, you can add the extra parcel point network(s) to your shipping method configuration.'),
                         )
                     );
                 }
             }
             //phpcs:ignore
-            self::set('BX_PP_OPERATORS', serialize(MiscUtil::convertStdClassToArray($body->parcelPointOperators)));
+            self::set('BX_PP_NETWORKS', serialize(MiscUtil::convertStdClassToArray($body->parcelPointNetworks)));
 
             return true;
         }
@@ -229,11 +254,16 @@ class ConfigurationUtil
      */
     private static function parseMapConfiguration($body)
     {
-        if (is_object($body) && property_exists($body, 'mapsBootstrapUrl') && property_exists($body, 'mapsTokenUrl')) {
+        if (is_object($body) && property_exists($body, 'mapsBootstrapUrl') && property_exists($body, 'mapsTokenUrl')
+            && property_exists($body, 'mapsLogoImageUrl') && property_exists($body, 'mapsLogoHrefUrl')) {
             //phpcs:ignore
             self::set('BX_MAP_BOOTSTRAP_URL', $body->mapsBootstrapUrl);
             //phpcs:ignore
             self::set('BX_MAP_TOKEN_URL', $body->mapsTokenUrl);
+            //phpcs:ignore
+            self::set('BX_MAP_LOGO_IMAGE_URL', $body->mapsLogoImageUrl);
+            //phpcs:ignore
+            self::set('BX_MAP_LOGO_HREF_URL', $body->mapsLogoHrefUrl);
 
             return true;
         }

@@ -4,6 +4,6 @@
  */
 ?>
 <div class="module_warning alert alert-danger">
-    <p><?php echo $boxtal->l('There was a problem initializing the Boxtal plugin. You should contact our support team.'); ?></p>
+    <p><?php echo $boxtalConnect->l('There was a problem initializing the Boxtal plugin. You should contact our support team.'); ?></p>
 </div>
 

@@ -47,8 +47,8 @@ class CookieUtil
      */
     private static function getCookie()
     {
-        $boxtal = \BoxtalConnect::getInstance();
+        $boxtalConnect = \BoxtalConnect::getInstance();
 
-        return $boxtal->getContext()->cookie;
+        return $boxtalConnect->getContext()->cookie;
     }
 }

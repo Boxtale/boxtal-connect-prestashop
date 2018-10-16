@@ -25,7 +25,7 @@ switch ($notice->status) {
     <?php echo $notice->message; ?>
     <p>
         <a class="bx-hide-notice" rel="<?php echo $notice->key; ?>">
-            <?php echo $boxtal->l('Hide this notice'); ?>
+            <?php echo $boxtalConnect->l('Hide this notice'); ?>
         </a>
     </p>
 </div>

@@ -25,13 +25,7 @@ class AuthUtil
      */
     public static function authenticate($body)
     {
-        $publicKey = file_get_contents(realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR.'resource'.DIRECTORY_SEPARATOR.'publickey');
-        $decrypted  = '';
-        if (openssl_public_decrypt(base64_decode($body), $decrypted, $publicKey)) {
-            return true;
-        }
-
-        ApiUtil::sendApiResponse(401);
+        return null === self::decryptBody($body) ? ApiUtil::sendApiResponse(401) : true;
     }
 
     /**
@@ -93,20 +87,27 @@ class AuthUtil
     /**
      * Request body decryption.
      *
-     * @param string $body encrypted body.
+     * @param string $jsonBody encrypted body.
      *
      * @return mixed
      */
-    public static function decryptBody($body)
+    public static function decryptBody($jsonBody)
     {
-        // phpcs:ignore
-        $publicKey = file_get_contents(realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'resource' . DIRECTORY_SEPARATOR . 'publickey');
-        $decrypted  = '';
-        if (openssl_public_decrypt(base64_decode($body), $decrypted, $publicKey)) {
-            return json_decode($decrypted);
+        $body = json_decode( $jsonBody );
+
+        if ( null === $body || ! is_object( $body ) || ! property_exists( $body, 'encryptedKey' ) || ! property_exists( $body, 'encryptedData' ) ) {
+            return null;
         }
 
-        return null;
+        $key = self::decryptPublicKey($body->encryptedKey);
+
+        if ( null === $key ) {
+            return null;
+        }
+
+        $data = self::encryptRc4( base64_decode( $body->encryptedData ), $key );
+
+        return json_decode($data);
     }
 
     /**
@@ -161,6 +162,25 @@ class AuthUtil
         $encrypted  = '';
         if (openssl_public_encrypt($str, $encrypted, $publicKey)) {
             return $encrypted;
+        }
+
+        return null;
+    }
+
+    /**
+     * Decrypt with public key.
+     *
+     * @param string $str string to encrypt.
+     *
+     * @return mixed
+     */
+    public static function decryptPublicKey($str)
+    {
+        // phpcs:ignore
+        $publicKey = file_get_contents(realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'resource' . DIRECTORY_SEPARATOR . 'publickey');
+        $decrypted  = '';
+        if (openssl_public_decrypt(base64_decode($str), $decrypted, $publicKey)) {
+            return json_decode($decrypted);
         }
 
         return null;

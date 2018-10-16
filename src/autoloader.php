@@ -4,7 +4,7 @@
  * plugin.
  */
 
-spl_autoload_register('boxtalAutoload');
+spl_autoload_register('boxtalConnectAutoload');
 
 /**
  * Dynamically loads the class attempting to be instantiated elsewhere in the
@@ -17,7 +17,7 @@ spl_autoload_register('boxtalAutoload');
  * @param string $className The fully-qualified name of the class to load.
  */
 //phpcs:ignore
-function boxtalAutoload($className)
+function boxtalConnectAutoload($className)
 {
 
     // If the specified $className does not include our namespace, duck out.

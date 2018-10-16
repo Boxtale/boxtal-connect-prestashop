@@ -130,7 +130,7 @@ class boxtalconnect extends Module
         \Db::getInstance()->execute(
             "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_carrier` (
             `id_carrier` int(10) unsigned NOT NULL,
-            `parcel_point_operators` text,
+            `parcel_point_networks` text,
             PRIMARY KEY (`id_carrier`)
             ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
@@ -153,8 +153,10 @@ class boxtalconnect extends Module
 
         // add the new tab
         $tab = new Tab();
+        //phpcs:ignore
         $tab->class_name = 'AdminShippingMethod';
-        $tab->id_parent = (int)Tab::getIdFromClassName('AdminParentShipping');
+        //phpcs:ignore
+        $tab->id_parent = (int) Tab::getIdFromClassName('AdminParentShipping');
         $tab->module = $this->name;
         $tab->name = array();
         foreach (\Language::getLanguages(true) as $lang) {
@@ -215,17 +217,17 @@ class boxtalconnect extends Module
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
                     'bx-notice',
-                    'modules/boxtal/views/js/notice.min.js',
+                    'modules/boxtalconnect/views/js/notice.min.js',
                     array('priority' => 100, 'server' => 'local')
                 );
                 $controller->registerStylesheet(
                     'bx-notice',
-                    'modules/boxtal/views/css/notices.css',
+                    'modules/boxtalconnect/views/css/notices.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addJs(_MODULE_DIR_.'/boxtal/views/js/notices.min.js');
-                $controller->addCSS(_MODULE_DIR_.'/boxtal/views/css/notices.css', 'all');
+                $controller->addJs(_MODULE_DIR_.'/boxtalconnect/views/js/notices.min.js');
+                $controller->addCSS(_MODULE_DIR_.'/boxtalconnect/views/css/notices.css', 'all');
             }
         }
     }

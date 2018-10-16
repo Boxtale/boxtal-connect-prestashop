@@ -58,7 +58,7 @@ class ShippingMethodUtil
     public static function getShippingMethods()
     {
         $sql = new \DbQuery();
-        $sql->select('c.id_carrier, c.name, bc.parcel_point_operators');
+        $sql->select('c.id_carrier, c.name, bc.parcel_point_networks');
         $sql->from('carrier', 'c');
         $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_shop = '.(int) ShopUtil::getCurrentShop().' AND cl.id_lang = '.(int) \Context::getContext()->language->id);
         $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier');
