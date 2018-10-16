@@ -76,7 +76,7 @@ class OrderUtil
 
         $translations = array();
         foreach ($result as $statusTranslation) {
-            $translations[$statusTranslation['locale']] = $statusTranslation['name'];
+            $translations[str_replace('-', '_', $statusTranslation['locale'])] = $statusTranslation['name'];
         }
 
         return $translations;

@@ -36,7 +36,7 @@ class ProductUtil
             $sql->where('l.id_lang = '.$langId);
             $result = \Db::getInstance()->executeS($sql);
             $row = array_shift($result);
-            $translations[$row['locale']] = $productName;
+            $translations[str_replace('-', '_', $row['locale'])] = $productName;
         }
 
         return $translations;

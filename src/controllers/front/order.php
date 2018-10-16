@@ -117,7 +117,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
             $multilingualShippingMethod = array();
             $shippingMethodName = MiscUtil::notEmptyOrNull($order, 'shippingMethod');
             foreach (\Language::getLanguages(true) as $lang) {
-                $multilingualShippingMethod[$lang['locale']] = $shippingMethodName;
+                $multilingualShippingMethod[str_replace('-', '_', $lang['locale'])] = $shippingMethodName;
             }
 
             $result[] = array(
