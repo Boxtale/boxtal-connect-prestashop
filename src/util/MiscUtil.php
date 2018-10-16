@@ -103,4 +103,17 @@ class MiscUtil
 
         return $object;
     }
+
+    /**
+     * Return date with W3C format if not null.
+     *
+     * @param string $date date to be formatted.
+     *
+     * @return string
+     */
+    public static function dateW3Cformat($date)
+    {
+        $date = new \DateTime($date);
+        return $date->format( \DateTime::W3C );
+    }
 }

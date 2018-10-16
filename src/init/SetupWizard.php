@@ -23,7 +23,7 @@ class SetupWizard
     /**
      * Construct function.
      *
-     * @param \boxtalconnect plugin instance.
+     * @param \boxtalconnect $plugin plugin instance.
      *
      * @void
      */

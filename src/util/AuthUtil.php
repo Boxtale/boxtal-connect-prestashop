@@ -93,19 +93,19 @@ class AuthUtil
      */
     public static function decryptBody($jsonBody)
     {
-        $body = json_decode( $jsonBody );
+        $body = json_decode($jsonBody);
 
-        if ( null === $body || ! is_object( $body ) || ! property_exists( $body, 'encryptedKey' ) || ! property_exists( $body, 'encryptedData' ) ) {
+        if (null === $body || ! is_object($body) || ! property_exists($body, 'encryptedKey') || ! property_exists($body, 'encryptedData')) {
             return null;
         }
 
         $key = self::decryptPublicKey($body->encryptedKey);
 
-        if ( null === $key ) {
+        if (null === $key) {
             return null;
         }
 
-        $data = self::encryptRc4( base64_decode( $body->encryptedData ), $key );
+        $data = self::encryptRc4(base64_decode($body->encryptedData), $key);
 
         return json_decode($data);
     }

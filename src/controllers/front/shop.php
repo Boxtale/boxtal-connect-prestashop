@@ -51,11 +51,11 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
                     case RestClient::$DELETE:
-                        $this->deleteHandler($body);
+                        $this->deleteConfigurationHandler($body);
                         break;
 
                     case RestClient::$PATCH:
-                        $this->updateHandler($body);
+                        $this->updateConfigurationHandler($body);
                         break;
 
                     default:
@@ -125,10 +125,14 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
      *
      * @void
      */
-    public function deleteHandler($body)
+    public function deleteConfigurationHandler($body)
     {
         if (null === $body) {
             ApiUtil::sendApiResponse(400);
+        }
+
+        if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey()) {
+            ApiUtil::sendApiResponse(403);
         }
 
         ConfigurationUtil::deleteConfiguration();
@@ -142,7 +146,7 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
      *
      * @void
      */
-    public function updateHandler($body)
+    public function updateConfigurationHandler($body)
     {
         if (null === $body) {
             ApiUtil::sendApiResponse(400);

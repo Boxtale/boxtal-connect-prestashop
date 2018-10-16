@@ -37,6 +37,7 @@ class AdminShippingMethodController extends \ModuleAdminController
         $boxtalConnect = BoxtalConnect::getInstance();
         if (!AuthUtil::canUsePlugin()) {
             $this->content = $boxtalConnect->displayTemplate('admin/accessDenied.tpl');
+
             return;
         }
 

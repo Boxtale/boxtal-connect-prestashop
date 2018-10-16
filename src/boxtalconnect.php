@@ -212,22 +212,23 @@ class boxtalconnect extends Module
     public function hookDisplayBackOfficeHeader()
     {
         $controller = $this->getContext()->controller;
+        $boxtalConnect = \BoxtalConnect::getInstance();
 
         if (NoticeController::hasNotices()) {
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
                     'bx-notice',
-                    'modules/boxtalconnect/views/js/notice.min.js',
+                    'modules/'.$boxtalConnect->name.'/views/js/notice.min.js',
                     array('priority' => 100, 'server' => 'local')
                 );
                 $controller->registerStylesheet(
                     'bx-notice',
-                    'modules/boxtalconnect/views/css/notices.css',
+                    'modules/'.$boxtalConnect->name.'/views/css/notices.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addJs(_MODULE_DIR_.'/boxtalconnect/views/js/notices.min.js');
-                $controller->addCSS(_MODULE_DIR_.'/boxtalconnect/views/css/notices.css', 'all');
+                $controller->addJs(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/js/notices.min.js');
+                $controller->addCSS(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/notices.css', 'all');
             }
         }
     }

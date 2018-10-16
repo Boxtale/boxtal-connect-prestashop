@@ -132,7 +132,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                     'translations' => $multilingualShippingMethod,
                 ),
                 'shippingAmount' => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'shippingAmount')),
-                'creationDate'   => MiscUtil::notEmptyOrNull($order, 'creationDate'),
+                'creationDate'   => MiscUtil::dateW3Cformat(MiscUtil::notEmptyOrNull($order, 'creationDate')),
                 'orderAmount'    => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'orderAmount')),
                 'recipient'      => $recipient,
                 'products'       => $products,
@@ -140,6 +140,6 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
             );
         }
 
-        return $result;
+        return array('orders' => $result);
     }
 }
