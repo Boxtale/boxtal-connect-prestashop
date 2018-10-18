@@ -28,6 +28,7 @@
 
 use Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController;
 use Boxtal\BoxtalConnectPrestashop\Init\EnvironmentCheck;
 use Boxtal\BoxtalConnectPrestashop\Init\SetupWizard;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
@@ -111,6 +112,7 @@ class boxtalconnect extends Module
             || !$this->registerHook('displayCarrierList')
             || !$this->registerHook('displayAfterCarrier')
             || !$this->registerHook('updateCarrier')
+            || !$this->registerHook('adminOrder')
             || !$this->registerHook('displayAdminAfterHeader')) {
             return false;
         }
@@ -160,7 +162,7 @@ class boxtalconnect extends Module
         $tab->module = $this->name;
         $tab->name = array();
         foreach (\Language::getLanguages(true) as $lang) {
-            $tab->name[$lang['id_lang']] = 'Boxtal';
+            $tab->name[$lang['id_lang']] = 'Boxtal Connect';
         }
         if (false === $tab->add()) {
             return false;
@@ -179,10 +181,7 @@ class boxtalconnect extends Module
         if (!parent::uninstall()) {
             return false;
         }
-        ConfigurationUtil::delete('BX_PAIRING_UPDATE');
-        ConfigurationUtil::delete('BX_ACCESS_KEY');
-        ConfigurationUtil::delete('BX_SECRET_KEY');
-        ConfigurationUtil::delete('BX_NOTICES');
+        ConfigurationUtil::deleteConfiguration();
         \DB::getInstance()->execute(
             'SET FOREIGN_KEY_CHECKS = 0;
             DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_notices`;
@@ -216,19 +215,26 @@ class boxtalconnect extends Module
 
         if (NoticeController::hasNotices()) {
             if (method_exists($controller, 'registerJavascript')) {
-                $controller->registerJavascript(
-                    'bx-notice',
-                    'modules/'.$boxtalConnect->name.'/views/js/notice.min.js',
-                    array('priority' => 100, 'server' => 'local')
-                );
                 $controller->registerStylesheet(
-                    'bx-notice',
-                    'modules/'.$boxtalConnect->name.'/views/css/notices.css',
+                    'bx-tracking',
+                    'modules/'.$boxtalConnect->name.'/views/css/tracking.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
                 $controller->addJs(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/js/notices.min.js');
                 $controller->addCSS(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/notices.css', 'all');
+            }
+        }
+
+        if ('AdminOrdersController' === get_class($controller) && false !== Tools::getValue('id_order')) {
+            if (method_exists($controller, 'registerJavascript')) {
+                $controller->registerStylesheet(
+                    'bx-tracking',
+                    'modules/'.$boxtalConnect->name.'/views/css/tracking.css',
+                    array('priority' => 100, 'server' => 'local')
+                );
+            } else {
+                $controller->addCSS(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/tracking.css', 'all');
             }
         }
     }
@@ -243,7 +249,7 @@ class boxtalconnect extends Module
     public function hookHeader($params)
     {
         if (!AuthUtil::canUsePlugin()) {
-            return;
+            return null;
         }
 
         return ParcelPointController::addScripts();
@@ -314,6 +320,31 @@ class boxtalconnect extends Module
         foreach ($notices as $notice) {
             $notice->render();
         }
+    }
+
+    /**
+     * adminOrder hook. Used to display tracking in admin orders.
+     *
+     * @param array $params List of params used in the operation.
+     *
+     * @return string html
+     */
+    public function hookAdminOrder($params)
+    {
+
+        if (!AuthUtil::canUsePlugin()) {
+            return null;
+        }
+
+        $tracking = TrackingController::getOrderTracking($params['id_order']);
+        if ( null === $tracking || ! property_exists( $tracking, 'shipmentsTracking' ) || empty( $tracking->shipmentsTracking ) ) {
+            return null;
+        }
+
+        $smarty = $this->getSmarty();
+        $smarty->assign('tracking', $tracking);
+        $smarty->assign('dateFormat', $this->l('Y-m-d H:i:s'));
+        return $this->display(__FILE__, '/views/templates/hook/hookAdminOrder.tpl');
     }
 
     /**

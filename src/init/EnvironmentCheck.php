@@ -5,7 +5,6 @@
 
 namespace Boxtal\BoxtalConnectPrestashop\Init;
 
-use Boxtal;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Util\EnvironmentUtil;
 
@@ -23,7 +22,7 @@ class EnvironmentCheck
     /**
      * Construct function.
      *
-     * @param Boxtal $plugin plugin array.
+     * @param \boxtalconnect $plugin plugin array.
      *
      * @void
      */

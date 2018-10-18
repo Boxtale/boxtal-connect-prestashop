@@ -44,6 +44,19 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                         break;
                 }
             }
+        } elseif ('tracking' === $route) {
+            $orderId = Tools::getValue('order');
+            $body = AuthUtil::decryptBody($entityBody);
+            if (isset($_SERVER['REQUEST_METHOD'])) {
+                switch ($_SERVER['REQUEST_METHOD']) {
+                    case RestClient::$POST:
+                        $this->trackingEventHandler($orderId, $body);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
         }
 
         ApiUtil::sendApiResponse(400);
@@ -141,5 +154,46 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
         }
 
         return array('orders' => $result);
+    }
+
+    /**
+     * Endpoint callback.
+     *
+     * @param int    $orderId order id.
+     * @param object $body    request body.
+     *
+     * @void
+     */
+    public function trackingEventHandler($orderId, $body)
+    {
+        if (! is_int($orderId)) {
+            ApiUtil::sendApiResponse(400);
+        }
+
+        if (! $this::parseTrackingEvent($orderId, $body)) {
+            ApiUtil::sendApiResponse(400);
+        }
+
+        ApiUtil::sendApiResponse(200);
+    }
+
+    /**
+     * Parse tracking event.
+     *
+     * @param int    $orderId order id.
+     * @param object $body    request body.
+     *
+     * @return boolean
+     */
+    public static function parseTrackingEvent($orderId, $body)
+    {
+        if (! ( is_object($body) && property_exists($body, 'carrierReference')
+            && property_exists($body, 'trackingDate') && property_exists($body, 'trackingCode') ) ) {
+            return false;
+        }
+
+
+
+        return true;
     }
 }

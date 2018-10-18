@@ -5,7 +5,6 @@
 
 namespace Boxtal\BoxtalConnectPrestashop\Util;
 
-use Boxtal;
 use Boxtal\BoxtalPhp\ApiClient;
 use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
@@ -181,6 +180,8 @@ class ConfigurationUtil
         self::delete('BX_PP_NETWORKS');
         self::delete('BX_TRACKING_EVENT');
         self::delete('BX_PAIRING_UPDATE');
+        self::delete('BX_ORDER_SHIPPED');
+        self::delete('BX_ORDER_DELIVERED');
         NoticeController::removeAllNotices();
     }
 

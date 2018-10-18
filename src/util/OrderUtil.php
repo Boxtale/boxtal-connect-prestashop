@@ -129,4 +129,20 @@ class OrderUtil
 
         return (int) $row['id_carrier'];
     }
+
+    /**
+     * Get order statuses.
+     *
+     * @return array|false|null
+     */
+    public static function getOrderStatuses($langId)
+    {
+        $sql = new \DbQuery();
+        $sql->select('os.id_order_state, osl.name');
+        $sql->from('order_state', 'os');
+        $sql->innerJoin('order_state_lang', 'osl', 'os.id_order_state = osl.id_order_state');
+        $sql->where('osl.id_lang = '.$langId);
+
+        return \Db::getInstance()->executeS($sql);
+    }
 }

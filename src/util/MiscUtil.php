@@ -114,6 +114,7 @@ class MiscUtil
     public static function dateW3Cformat($date)
     {
         $date = new \DateTime($date);
-        return $date->format( \DateTime::W3C );
+
+        return $date->format(\DateTime::W3C);
     }
 }

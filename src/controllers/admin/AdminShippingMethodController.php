@@ -5,10 +5,11 @@
 
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\OrderUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
 
 /**
- * Ajax admin controller class.
+ * Shipping method admin controller class.
  */
 class AdminShippingMethodController extends \ModuleAdminController
 {
@@ -32,11 +33,18 @@ class AdminShippingMethodController extends \ModuleAdminController
      */
     public function init()
     {
+        global $cookie;
+
         parent::init();
-        $this->handleForm();
+        if (\Tools::isSubmit('submitParcelPointNetworks')) {
+            $this->handleParcelPointNetworksForm();
+        }
+        if (\Tools::isSubmit('submitTrackingEvents')) {
+            $this->handleTrackingEventsForm();
+        }
         $boxtalConnect = BoxtalConnect::getInstance();
         if (!AuthUtil::canUsePlugin()) {
-            $this->content = $boxtalConnect->displayTemplate('admin/accessDenied.tpl');
+            $this->content = $boxtalConnect->displayTemplate('admin/hookAdminOrder.tpl');
 
             return;
         }
@@ -52,32 +60,64 @@ class AdminShippingMethodController extends \ModuleAdminController
             $carriers[$c]['parcel_point_networks'] = unserialize($carriers[$c]['parcel_point_networks']);
         }
         $smarty->assign('carriers', $carriers);
-        $this->content = $boxtalConnect->displayTemplate('admin/shipping-method/settings.tpl');
+
+
+        $langId = $cookie->id_lang;
+        $orderStatuses = OrderUtil::getOrderStatuses($langId);
+        $smarty->assign('orderStatuses', $orderStatuses);
+        $smarty->assign('orderShipped', ConfigurationUtil::get('BX_ORDER_SHIPPED'));
+        $smarty->assign('orderDelivered', ConfigurationUtil::get('BX_ORDER_DELIVERED'));
+
+        $this->content = $boxtalConnect->displayTemplate('admin/configuration/settings.tpl');
     }
 
     /**
-     * Handles parcel point operators form.
+     * Handle parcel point networks form.
      *
      * @void
      */
-    private function handleForm()
+    private function handleParcelPointNetworksForm()
     {
-        if (\Tools::isSubmit('submitParcelPointNetworks')) {
-            $carriers = ShippingMethodUtil::getShippingMethods();
-            foreach ((array) $carriers as $carrier) {
-                if (\Tools::isSubmit('parcelPointNetworks_'.(int) $carrier['id_carrier'])) {
-                    \Db::getInstance()->execute(
-                        "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `parcel_point_networks`)
-                        VALUES ('".(int) $carrier['id_carrier']."', '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
-                        ON DUPLICATE KEY UPDATE parcel_point_networks='".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."'"
-                    );
-                } else {
-                    \Db::getInstance()->execute(
-                        "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `parcel_point_networks`)
-                        VALUES ('".(int) $carrier['id_carrier']."', '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
-                        ON DUPLICATE KEY UPDATE parcel_point_networks='".pSQL(serialize(array()))."'"
-                    );
-                }
+        $carriers = ShippingMethodUtil::getShippingMethods();
+        foreach ((array) $carriers as $carrier) {
+            if (\Tools::isSubmit('parcelPointNetworks_'.(int) $carrier['id_carrier'])) {
+                \Db::getInstance()->execute(
+                    "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `parcel_point_networks`)
+                    VALUES ('".(int) $carrier['id_carrier']."', '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
+                    ON DUPLICATE KEY UPDATE parcel_point_networks='".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."'"
+                );
+            } else {
+                \Db::getInstance()->execute(
+                    "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `parcel_point_networks`)
+                    VALUES ('".(int) $carrier['id_carrier']."', '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
+                    ON DUPLICATE KEY UPDATE parcel_point_networks='".pSQL(serialize(array()))."'"
+                );
+            }
+        }
+    }
+
+    /**
+     * Handle tracking events form.
+     *
+     * @void
+     */
+    private function handleTrackingEventsForm()
+    {
+        if (\Tools::isSubmit('orderShipped')) {
+            $status = \Tools::getValue('orderShipped');
+            if ('' === $status) {
+                ConfigurationUtil::set('BX_ORDER_SHIPPED', null);
+            } else {
+                ConfigurationUtil::set('BX_ORDER_SHIPPED', $status);
+            }
+        }
+
+        if (\Tools::isSubmit('orderDelivered')) {
+            $status = \Tools::getValue('orderDelivered');
+            if ('' === $status) {
+                ConfigurationUtil::set('BX_ORDER_DELIVERED', null);
+            } else {
+                ConfigurationUtil::set('BX_ORDER_DELIVERED', $status);
             }
         }
     }
