@@ -26,28 +26,6 @@ class TrackingController
      */
     public static function getOrderTracking($orderId)
     {
-        return json_decode('{
-  "reference": "xxxxxxx",
-  "shipmentsTracking": [
-    {
-      "reference": "yyyyyy",
-      "parcelsTracking": [
-        {
-          "reference": "zzzzzz",
-          "status": "A",
-          "trackingUrl": "http://anyurl",
-          "trackingEvents": [
-            {
-              "date": "1977-04-22T06:00:00Z",
-              "message": "message",
-              "status": "A"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}');
         $lib = new ApiClient(AuthUtil::getAccessKey(), AuthUtil::getSecretKey());
         $response = $lib->getOrder($orderId);
         if ($response->isError()) {

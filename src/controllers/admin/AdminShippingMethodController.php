@@ -61,7 +61,7 @@ class AdminShippingMethodController extends \ModuleAdminController
         }
         $smarty->assign('carriers', $carriers);
 
-
+        //phpcs:ignore
         $langId = $cookie->id_lang;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
         $smarty->assign('orderStatuses', $orderStatuses);

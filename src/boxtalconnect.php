@@ -238,22 +238,30 @@ class boxtalconnect extends Module
 
         if (NoticeController::hasNotices()) {
             if (method_exists($controller, 'registerJavascript')) {
-                $controller->registerStylesheet(
-                    'bx-tracking',
-                    'modules/'.$boxtalConnect->name.'/views/css/tracking.css',
+                $controller->registerJavascript(
+                    'bx-notices',
+                    _MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/notices.min.js',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
                 $controller->addJs(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/js/notices.min.js');
+            }
+            if (method_exists($controller, 'registerStylesheet')) {
+                $controller->registerStylesheet(
+                    'bx-notices',
+                    _MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/notices.css',
+                    array('priority' => 100, 'server' => 'local')
+                );
+            } else {
                 $controller->addCSS(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/notices.css', 'all');
             }
         }
 
         if ('AdminOrdersController' === get_class($controller) && false !== Tools::getValue('id_order')) {
-            if (method_exists($controller, 'registerJavascript')) {
+            if (method_exists($controller, 'registerStylesheet')) {
                 $controller->registerStylesheet(
                     'bx-tracking',
-                    'modules/'.$boxtalConnect->name.'/views/css/tracking.css',
+                    _MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/tracking.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
@@ -313,7 +321,7 @@ class boxtalconnect extends Module
     /**
      * Order creation hook.
      *
-     * @param $params array List of order params.
+     * @param array $params list of order params.
      *
      * @void
      */

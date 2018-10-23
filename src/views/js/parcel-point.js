@@ -18,24 +18,23 @@ const bxParcelPoint = {
     self.initCarriers();
 
     self.on("body", "click", self.trigger, function () {
-      self.on("body", "click", ".bx-parcel-point-button", function () {
-        self.selectPoint(this.getAttribute("data-code"), this.getAttribute("data-name"), this.getAttribute("data-network"))
-          .then(function (name) {
-            self.initSelectedParcelPoint();
-            const target = document.querySelector(".bx-parcel-name");
-            target.innerHTML = name;
-            self.closeMap();
-          })
-          .catch(function (err) {
-            self.showError(err);
-          });
-      });
       self.openMap();
       self.getPoints();
     });
 
     self.on("body", "change", self.getAllCarrierInputsSelector(), function () {
       self.initCarriers();
+    });
+
+    self.on("body", "click", ".bx-parcel-point-button", function () {
+      self.selectPoint(this.getAttribute("data-code"), this.getAttribute("data-name"), this.getAttribute("data-network"))
+        .then(function () {
+          self.initCarriers();
+          self.closeMap();
+        })
+        .catch(function (err) {
+          self.showError(err);
+        });
     });
   },
 
@@ -76,6 +75,21 @@ const bxParcelPoint = {
       zoom: 14
     });
     self.map.addControl(new mapboxgl.NavigationControl());
+
+    const logoImg = document.createElement("img");
+    logoImg.setAttribute("src", bxMapLogoImageUrl);
+    const logoLink = document.createElement("a");
+    logoLink.setAttribute("href", bxMapLogoHrefUrl);
+    logoLink.setAttribute("target", "_blank");
+    logoLink.appendChild(logoImg);
+    const logoContainer = document.createElement("div");
+    logoContainer.setAttribute("id", "bx-boxtal-logo");
+    logoContainer.appendChild(logoLink);
+
+    const mapTopLeftCorner = document.querySelector(".mapboxgl-ctrl-top-left");
+    if (mapTopLeftCorner) {
+      mapTopLeftCorner.appendChild(logoContainer);
+    }
   },
 
   initCarriers: function() {
@@ -127,14 +141,6 @@ const bxParcelPoint = {
   closeMap: function () {
     this.mapContainer.classList.remove("bx-modal-show");
     this.clearMarkers();
-  },
-
-  initSelectedParcelPoint: function () {
-    const selectParcelPoint = document.querySelector(".bx-parcel-client");
-    selectParcelPoint.innerHTML = bxTranslation.text.selectedParcelPoint + " ";
-    const selectParcelPointContent = document.createElement("span");
-    selectParcelPointContent.setAttribute("class", "bx-parcel-name");
-    selectParcelPoint.appendChild(selectParcelPointContent);
   },
 
   getPoints: function () {
@@ -194,13 +200,15 @@ const bxParcelPoint = {
     for (let i = 0, l = point.parcelPoint.openingDays.length; i < l; i++) {
       const day = point.parcelPoint.openingDays[i];
 
-      info += '<span class="bx-parcel-point-day">' + bxTranslation.day[day.weekday] + '</span>';
+      if (day.openingPeriods.length > 0) {
+        info += '<span class="bx-parcel-point-day">' + bxTranslation.day[day.weekday] + '</span>';
 
-      for (let j = 0, t = day.openingPeriods.length; j < t; j++) {
-        const openingPeriod = day.openingPeriods[j];
-        info += self.formatHours(openingPeriod.openingTime) + '-' + self.formatHours(openingPeriod.closingTime);
+        for (let j = 0, t = day.openingPeriods.length; j < t; j++) {
+          const openingPeriod = day.openingPeriods[j];
+          info += ' ' + self.formatHours(openingPeriod.openingTime) + '-' + self.formatHours(openingPeriod.closingTime);
+        }
+        info += '<br/>';
       }
-      info += '<br/>';
     }
     info += '</div>';
 
@@ -314,9 +322,9 @@ const bxParcelPoint = {
       setPointRequest.onreadystatechange = function () {
         if (setPointRequest.readyState === 4) {
           if (200 !== setPointRequest.status) {
-            reject();
+            reject(bxTranslation.error.couldNotSelectPoint);
           } else {
-            resolve(name);
+            resolve();
           }
         }
       };

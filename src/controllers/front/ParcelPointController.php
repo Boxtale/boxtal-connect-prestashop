@@ -24,19 +24,6 @@ class ParcelPointController
 {
 
     /**
-     * Controllers for which parcel point link can appear.
-     *
-     * @var array
-     */
-    private static $parcelPointControllers = array(
-        'OrderOpcController',
-        'BoxtalAjaxModuleFrontController',
-        'OrderController',
-    );
-
-
-
-    /**
      * Add scripts.
      *
      * @return string html
@@ -47,15 +34,12 @@ class ParcelPointController
         $translation = array(
             'error' => array(
                 'carrierNotFound' => $boxtalConnect->l('Unable to find carrier'),
-                'addressNotFound' => $boxtalConnect->l('Could not find address'),
-                'mapServerError'  => $boxtalConnect->l('Could not connect to map server'),
+                'couldNotSelectPoint' => $boxtalConnect->l('An error occurred during parcel point selection'),
             ),
             'text'  => array(
                 'openingHours'        => $boxtalConnect->l('Opening hours'),
                 'chooseParcelPoint'   => $boxtalConnect->l('Choose this parcel point'),
-                'yourAddress'         => $boxtalConnect->l('Your address:'),
                 'closeMap'            => $boxtalConnect->l('Close map'),
-                'selectedParcelPoint' => $boxtalConnect->l('Your parcel point:'),
             ),
             'day'   => array(
                 'MONDAY'    => $boxtalConnect->l('monday'),
@@ -67,36 +51,43 @@ class ParcelPointController
                 'SUNDAY'    => $boxtalConnect->l('sunday'),
             ),
         );
+
         $smarty = $boxtalConnect->getSmarty();
         $smarty->assign('translation', \Tools::jsonEncode($translation));
         $smarty->assign('mapUrl', self::getMapUrl());
+        $smarty->assign('mapLogoImageUrl', ConfigurationUtil::getMapLogoImageUrl());
+        $smarty->assign('mapLogoHrefUrl', ConfigurationUtil::getMapLogoHrefUrl());
 
         $controller = $boxtalConnect->getCurrentController();
         if (method_exists($controller, 'registerJavascript')) {
             $controller->registerJavascript(
                 'bx-mapbox-gl',
-                'modules/'.$boxtalConnect->name.'/views/js/mapbox-gl.min.js',
-                array('priority' => 100, 'server' => 'local')
-            );
-            $controller->registerStylesheet(
-                'bx-mapbox-gl',
-                'modules/'.$boxtalConnect->name.'/views/css/mapbox-gl.css',
+                _MODULE_DIR_.'/'.$boxtalConnect->name.'/views/js/mapbox-gl.min.js',
                 array('priority' => 100, 'server' => 'local')
             );
             $controller->registerJavascript(
                 'bx-parcel-point',
-                'modules/'.$boxtalConnect->name.'/views/js/parcel-point.min.js',
-                array('priority' => 100, 'server' => 'local')
-            );
-            $controller->registerStylesheet(
-                'bx-parcel-point',
-                'modules/'.$boxtalConnect->name.'/views/css/parcel-point.css',
+                _MODULE_DIR_.'/'.$boxtalConnect->name.'/views/js/parcel-point.min.js',
                 array('priority' => 100, 'server' => 'local')
             );
         } else {
             $controller->addJs(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/js/mapbox-gl.min.js');
-            $controller->addCss(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/mapbox-gl.css', 'all');
             $controller->addJs(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/js/parcel-point.min.js');
+        }
+
+        if (method_exists($controller, 'registerStylesheet')) {
+            $controller->registerStylesheet(
+                'bx-mapbox-gl',
+                _MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/mapbox-gl.css',
+                array('priority' => 100, 'server' => 'local')
+            );
+            $controller->registerStylesheet(
+                'bx-parcel-point',
+                _MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/parcel-point.css',
+                array('priority' => 100, 'server' => 'local')
+            );
+        } else {
+            $controller->addCss(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/mapbox-gl.css', 'all');
             $controller->addCss(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/parcel-point.css', 'all');
         }
 
@@ -199,11 +190,11 @@ class ParcelPointController
     /**
      * Order creation.
      *
-     * @param $params array List of order params.
+     *  @param array $params list of order params.
      *
      * @void
      */
-    public function orderCreated($params)
+    public static function orderCreated($params)
     {
 
         if (!isset($params['cart'], $params['order'])) {

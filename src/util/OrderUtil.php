@@ -133,6 +133,8 @@ class OrderUtil
     /**
      * Get order statuses.
      *
+     * @param string $langId language id.
+     *
      * @return array|false|null
      */
     public static function getOrderStatuses($langId)
