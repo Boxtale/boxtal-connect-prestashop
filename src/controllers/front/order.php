@@ -3,6 +3,7 @@
  * Contains code for the order rest controller.
  */
 
+use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
 use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
@@ -117,16 +118,15 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
             }
 
             $parcelPoint          = null;
-            /*
-                        $parcel_point_code     = Order_Util::get_meta($order, 'bw_parcel_point_code');
-                        $parcel_point_operator = Order_Util::get_meta($order, 'bw_parcel_point_operator');
-                        if ($parcel_point_code && $parcel_point_operator) {
-                            $parcelPoint = array(
-                                'code'     => $parcel_point_code,
-                                'operator' => $parcel_point_operator,
-                            );
-                        }
-            */
+            $parcelPointCode     = OrderStorageUtil::get($orderId, 'bxParcelPointCode');
+            $parcelPointNetwork = OrderStorageUtil::get($orderId, 'bxParcelPointNetwork');
+            if ($parcelPointCode && $parcelPointNetwork) {
+                $parcelPoint = array(
+                    'code'     => $parcelPointCode,
+                    'network' => $parcelPointNetwork,
+                );
+            }
+
             $multilingualStatus = OrderUtil::getStatusMultilingual($orderId);
             $multilingualShippingMethod = array();
             $shippingMethodName = MiscUtil::notEmptyOrNull($order, 'shippingMethod');
