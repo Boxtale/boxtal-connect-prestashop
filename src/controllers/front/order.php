@@ -3,6 +3,7 @@
  * Contains code for the order rest controller.
  */
 
+use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
 use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
@@ -141,7 +142,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                     'translations' => $multilingualStatus,
                 ),
                 'shippingMethod' => array(
-                    'key' => CarrierUtil::getReferenceFromId(OrderUtil::getCarrierId($orderId)),
+                    'key' => ShippingMethodUtil::getReferenceFromId(OrderUtil::getCarrierId($orderId)),
                     'translations' => $multilingualShippingMethod,
                 ),
                 'shippingAmount' => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'shippingAmount')),

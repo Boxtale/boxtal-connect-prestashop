@@ -1,4 +1,5 @@
 const bxParcelPoint = {
+  trigger: '.bx-select-parcel',
   initialized: false,
   mapContainer: null,
   map: null,
@@ -18,11 +19,11 @@ const bxParcelPoint = {
 
     self.on("body", "click", self.trigger, function () {
       self.on("body", "click", ".bx-parcel-point-button", function () {
-        self.selectPoint(this.getAttribute("data-code"), this.getAttribute("data-label"), this.getAttribute("data-operator"))
-          .then(function (label) {
+        self.selectPoint(this.getAttribute("data-code"), this.getAttribute("data-name"), this.getAttribute("data-network"))
+          .then(function (name) {
             self.initSelectedParcelPoint();
             const target = document.querySelector(".bx-parcel-name");
-            target.innerHTML = label;
+            target.innerHTML = name;
             self.closeMap();
           })
           .catch(function (err) {
@@ -85,12 +86,12 @@ const bxParcelPoint = {
       const carrier = carriers[i];
       if (null === carrier.querySelector(".bx-extra-content")) {
         const el = document.createElement("div");
-        el.setAttribute("class", "bx-extra-content");
+        el.setAttribute("class", "col-sm-12 bx-extra-content");
         carrier.appendChild(el);
       }
       const extraContent = carrier.querySelector(".bx-extra-content");
       if (selectedCarrierId === self.getCarrierId(carrier)) {
-        extraContent.innerHTML = self.getSelectedCarrierText(selectedCarrierId);
+        self.getSelectedCarrierText(selectedCarrierId, extraContent);
       } else {
         extraContent.innerHTML = "";
       }
@@ -140,9 +141,9 @@ const bxParcelPoint = {
     const self = this;
 
     self.getParcelPoints().then(function (parcelPointResponse) {
-      self.addParcelPointMarkers(parcelPointResponse['parcelPoints']);
-      self.fillParcelPointPanel(parcelPointResponse['parcelPoints']);
-      self.addRecipientMarker(parcelPointResponse['origin']);
+      self.addParcelPointMarkers(parcelPointResponse['nearbyParcelPoints']);
+      self.fillParcelPointPanel(parcelPointResponse['nearbyParcelPoints']);
+      self.addRecipientMarker(parcelPointResponse['searchLocation']);
       self.setMapBounds();
     }).catch(function (err) {
       self.showError(err);
@@ -159,20 +160,20 @@ const bxParcelPoint = {
       const httpRequest = new XMLHttpRequest();
       httpRequest.onreadystatechange = function () {
         if (httpRequest.readyState === 4) {
-          if (httpRequest.response.success === false) {
-            reject(httpRequest.response.data.message);
+          if (200 !== httpRequest.status) {
+            reject();
           } else {
             resolve(httpRequest.response);
           }
         }
       };
-      httpRequest.open("POST", ajaxurl);
+      httpRequest.open("POST", bxAjaxUrl);
       httpRequest.setRequestHeader(
         "Content-Type",
         "application/x-www-form-urlencoded"
       );
       httpRequest.responseType = "json";
-      httpRequest.send("action=get_points&carrier=" + encodeURIComponent(carrier));
+      httpRequest.send("route=getPoints&carrier=" + encodeURIComponent(carrier) + "&cartId=" + encodeURIComponent(bxCartId));
     });
   },
 
@@ -185,29 +186,25 @@ const bxParcelPoint = {
 
   addParcelPointMarker: function (point) {
     const self = this;
-    let info = "<div class='bx-marker-popup'><b>" + point.label + '</b><br/>' +
-      '<a href="#" class="bx-parcel-point-button" data-code="' + point.code + '" data-label="' + point.label + '" data-operator="' + point.operator + '"><b>' + bxTranslation.text.chooseParcelPoint + '</b></a><br/>' +
-      point.address.street + ", " + point.address.postcode + " " + point.address.city + "<br/>" + "<b>" + bxTranslation.text.openingHours +
+    let info = "<div class='bx-marker-popup'><b>" + point.parcelPoint.name + '</b><br/>' +
+      '<a href="#" class="bx-parcel-point-button" data-code="' + point.parcelPoint.code + '" data-name="' + point.parcelPoint.name + '" data-network="' + point.parcelPoint.network + '"><b>' + bxTranslation.text.chooseParcelPoint + '</b></a><br/>' +
+      point.parcelPoint.location.street + ", " + point.parcelPoint.location.zipCode + " " + point.parcelPoint.location.city + "<br/>" + "<b>" + bxTranslation.text.openingHours +
       "</b><br/>" + '<div class="bx-parcel-point-schedule">';
 
-    for (let i = 0, l = point.schedule.length; i < l; i++) {
-      const day = point.schedule[i];
+    for (let i = 0, l = point.parcelPoint.openingDays.length; i < l; i++) {
+      const day = point.parcelPoint.openingDays[i];
 
       info += '<span class="bx-parcel-point-day">' + bxTranslation.day[day.weekday] + '</span>';
 
-      for (let j = 0, t = day.timePeriods.length; j < t; j++) {
-        const timePeriod = day.timePeriods[j];
-        info += self.formatHours(timePeriod.openingTime) + '-' + self.formatHours(timePeriod.closingTime);
+      for (let j = 0, t = day.openingPeriods.length; j < t; j++) {
+        const openingPeriod = day.openingPeriods[j];
+        info += self.formatHours(openingPeriod.openingTime) + '-' + self.formatHours(openingPeriod.closingTime);
       }
       info += '<br/>';
     }
     info += '</div>';
 
-    const el = document.createElement('div');
-    el.className = 'bx-marker';
-    el.style.backgroundImage = "url('" + imgDir + "markers/" + (point.index + 1) + ".png')";
-    el.style.width = '28px';
-    el.style.height = '35px';
+    const el = this.getMarkerHtmlElement(point.index + 1);
 
     const popup = new mapboxgl.Popup({offset: 25})
       .setHTML(info);
@@ -215,13 +212,13 @@ const bxParcelPoint = {
     const marker = new mapboxgl.Marker({
       element: el
     })
-      .setLngLat(new mapboxgl.LngLat(parseFloat(point.coordinates.longitude), parseFloat(point.coordinates.latitude)))
+      .setLngLat(new mapboxgl.LngLat(parseFloat(point.parcelPoint.location.position.longitude), parseFloat(point.parcelPoint.location.position.latitude)))
       .setPopup(popup)
       .addTo(self.map);
 
     self.markers.push(marker);
 
-    self.addRightColMarkerEvent(marker, point.code);
+    self.addRightColMarkerEvent(marker, point.parcelPoint.code);
   },
 
   addRightColMarkerEvent: function (marker, code) {
@@ -238,19 +235,19 @@ const bxParcelPoint = {
     return time;
   },
 
-  addRecipientMarker: function (latlon) {
+  addRecipientMarker: function (location) {
     const self = this;
 
     const el = document.createElement('div');
     el.className = 'bx-marker-recipient';
-    el.style.backgroundImage = "url('" + imgDir + "marker-recipient.png')";
+    el.style.backgroundImage = "url('" + bxImgDir + "marker-recipient.png')";
     el.style.width = '30px';
     el.style.height = '35px';
 
     const marker = new mapboxgl.Marker({
       element: el,
     })
-      .setLngLat(new mapboxgl.LngLat(parseFloat(latlon.longitude), parseFloat(latlon.latitude)))
+      .setLngLat(new mapboxgl.LngLat(parseFloat(location.position.longitude), parseFloat(location.position.latitude)))
       .addTo(self.map);
 
     self.markers.push(marker);
@@ -280,11 +277,11 @@ const bxParcelPoint = {
     for (let i = 0; i < parcelPoints.length; i++) {
       const point = parcelPoints[i];
       html += '<tr>';
-      html += '<td><img src="' + imgDir + 'markers/' + (i + 1) + '.png" />';
-      html += '<div class="bx-parcel-point-title"><a class="bx-show-info-' + point.code + '">' + point.label + '</a></div><br/>';
-      html += point.address.street + '<br/>';
-      html += point.address.postcode + ' ' + point.address.city + '<br/>';
-      html += '<a class="bx-parcel-point-button" data-code="' + point.code + '" data-label="' + point.label + '" data-operator="' + point.operator + '"><b>' + bxTranslation.text.chooseParcelPoint + '</b></a>';
+      html += '<td>' + this.getMarkerHtmlElement(i+1).outerHTML;
+      html += '<div class="bx-parcel-point-title"><a class="bx-show-info-' + point.parcelPoint.code + '">' + point.parcelPoint.name + '</a></div><br/>';
+      html += point.parcelPoint.location.street + '<br/>';
+      html += point.parcelPoint.location.zipCode + ' ' + point.parcelPoint.location.city + '<br/>';
+      html += '<a class="bx-parcel-point-button" data-code="' + point.parcelPoint.code + '" data-name="' + point.parcelPoint.name + '" data-network="' + point.parcelPoint.network + '"><b>' + bxTranslation.text.chooseParcelPoint + '</b></a>';
       html += '</td>';
       html += '</tr>';
     }
@@ -292,7 +289,21 @@ const bxParcelPoint = {
     document.querySelector('#bx-pp-container').innerHTML = html;
   },
 
-  selectPoint: function (code, label, operator) {
+  getMarkerHtmlElement: function(index) {
+    const el = document.createElement('div');
+    el.className = 'bx-marker';
+    el.style.backgroundImage = "url('" + bxImgDir + "marker.png')";
+    el.innerHTML = index;
+    el.style.color = '#fff';
+    el.style.fontSize = '14px';
+    el.style.textAlign = 'center';
+    el.style.paddingTop = '6px';
+    el.style.width = '28px';
+    el.style.height = '35px';
+    return el;
+  },
+
+  selectPoint: function (code, name, network) {
     const self = this;
     return new Promise(function (resolve, reject) {
       const carrier = self.getSelectedCarrier();
@@ -302,21 +313,21 @@ const bxParcelPoint = {
       const setPointRequest = new XMLHttpRequest();
       setPointRequest.onreadystatechange = function () {
         if (setPointRequest.readyState === 4) {
-          if (setPointRequest.response.success === false) {
-            reject(setPointRequest.response.data.message);
+          if (200 !== setPointRequest.status) {
+            reject();
           } else {
-            resolve(label);
+            resolve(name);
           }
         }
       };
-      setPointRequest.open("POST", ajaxurl);
+      setPointRequest.open("POST", bxAjaxUrl);
       setPointRequest.setRequestHeader(
         "Content-Type",
         "application/x-www-form-urlencoded"
       );
       setPointRequest.responseType = "json";
-      setPointRequest.send("action=set_point&carrier=" + encodeURIComponent(carrier) + "&code=" + encodeURIComponent(code)
-        + "&label=" + encodeURIComponent(label) + "&operator=" + encodeURIComponent(operator));
+      setPointRequest.send("route=setPoint&carrier=" + encodeURIComponent(carrier) + "&code=" + encodeURIComponent(code)
+        + "&name=" + encodeURIComponent(name) + "&network=" + encodeURIComponent(network) + "&cartId=" + encodeURIComponent(bxCartId));
     });
   },
 
@@ -356,7 +367,7 @@ const bxParcelPoint = {
     return carrier;
   },
 
-  getSelectedCarrierText: function(selectedCarrierId) {
+  getSelectedCarrierText: function(selectedCarrierId, extraContent) {
     if (null === selectedCarrierId) {
       return "";
     }
@@ -364,22 +375,20 @@ const bxParcelPoint = {
     const getSelectedCarrierTextRequest = new XMLHttpRequest();
     getSelectedCarrierTextRequest.onreadystatechange = function () {
       if (getSelectedCarrierTextRequest.readyState === 4) {
-        console.log(getSelectedCarrierTextRequest);
         if (200 !== getSelectedCarrierTextRequest.status) {
-          return "";
+          extraContent.innerHTML = "";
         } else {
-          return getSelectedCarrierTextRequest.response;
+          extraContent.innerHTML = getSelectedCarrierTextRequest.response;
         }
       }
     };
-    console.log(bxAjaxUrl);
     getSelectedCarrierTextRequest.open("POST", bxAjaxUrl);
     getSelectedCarrierTextRequest.setRequestHeader(
       "Content-Type",
       "application/x-www-form-urlencoded"
     );
     getSelectedCarrierTextRequest.responseType = "json";
-    getSelectedCarrierTextRequest.send("route=getSelectedCarrierText&carrier=" + encodeURIComponent(selectedCarrierId));
+    getSelectedCarrierTextRequest.send("route=getSelectedCarrierText&carrier=" + encodeURIComponent(selectedCarrierId) + "&cartId=" + encodeURIComponent(bxCartId));
   },
 
   getSelectedInput: function() {

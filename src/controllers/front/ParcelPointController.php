@@ -5,6 +5,8 @@
 
 namespace Boxtal\BoxtalConnectPrestashop\Controllers\Front;
 
+use Boxtal\BoxtalConnectPrestashop\Util\CartStorageUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
 use Boxtal\BoxtalPhp\ApiClient;
 use Boxtal\BoxtalConnectPrestashop\Util\AddressUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
@@ -41,7 +43,7 @@ class ParcelPointController
      */
     public static function addScripts()
     {
-        $boxtalConnect = \BoxtalConnect::getInstance();
+        $boxtalConnect = \boxtalconnect::getInstance();
         $translation = array(
             'error' => array(
                 'carrierNotFound' => $boxtalConnect->l('Unable to find carrier'),
@@ -86,10 +88,16 @@ class ParcelPointController
                 'modules/'.$boxtalConnect->name.'/views/js/parcel-point.min.js',
                 array('priority' => 100, 'server' => 'local')
             );
+            $controller->registerStylesheet(
+                'bx-parcel-point',
+                'modules/'.$boxtalConnect->name.'/views/css/parcel-point.css',
+                array('priority' => 100, 'server' => 'local')
+            );
         } else {
             $controller->addJs(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/js/mapbox-gl.min.js');
             $controller->addCss(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/mapbox-gl.css', 'all');
             $controller->addJs(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/js/parcel-point.min.js');
+            $controller->addCss(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/parcel-point.css', 'all');
         }
 
         return $boxtalConnect->displayTemplate('front/shipping-method/header.tpl');
@@ -104,25 +112,26 @@ class ParcelPointController
      */
     public static function initPoints($params)
     {
-        CookieUtil::set('bxParcelPoints', null);
 
         if (!isset($params['cart'])) {
             return null;
         }
         $cart = $params['cart'];
+        CartStorageUtil::set($cart->id, 'bxParcelPoints', null);
         //phpcs:ignore
         $address = new \Address((int) $cart->id_address_delivery);
 
-        $parcelPointOperators = ShippingMethodUtil::getSelectedParcelPointOperators();
-        if (!empty($parcelPointOperators)) {
+        $parcelPointNetworks = ShippingMethodUtil::getAllSelectedParcelPointNetworks();
+        if (!empty($parcelPointNetworks)) {
             $lib      = new ApiClient(AuthUtil::getAccessKey(), AuthUtil::getSecretKey());
-            $response = $lib->getParcelPoints(AddressUtil::convert($address), $parcelPointOperators);
-            if (! $response->isError() && property_exists($response->response, 'parcelPoints') && is_array($response->response->parcelPoints) && count($response->response->parcelPoints) > 0) {
-                $json = \Tools::jsonEncode($response->response);
-                CookieUtil::set('bxParcelPoints', $json);
-                $boxtalConnect = \BoxtalConnect::getInstance();
+            $response = $lib->getParcelPoints(AddressUtil::convert($address), $parcelPointNetworks);
+            if (! $response->isError() && property_exists($response->response, 'nearbyParcelPoints') && is_array($response->response->nearbyParcelPoints) && count($response->response->nearbyParcelPoints) > 0) {
+                CartStorageUtil::set((int) $cart->id, 'bxParcelPoints', serialize($response->response));
+                $boxtalConnect = \boxtalconnect::getInstance();
                 $smarty = $boxtalConnect->getSmarty();
-                $smarty->assign('bxParcelPoints', $json);
+                $smarty->assign('bxCartId', (int) $cart->id);
+                $host = \Tools::getShopProtocol().\Tools::getHttpHost().__PS_BASE_URI__;
+                $smarty->assign('bxImgDir', $host.'modules/'.$boxtalConnect->name.'/views/img/');
 
                 return $boxtalConnect->displayTemplate('front/shipping-method/parcelPoint.tpl');
             }
@@ -147,31 +156,78 @@ class ParcelPointController
     }
 
     /**
-     * Is checkout page.
+     * Get closest parcel point.
      *
-     * @return boolean
+     * @param int    $cartId cart id.
+     * @param string $id     shipping method id.
+     *
+     * @return mixed
      */
-    private static function isCheckoutPage()
+    public static function getClosestPoint($cartId, $id)
     {
-        $boxtalConnect = \BoxtalConnect::getInstance();
-        $controller = $boxtalConnect->getCurrentController();
-        $controllerClass = get_class($controller);
-        $psOrderProcessType = (int) ConfigurationUtil::get('PS_ORDER_PROCESS_TYPE');
-
-        if (1 === $psOrderProcessType && in_array($controllerClass, self::$parcelPointControllers, true)) {
-            return true;
+        $parcelPoints = @unserialize(CartStorageUtil::get($cartId, 'bxParcelPoints'));
+        $networks = ShippingMethodUtil::getSelectedParcelPointNetworks($id);
+        if (property_exists($parcelPoints, 'nearbyParcelPoints') && is_array($parcelPoints->nearbyParcelPoints) && count($parcelPoints->nearbyParcelPoints) > 0) {
+            foreach ($parcelPoints->nearbyParcelPoints as $parcelPoint) {
+                if (property_exists($parcelPoint, 'parcelPoint') && property_exists($parcelPoint->parcelPoint, 'network') && in_array($parcelPoint->parcelPoint->network, $networks)) {
+                    return $parcelPoint;
+                }
+            }
         }
 
-        $step = (int) \Tools::getValue('step');
+        return null;
+    }
 
-        if (0 === $psOrderProcessType && 2 === $step) {
-            return true;
+    /**
+     * Get chosen parcel point.
+     *
+     * @param int    $cartId cart id.
+     * @param string $id     shipping method id.
+     *
+     * @return mixed
+     */
+    public static function getChosenPoint($cartId, $id)
+    {
+        $point = @unserialize(CartStorageUtil::get($cartId, 'bxChosenParcelPoint'.$id));
+        if (false !== $point) {
+            return $point;
         }
 
-        if (0 === $psOrderProcessType && 0 === $step && in_array($controllerClass, self::$parcelPointControllers, true)) {
-            return true;
+        return null;
+    }
+
+    /**
+     * Order creation.
+     *
+     * @param $params array List of order params.
+     *
+     * @void
+     */
+    public function orderCreated($params)
+    {
+
+        if (!isset($params['cart'], $params['order'])) {
+            return;
         }
 
-        return false;
+        $cart = $params['cart'];
+        $order = $params['order'];
+        //phpcs:ignore
+        $carrierId = $cart->id_carrier;
+
+        $closestPoint = ParcelPointController::getClosestPoint($cart->id, $carrierId);
+        if (null !== $closestPoint) {
+            $point = ParcelPointController::getChosenPoint($cart->id, $carrierId);
+            if (null === $point) {
+                $point = $closestPoint;
+            }
+
+            CartStorageUtil::delete($cart->id);
+
+            OrderStorageUtil::set($order->id, 'bxParcelPointCode', $point->parcelPoint->code);
+            OrderStorageUtil::set($order->id, 'bxParcelPointNetwork', $point->parcelPoint->network);
+        }
+
+        return;
     }
 }

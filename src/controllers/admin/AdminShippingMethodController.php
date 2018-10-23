@@ -42,7 +42,7 @@ class AdminShippingMethodController extends \ModuleAdminController
         if (\Tools::isSubmit('submitTrackingEvents')) {
             $this->handleTrackingEventsForm();
         }
-        $boxtalConnect = BoxtalConnect::getInstance();
+        $boxtalConnect = \boxtalconnect::getInstance();
         if (!AuthUtil::canUsePlugin()) {
             $this->content = $boxtalConnect->displayTemplate('admin/hookAdminOrder.tpl');
 

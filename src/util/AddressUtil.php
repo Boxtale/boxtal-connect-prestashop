@@ -25,7 +25,7 @@ class AddressUtil
         $convertedAddress = array(
             'street'   => trim(MiscUtil::propertyExistsOrNull($address, 'address1').' '.MiscUtil::propertyExistsOrNull($address, 'address2')),
             'city'     => trim(MiscUtil::propertyExistsOrNull($address, 'city')),
-            'postcode' => trim(MiscUtil::propertyExistsOrNull($address, 'postcode')),
+            'zipCode' => trim(MiscUtil::propertyExistsOrNull($address, 'postcode')),
             'country'  => self::getCountryIsoFromId(MiscUtil::propertyExistsOrNull($address, 'id_country')),
         );
 

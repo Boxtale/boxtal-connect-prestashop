@@ -11,6 +11,7 @@
   <exclude-pattern>test/e2e/*</exclude-pattern>
   <exclude-pattern>src/lib/*</exclude-pattern>
   <exclude-pattern>ps/*</exclude-pattern>
+  <exclude-pattern>translations/*</exclude-pattern>
 
   <rule ref="PHPCompatibility" />
   <rule ref="Symfony">

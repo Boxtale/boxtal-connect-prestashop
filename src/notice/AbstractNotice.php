@@ -75,7 +75,7 @@ abstract class AbstractNotice
     {
         $notice = $this;
         if ($notice->isValid()) {
-            $boxtalConnect = \BoxtalConnect::getInstance();
+            $boxtalConnect = \boxtalconnect::getInstance();
             $ajaxLink = \Context::getContext()->link->getAdminLink('AdminAjax');
             include realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'notice'.DIRECTORY_SEPARATOR.'wrapper.php';
             if ($notice->autodestruct) {

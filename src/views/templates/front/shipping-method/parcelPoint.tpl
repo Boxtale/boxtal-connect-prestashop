@@ -1,5 +1,6 @@
 <script>
-  const bxParcelPoints = {$bxParcelPoints nofilter};
+  const bxCartId = {$bxCartId nofilter};
+  const bxImgDir = "{$bxImgDir nofilter}";
 
   document.addEventListener(
     "DOMContentLoaded", function() {

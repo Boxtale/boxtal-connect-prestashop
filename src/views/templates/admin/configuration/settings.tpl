@@ -53,7 +53,7 @@
       <p>{l s='Associate your order statuses to tracking events.' mod='boxtalconnect'}</p>
       <table class="table">
         <thead>
-          <th>{l s='Order event' mod='boxtalconnect'}</th>
+          <th>{l s='Tracking event' mod='boxtalconnect'}</th>
           <th>{l s='Associated order status' mod='boxtalconnect'}</th>
         </thead>
         <tbody>

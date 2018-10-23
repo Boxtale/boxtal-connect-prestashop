@@ -32,8 +32,10 @@ use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController;
 use Boxtal\BoxtalConnectPrestashop\Init\EnvironmentCheck;
 use Boxtal\BoxtalConnectPrestashop\Init\SetupWizard;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\CartStorageUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\EnvironmentUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -77,7 +79,7 @@ class boxtalconnect extends Module
         parent::__construct();
 
         $this->displayName = $this->l('Boxtal Connect');
-        $this->description = $this->l('Ship your orders with multiple carriers and save up to 75% on your shipping costs without commitments or any contracts.');
+        $this->description = $this->l('Managing your shipments becomes easier with our free plugin Boxtal! Save time and enjoy negotiated rates with 15 carriers: Colissimo, Mondial Relay...');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         $this->minPhpVersion = '5.3.0';
@@ -90,9 +92,9 @@ class boxtalconnect extends Module
                 $this->initSetupWizard($this);
                 $this->initShopController($this);
                 $this->initAdminAjaxController($this);
-                $this->initFrontAjaxController($this);
 
                 if (AuthUtil::canUsePlugin()) {
+                    $this->initFrontAjaxController($this);
                     $this->initOrderController($this);
                 }
             }
@@ -111,6 +113,7 @@ class boxtalconnect extends Module
             || !$this->registerHook('header')
             || !$this->registerHook('displayCarrierList')
             || !$this->registerHook('displayAfterCarrier')
+            || !$this->registerHook('newOrder')
             || !$this->registerHook('updateCarrier')
             || !$this->registerHook('adminOrder')
             || !$this->registerHook('displayAdminAfterHeader')) {
@@ -134,6 +137,24 @@ class boxtalconnect extends Module
             `id_carrier` int(10) unsigned NOT NULL,
             `parcel_point_networks` text,
             PRIMARY KEY (`id_carrier`)
+            ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
+        );
+
+        \Db::getInstance()->execute(
+            "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_cart_storage` (
+            `id_cart` int(10) unsigned NOT NULL,
+            `key` varchar(255) NOT NULL,
+            `value` mediumtext,
+            PRIMARY KEY (`id_cart`, `key`)
+            ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
+        );
+
+        \Db::getInstance()->execute(
+            "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_order_storage` (
+            `id_order` int(10) unsigned NOT NULL,
+            `key` varchar(255) NOT NULL,
+            `value` varchar(255),
+            PRIMARY KEY (`id_order`, `key`)
             ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
 
@@ -186,6 +207,8 @@ class boxtalconnect extends Module
             'SET FOREIGN_KEY_CHECKS = 0;
             DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_notices`;
             DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_carrier`;
+            DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_cart_storage`;
+            DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_order_storage`;
             DELETE FROM `'._DB_PREFIX_.'configuration` WHERE name like "BX_%";
             SET FOREIGN_KEY_CHECKS = 1;'
         );
@@ -196,7 +219,7 @@ class boxtalconnect extends Module
     /**
      * Get module instance.
      *
-     * @return BoxtalConnect
+     * @return boxtalconnect
      */
     public static function getInstance()
     {
@@ -211,7 +234,7 @@ class boxtalconnect extends Module
     public function hookDisplayBackOfficeHeader()
     {
         $controller = $this->getContext()->controller;
-        $boxtalConnect = \BoxtalConnect::getInstance();
+        $boxtalConnect = \boxtalconnect::getInstance();
 
         if (NoticeController::hasNotices()) {
             if (method_exists($controller, 'registerJavascript')) {
@@ -288,6 +311,22 @@ class boxtalconnect extends Module
     }
 
     /**
+     * Order creation hook.
+     *
+     * @param $params array List of order params.
+     *
+     * @void
+     */
+    public function hooknewOrder($params)
+    {
+        if (!AuthUtil::canUsePlugin()) {
+            return;
+        }
+
+        ParcelPointController::orderCreated($params);
+    }
+
+    /**
      * Update carrier hook. Used to update carrier id.
      *
      * @param array $params List of params used in the operation.
@@ -337,13 +376,14 @@ class boxtalconnect extends Module
         }
 
         $tracking = TrackingController::getOrderTracking($params['id_order']);
-        if ( null === $tracking || ! property_exists( $tracking, 'shipmentsTracking' ) || empty( $tracking->shipmentsTracking ) ) {
+        if (null === $tracking || ! property_exists($tracking, 'shipmentsTracking') || empty($tracking->shipmentsTracking)) {
             return null;
         }
 
         $smarty = $this->getSmarty();
         $smarty->assign('tracking', $tracking);
         $smarty->assign('dateFormat', $this->l('Y-m-d H:i:s'));
+
         return $this->display(__FILE__, '/views/templates/hook/hookAdminOrder.tpl');
     }
 

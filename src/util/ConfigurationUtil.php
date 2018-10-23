@@ -119,7 +119,7 @@ class ConfigurationUtil
      */
     public static function getOnboardingLink()
     {
-        $boxtalConnect = \BoxtalConnect::getInstance();
+        $boxtalConnect = \boxtalconnect::getInstance();
         $url    = $boxtalConnect->onboardingUrl;
         $sql = new \DbQuery();
         $sql->select('e.email');
@@ -128,7 +128,7 @@ class ConfigurationUtil
         $sql->orderBy('e.id_employee asc');
         $sql->limit('limit(0,1)');
         $adminUser = \Db::getInstance()->executeS($sql)[0];
-        $locale = \Language::getIsoById((int) \BoxtalConnect::getInstance()->getContext()->cookie->id_lang);
+        $locale = \Language::getIsoById((int) \boxtalconnect::getInstance()->getContext()->cookie->id_lang);
 
         $params       = array(
             'acceptLanguage' => $locale,
@@ -212,7 +212,7 @@ class ConfigurationUtil
                         NoticeController::$custom,
                         array(
                             'status'  => 'warning',
-                            'message' => boxtalconnect::getInstance()->l('There\'s been a change in Boxtal\'s parcel point network list, we\'ve adapted your shipping method configuration. Please check that everything is in order.'),
+                            'message' => boxtalconnect::getInstance()->l('There\'s been a change in the parcel point network list, we\'ve adapted your shipping method configuration. Please check that everything is in order.'),
                         )
                     );
                 }
@@ -232,7 +232,7 @@ class ConfigurationUtil
                         NoticeController::$custom,
                         array(
                             'status'  => 'info',
-                            'message' => boxtalconnect::getInstance()->l('There\'s been a change in Boxtal\'s parcel point network list, you can add the extra parcel point network(s) to your shipping method configuration.'),
+                            'message' => boxtalconnect::getInstance()->l('There\'s been a change in the parcel point network list, you can add the extra parcel point network(s) to your shipping method configuration.'),
                         )
                     );
                 }

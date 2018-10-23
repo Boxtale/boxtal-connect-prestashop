@@ -53,6 +53,7 @@ class TrackingController
         if ($response->isError()) {
             return null;
         }
+
         return $response->response;
     }
 }
