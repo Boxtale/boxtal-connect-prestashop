@@ -27,8 +27,11 @@
                         "application/x-www-form-urlencoded"
                     );
                     httpRequest.responseType = "json";
-                    const noticeKey = notice.getAttribute("rel");
-                    httpRequest.send("action=hideNotice&noticeKey=" + encodeURIComponent(noticeKey));
+                    const noticeKey = notice.getAttribute("data-key");
+                    const noticeShopGroupId = notice.getAttribute("data-shop-group-id");
+                    const noticeShopId = notice.getAttribute("data-shop-id");
+                    httpRequest.send("action=hideNotice&noticeKey=" + encodeURIComponent(noticeKey) + "&noticeShopGroupId="
+                      + encodeURIComponent(noticeShopGroupId) + "&noticeShopId=" + encodeURIComponent(noticeShopId));
                 });
 
                 self.on("body", "click", ".bx-pairing-update-validate", function() {

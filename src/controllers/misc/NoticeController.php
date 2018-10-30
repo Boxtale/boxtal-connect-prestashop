@@ -6,6 +6,7 @@
 namespace Boxtal\BoxtalConnectPrestashop\Controllers\Misc;
 
 use Boxtal\BoxtalConnectPrestashop\Notice\CustomNotice;
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 
 /**
  * Notice controller class.
@@ -78,11 +79,14 @@ class NoticeController
     /**
      * Get notice instances.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return array $notices instances of notices.
      */
-    public static function getNoticeInstances()
+    public static function getNoticeInstances($shopGroupId, $shopId)
     {
-        $notices = self::getNoticeKeys();
+        $notices = self::getNoticeKeys($shopGroupId, $shopId);
         $noticeInstances = array();
         if (is_array($notices)) {
             foreach ($notices as $notice) {
@@ -91,19 +95,19 @@ class NoticeController
                 if (! in_array($key, self::$coreNotices, true)) {
                     $value = unserialize($notice['value']);
                     if (false !== $value) {
-                        $class             = new CustomNotice($key, $value);
+                        $class             = new CustomNotice($key, (int) $notice['id_shop_group'], (int) $notice['id_shop'], $value);
                         $noticeInstances[] = $class;
                     } else {
-                        self::removeNotice($key);
+                        self::removeNotice($key, $shopGroupId, $shopId);
                     }
                 } else {
                     $classname .= ucwords(str_replace('-', '', $key)).'Notice';
                     if (class_exists($classname, true)) {
                         $value = unserialize($notice['value']);
                         if (false !== $value && null !== $value) {
-                            $class = new $classname($key, $value);
+                            $class = new $classname($key, (int) $notice['id_shop_group'], (int) $notice['id_shop'], $value);
                         } else {
-                            $class = new $classname($key);
+                            $class = new $classname($key, (int) $notice['id_shop_group'], (int) $notice['id_shop']);
                         }
                         $noticeInstances[] = $class;
                     }
@@ -117,13 +121,23 @@ class NoticeController
     /**
      * Get notice keys.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return array of notice keys.
      */
-    public static function getNoticeKeys()
+    public static function getNoticeKeys($shopGroupId, $shopId)
     {
-        $sql = new \DbQuery();
-        $sql->select('n.key, n.value');
-        $sql->from('bx_notices', 'n');
+        if (null === $shopGroupId && null === $shopId) {
+            $sql = new \DbQuery();
+            $sql->select('n.key, n.value, n.id_shop, n.id_shop_group');
+            $sql->from('bx_notices', 'n');
+        } else {
+            $sql = new \DbQuery();
+            $sql->select('n.key, n.value, n.id_shop, n.id_shop_group');
+            $sql->from('bx_notices', 'n');
+            $sql->where('n.id_shop='.$shopId.' AND n.id_shop_group='.$shopGroupId);
+        }
 
         return \Db::getInstance()->executeS($sql);
     }
@@ -131,40 +145,58 @@ class NoticeController
     /**
      * Add notice.
      *
-     * @param string $type type of notice.
-     * @param mixed  $args additional args.
+     * @param string $type        type of notice.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
+     * @param mixed  $args        additional args.
      *
      * @void
      */
-    public static function addNotice($type, $args = array())
+    public static function addNotice($type, $shopGroupId, $shopId, $args = array())
     {
         if (! in_array($type, self::$coreNotices, true)) {
             $key           = uniqid('bx_', false);
             $value         = serialize($args);
-            \Db::getInstance()->execute(
-                "INSERT INTO `"._DB_PREFIX_."bx_notices` (`key`, `value`)
-                VALUES ('".pSQL($key)."', '".pSQL($value)."')"
-            );
-        } else {
-            $notices = self::getNoticeKeys();
-            $alreadyExists = false;
-            foreach ($notices as $notice) {
-                if ($notice['key'] === $type) {
-                    $alreadyExists = true;
-                }
+            if (null === $shopGroupId && null === $shopId) {
+                \Db::getInstance()->execute(
+                    "INSERT INTO `"._DB_PREFIX_."bx_notices` (`key`, `value`)
+                    VALUES ('".pSQL($key)."', '".pSQL($value)."')"
+                );
+            } else {
+                \Db::getInstance()->execute(
+                    "INSERT INTO `"._DB_PREFIX_."bx_notices` (`id_shop_group`, `id_shop`, `key`, `value`)
+                    VALUES ('".$shopGroupId."', '".$shopId."', '".pSQL($key)."', '".pSQL($value)."')"
+                );
             }
+        } else {
+            $alreadyExists = self::hasNotice($type, $shopGroupId, $shopId);
 
             if (! $alreadyExists) {
                 if (!empty($args)) {
-                    \Db::getInstance()->execute(
-                        "INSERT INTO `"._DB_PREFIX_."bx_notices` (`key`, `value`)
-                    VALUES ('".pSQL($type)."', '".pSQL(serialize($args))."')"
-                    );
+                    $value         = serialize($args);
+                    if (null === $shopGroupId && null === $shopId) {
+                        \Db::getInstance()->execute(
+                            "INSERT INTO `"._DB_PREFIX_."bx_notices` (`key`, `value`)
+                            VALUES ('".pSQL($type)."', '".pSQL($value)."')"
+                        );
+                    } else {
+                        \Db::getInstance()->execute(
+                            "INSERT INTO `"._DB_PREFIX_."bx_notices` (`id_shop_group`, `id_shop`, `key`, `value`)
+                            VALUES ('".$shopGroupId."', '".$shopId."', '".pSQL($type)."', '".pSQL($value)."')"
+                        );
+                    }
                 } else {
-                    \Db::getInstance()->execute(
-                        "INSERT INTO `"._DB_PREFIX_."bx_notices` (`key`)
-                    VALUES ('".pSQL($type)."')"
-                    );
+                    if (null === $shopGroupId && null === $shopId) {
+                        \Db::getInstance()->execute(
+                            "INSERT INTO `"._DB_PREFIX_."bx_notices` (`key`)
+                            VALUES ('".pSQL($type)."')"
+                        );
+                    } else {
+                        \Db::getInstance()->execute(
+                            "INSERT INTO `"._DB_PREFIX_."bx_notices` (`id_shop_group`, `id_shop`, `key`)
+                            VALUES ('".$shopGroupId."', '".$shopId."', '".pSQL($type)."')"
+                        );
+                    }
                 }
             }
         }
@@ -173,15 +205,25 @@ class NoticeController
     /**
      * Remove notice.
      *
-     * @param string $key notice key.
+     * @param string $key         notice key.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
      *
      * @void
      */
-    public static function removeNotice($key)
+    public static function removeNotice($key, $shopGroupId, $shopId)
     {
-        \DB::getInstance()->execute(
-            'DELETE IGNORE FROM `'._DB_PREFIX_.'bx_notices` WHERE `key`="'.$key.'";'
-        );
+        if (null === $shopGroupId && null === $shopId) {
+            \DB::getInstance()->execute(
+                'DELETE IGNORE FROM `'._DB_PREFIX_.'bx_notices` 
+                WHERE `id_shop_group` IS NULL AND `id_shop` IS NULL AND `key`="'.$key.'";'
+            );
+        } else {
+            \DB::getInstance()->execute(
+                'DELETE IGNORE FROM `'._DB_PREFIX_.'bx_notices` 
+                WHERE `id_shop_group`="'.$shopGroupId.'" AND `id_shop`="'.$shopId.'" AND `key`="'.$key.'";'
+            );
+        }
     }
 
     /**
@@ -191,7 +233,8 @@ class NoticeController
      */
     public static function hasNotices()
     {
-        $notices = self::getNoticeKeys();
+        $shopContext = ShopUtil::getShopContext();
+        $notices = self::getNoticeKeys($shopContext['id_shop_group'], $shopContext['id_shop']);
 
         return !empty($notices);
     }
@@ -199,31 +242,44 @@ class NoticeController
     /**
      * Whether given notice is active.
      *
-     * @param string $noticeKey notice key.
+     * @param string $noticeKey   notice key.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
      *
      * @return boolean
      */
-    public static function hasNotice($noticeKey)
+    public static function hasNotice($noticeKey, $shopGroupId, $shopId)
     {
-        $notices = self::getNoticeKeys();
-        foreach ($notices as $notice) {
-            if ($noticeKey === $notice['key']) {
-                return true;
-            }
+        if (null === $shopGroupId && null === $shopId) {
+            $sql = new \DbQuery();
+            $sql->select('n.key, n.value, n.id_shop, n.id_shop_group');
+            $sql->from('bx_notices', 'n');
+            $sql->where('n.id_shop_group IS NULL AND n.id_shop IS NULL AND n.key="'.pSQL($noticeKey).'"');
+            $result = \Db::getInstance()->executeS($sql);
+        } else {
+            $sql = new \DbQuery();
+            $sql->select('n.key, n.value, n.id_shop, n.id_shop_group');
+            $sql->from('bx_notices', 'n');
+            $sql->where('n.id_shop_group="'.(int) $shopGroupId.'" AND n.id_shop="'.(int) $shopId.'" AND n.key="'.pSQL($noticeKey).'"');
+            $result = \Db::getInstance()->executeS($sql);
         }
 
-        return false;
+        return !empty($result);
     }
 
     /**
      * Remove all notices.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @void
      */
-    public static function removeAllNotices()
+    public static function removeAllNotices($shopGroupId, $shopId)
     {
         \DB::getInstance()->execute(
-            'DELETE FROM `'._DB_PREFIX_.'bx_notices`;'
+            'DELETE FROM `'._DB_PREFIX_.'bx_notices`
+            WHERE `id_shop_group`="'.pSQL($shopGroupId).'" AND `id_shop`="'.pSQL($shopId).'";'
         );
     }
 }

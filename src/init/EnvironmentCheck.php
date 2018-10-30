@@ -34,12 +34,14 @@ class EnvironmentCheck
             NoticeController::removeAllNotices();
             NoticeController::addNotice(
                 NoticeController::$environmentWarning,
+                null,
+                null,
                 array(
                     'message' => $environmentWarning,
                 )
             );
-        } elseif (NoticeController::hasNotice(NoticeController::$environmentWarning)) {
-            NoticeController::removeNotice(NoticeController::$environmentWarning);
+        } elseif (NoticeController::hasNotice(NoticeController::$environmentWarning, null, null)) {
+            NoticeController::removeNotice(NoticeController::$environmentWarning, null, null);
         }
     }
 }

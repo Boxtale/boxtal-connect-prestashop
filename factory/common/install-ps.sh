@@ -4,6 +4,7 @@ echo "starting prestashop install"
 set -ex
 
 PS_VERSION=${1-latest}
+MULTISTORE=${2-0}
 
 TMPSITETITLE="Prestatest"
 TMPSITEADMINLOGIN="admin"
@@ -42,6 +43,16 @@ install_ps() {
   sed -i "s/define('_PS_MODE_DEV_', false)/define('_PS_MODE_DEV_', true)/" $PS_CORE_DIR/config/defines.inc.php
   mysql -u dbadmin -pdbpass -D "prestashop" -e "UPDATE ps_configuration SET value=0 WHERE name='PS_SMARTY_CACHE';"
   mysql -u dbadmin -pdbpass -D "prestashop" -e "UPDATE ps_configuration SET value=1 WHERE name='PS_SMARTY_FORCE_COMPILE';"
+
+  if [[ $MULTISTORE = "1" ]]; then
+    install_multistore
+  fi
+}
+
+install_multistore() {
+  mysql -u dbadmin -pdbpass -D "prestashop" < factory/common/multistore/$PS_VERSION
+  mysql -u dbadmin -pdbpass -D "prestashop" < factory/common/multistore/$PS_VERSION-virtual
+  sudo cp factory/common/multistore/$PS_VERSION-virtual-htaccess $PS_CORE_DIR/.htaccess
 }
 
 clean_ps_dir

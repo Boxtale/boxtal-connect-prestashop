@@ -7,6 +7,7 @@ namespace Boxtal\BoxtalConnectPrestashop\Notice;
 
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\Notice;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 
 /**
  * Abstract notice class.
@@ -55,15 +56,33 @@ abstract class AbstractNotice
     protected $autodestruct;
 
     /**
+     * Notice shop group id.
+     *
+     * @var int
+     */
+    protected $shopGroupId;
+
+    /**
+     * Notice shop id.
+     *
+     * @var int
+     */
+    protected $shopId;
+
+    /**
      * Construct function.
      *
-     * @param string $key key for notice.
+     * @param string $key         key for notice.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
      *
      * @void
      */
-    public function __construct($key)
+    public function __construct($key, $shopGroupId, $shopId)
     {
         $this->key = $key;
+        $this->shopGroupId = $shopGroupId;
+        $this->shopId = $shopId;
     }
 
     /**
@@ -77,6 +96,8 @@ abstract class AbstractNotice
         if ($notice->isValid()) {
             $boxtalConnect = \boxtalconnect::getInstance();
             $ajaxLink = \Context::getContext()->link->getAdminLink('AdminAjax');
+            //phpcs:ignore
+            $shopName = ShopUtil::getShopName($notice->shopGroupId, $notice->shopId);
             include realpath(dirname(__DIR__)).DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'notice'.DIRECTORY_SEPARATOR.'wrapper.php';
             if ($notice->autodestruct) {
                 $notice->remove();
@@ -93,7 +114,7 @@ abstract class AbstractNotice
      */
     public function remove()
     {
-        NoticeController::removeNotice($this->key);
+        NoticeController::removeNotice($this->key, $this->shopGroupId, $this->shopId);
     }
 
     /**

@@ -36,6 +36,7 @@ use Boxtal\BoxtalConnectPrestashop\Util\CartStorageUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\EnvironmentUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -85,6 +86,10 @@ class boxtalconnect extends Module
         $this->minPhpVersion = '5.3.0';
         $this->onboardingUrl = 'https://www.boxtal.com/onboarding';
 
+        $shopContext = ShopUtil::getShopContext();
+        $this->shopId = $shopContext['id_shop'];
+        $this->shopGroupId = $shopContext['id_shop_group'];
+
         if ($this->active) {
             $this->initEnvironmentCheck($this);
 
@@ -93,7 +98,8 @@ class boxtalconnect extends Module
                 $this->initShopController($this);
                 $this->initAdminAjaxController($this);
 
-                if (AuthUtil::canUsePlugin()) {
+
+                if (AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
                     $this->initFrontAjaxController($this);
                     $this->initOrderController($this);
                 }
@@ -128,21 +134,25 @@ class boxtalconnect extends Module
             `key` varchar(255) NOT NULL,
             `value` text,
             PRIMARY KEY (`id_notice`),
-            UNIQUE (`key`)
+            UNIQUE (`key`, `id_shop_group`, `id_shop`)
             ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
 
         \Db::getInstance()->execute(
             "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_carrier` (
             `id_carrier` int(10) unsigned NOT NULL,
+            `id_shop_group` int(11) unsigned,
+            `id_shop` int(11) unsigned,
             `parcel_point_networks` text,
-            PRIMARY KEY (`id_carrier`)
+            PRIMARY KEY (`id_carrier`, `id_shop_group`, `id_shop`)
             ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
 
         \Db::getInstance()->execute(
             "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_cart_storage` (
             `id_cart` int(10) unsigned NOT NULL,
+            `id_shop_group` int(11) unsigned,
+            `id_shop` int(11) unsigned,
             `key` varchar(255) NOT NULL,
             `value` mediumtext,
             PRIMARY KEY (`id_cart`, `key`)
@@ -152,6 +162,8 @@ class boxtalconnect extends Module
         \Db::getInstance()->execute(
             "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_order_storage` (
             `id_order` int(10) unsigned NOT NULL,
+            `id_shop_group` int(11) unsigned,
+            `id_shop` int(11) unsigned,
             `key` varchar(255) NOT NULL,
             `value` varchar(255),
             PRIMARY KEY (`id_order`, `key`)
@@ -202,7 +214,10 @@ class boxtalconnect extends Module
         if (!parent::uninstall()) {
             return false;
         }
-        ConfigurationUtil::deleteConfiguration();
+        $shops = ShopUtil::getShops();
+        foreach ($shops as $shop) {
+            ConfigurationUtil::deleteConfiguration($shop['id_shop_group'], $shop['id_shop']);
+        }
         \DB::getInstance()->execute(
             'SET FOREIGN_KEY_CHECKS = 0;
             DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_notices`;
@@ -240,20 +255,20 @@ class boxtalconnect extends Module
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
                     'bx-notices',
-                    _MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/notices.min.js',
+                    'modules/'.$boxtalConnect->name.'/views/css/notices.min.js',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addJs(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/js/notices.min.js');
+                $controller->addJs('modules/'.$boxtalConnect->name.'/views/js/notices.min.js');
             }
             if (method_exists($controller, 'registerStylesheet')) {
                 $controller->registerStylesheet(
                     'bx-notices',
-                    _MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/notices.css',
+                    'modules/'.$boxtalConnect->name.'/views/css/notices.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addCSS(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/notices.css', 'all');
+                $controller->addCSS('modules/'.$boxtalConnect->name.'/views/css/notices.css', 'all');
             }
         }
 
@@ -261,11 +276,11 @@ class boxtalconnect extends Module
             if (method_exists($controller, 'registerStylesheet')) {
                 $controller->registerStylesheet(
                     'bx-tracking',
-                    _MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/tracking.css',
+                    'modules/'.$boxtalConnect->name.'/views/css/tracking.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addCSS(_MODULE_DIR_.'/'.$boxtalConnect->name.'/views/css/tracking.css', 'all');
+                $controller->addCSS('modules/'.$boxtalConnect->name.'/views/css/tracking.css', 'all');
             }
         }
     }
@@ -279,7 +294,7 @@ class boxtalconnect extends Module
      */
     public function hookHeader($params)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
             return null;
         }
 
@@ -295,7 +310,7 @@ class boxtalconnect extends Module
      */
     public function hookDisplayCarrierList($params)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
             return null;
         }
 
@@ -311,7 +326,7 @@ class boxtalconnect extends Module
      */
     public function hookDisplayAfterCarrier($params)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
             return null;
         }
 
@@ -327,7 +342,7 @@ class boxtalconnect extends Module
      */
     public function hooknewOrder($params)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
             return;
         }
 
@@ -363,7 +378,8 @@ class boxtalconnect extends Module
      */
     public function hookDisplayAdminAfterHeader()
     {
-        $notices = NoticeController::getNoticeInstances();
+        $shopContext = ShopUtil::getShopContext();
+        $notices = NoticeController::getNoticeInstances($shopContext['id_shop_group'], $shopContext['id_shop']);
         foreach ($notices as $notice) {
             $notice->render();
         }
@@ -379,7 +395,7 @@ class boxtalconnect extends Module
     public function hookAdminOrder($params)
     {
 
-        if (!AuthUtil::canUsePlugin()) {
+        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
             return null;
         }
 

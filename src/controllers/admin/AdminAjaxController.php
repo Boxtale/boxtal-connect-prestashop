@@ -57,7 +57,9 @@ class AdminAjaxController extends \ModuleAdminController
             return false;
         }
         $noticeKey = Tools::getValue('noticeKey');
-        NoticeController::removeNotice($noticeKey);
+        $noticeShopGroupId = Tools::getValue('noticeShopGroupId');
+        $noticeShopId = Tools::getValue('noticeShopId');
+        NoticeController::removeNotice($noticeKey, $noticeShopGroupId, $noticeShopId);
 
         return true;
     }
@@ -74,14 +76,22 @@ class AdminAjaxController extends \ModuleAdminController
         }
         $approve = sanitize_text_field(wp_unslash($_REQUEST['approve']));
 
-        $lib = new ApiClient(AuthUtil::getAccessKey(), AuthUtil::getSecretKey());
+        $boxtalconnect = boxtalconnect::getInstance();
+        $lib = new ApiClient(
+            AuthUtil::getAccessKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId),
+            AuthUtil::getSecretKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId)
+        );
         //phpcs:ignore
-        $response = $lib->restClient->request( RestClient::$PATCH, ConfigurationUtil::get( 'BW_PAIRING_UPDATE' ), array( 'approve' => $approve ) );
+        $response = $lib->restClient->request(
+            RestClient::$PATCH,
+            ConfigurationUtil::get('BW_PAIRING_UPDATE', $boxtalconnect->shopGroupId, $boxtalconnect->shopId),
+            array( 'approve' => $approve )
+        );
 
         if (! $response->isError()) {
-            AuthUtil::endPairingUpdate();
-            NoticeController::removeNotice(NoticeController::$pairingUpdate);
-            NoticeController::addNotice(NoticeController::$pairing, array( 'result' => 1 ));
+            AuthUtil::endPairingUpdate($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+            NoticeController::removeNotice(NoticeController::$pairingUpdate, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+            NoticeController::addNotice(NoticeController::$pairing, $boxtalconnect->shopGroupId, $boxtalconnect->shopId, array( 'result' => 1 ));
             wp_send_json(true);
         } else {
             wp_send_json_error('pairing validation failed');

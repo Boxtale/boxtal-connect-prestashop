@@ -16,6 +16,11 @@ if ! [ -z "$ONBOARDINGURL" ]; then
 fi
 
 if ! [ -z "$PS_SITEURL" ]; then
+  if [[ $PS_SITEURL =~ "https" ]]; then
+    mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_configuration SET value=1 WHERE name=\"PS_SSL_ENABLED\";"
+    mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_configuration SET value=1 WHERE name=\"PS_SSL_ENABLED_EVERYWHERE\";"
+  fi
+
     mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_shop_url set domain=\"$PS_SITEURL\";"
     mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_shop_url set domain_ssl=\"$PS_SITEURL\";"
 fi

@@ -7,6 +7,7 @@ namespace Boxtal\BoxtalConnectPrestashop\Controllers\Misc;
 
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalPhp\ApiClient;
+use boxtalconnect;
 
 /**
  * Tracking controller class.
@@ -26,7 +27,8 @@ class TrackingController
      */
     public static function getOrderTracking($orderId)
     {
-        $lib = new ApiClient(AuthUtil::getAccessKey(), AuthUtil::getSecretKey());
+        $boxtalconnect = boxtalconnect::getInstance();
+        $lib = new ApiClient(AuthUtil::getAccessKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId), AuthUtil::getSecretKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId));
         $response = $lib->getOrder($orderId);
         if ($response->isError()) {
             return null;

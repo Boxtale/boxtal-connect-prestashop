@@ -7,6 +7,7 @@ use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\OrderUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 
 /**
  * Shipping method admin controller class.
@@ -43,16 +44,20 @@ class AdminShippingMethodController extends \ModuleAdminController
             $this->handleTrackingEventsForm();
         }
         $boxtalConnect = \boxtalconnect::getInstance();
-        if (!AuthUtil::canUsePlugin()) {
-            $this->content = $boxtalConnect->displayTemplate('admin/hookAdminOrder.tpl');
-
+        if (\Shop::isFeatureActive() && null === $boxtalConnect->shopGroupId && null === $boxtalConnect->shopId) {
+            $this->content = $boxtalConnect->displayTemplate('admin/multistoreAccessDenied.tpl');
+            //phpcs:ignore
+            return;
+        } elseif (!AuthUtil::canUsePlugin($boxtalConnect->shopGroupId, $boxtalConnect->shopId)) {
+            $this->content = $boxtalConnect->displayTemplate('admin/accessDenied.tpl');
+            //phpcs:ignore
             return;
         }
 
         $smarty = $boxtalConnect->getSmarty();
-        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
+        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS', $boxtalConnect->shopGroupId, $boxtalConnect->shopId));
         $smarty->assign('parcelPointNetworks', $parcelPointNetworks);
-        $carriers = ShippingMethodUtil::getShippingMethods();
+        $carriers = ShippingMethodUtil::getShippingMethods($boxtalConnect->shopGroupId, $boxtalConnect->shopId);
         foreach ((array) $carriers as $c => $carrier) {
             if (file_exists(_PS_SHIP_IMG_DIR_.(int) $carrier['id_carrier'].'.jpg')) {
                 $carriers[$c]['logo'] = _THEME_SHIP_DIR_.(int) $carrier['id_carrier'].'.jpg';
@@ -65,8 +70,8 @@ class AdminShippingMethodController extends \ModuleAdminController
         $langId = $cookie->id_lang;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
         $smarty->assign('orderStatuses', $orderStatuses);
-        $smarty->assign('orderShipped', ConfigurationUtil::get('BX_ORDER_SHIPPED'));
-        $smarty->assign('orderDelivered', ConfigurationUtil::get('BX_ORDER_DELIVERED'));
+        $smarty->assign('orderShipped', ConfigurationUtil::get('BX_ORDER_SHIPPED', $boxtalConnect->shopGroupId, $boxtalConnect->shopId));
+        $smarty->assign('orderDelivered', ConfigurationUtil::get('BX_ORDER_DELIVERED', $boxtalConnect->shopGroupId, $boxtalConnect->shopId));
 
         $this->content = $boxtalConnect->displayTemplate('admin/configuration/settings.tpl');
     }
@@ -78,18 +83,19 @@ class AdminShippingMethodController extends \ModuleAdminController
      */
     private function handleParcelPointNetworksForm()
     {
-        $carriers = ShippingMethodUtil::getShippingMethods();
+        $boxtalconnect = boxtalconnect::getInstance();
+        $carriers = ShippingMethodUtil::getShippingMethods($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
         foreach ((array) $carriers as $carrier) {
             if (\Tools::isSubmit('parcelPointNetworks_'.(int) $carrier['id_carrier'])) {
                 \Db::getInstance()->execute(
-                    "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `parcel_point_networks`)
-                    VALUES ('".(int) $carrier['id_carrier']."', '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
+                    "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `id_shop_group`, `id_shop`, `parcel_point_networks`)
+                    VALUES ('".(int) $carrier['id_carrier']."', $boxtalconnect->shopGroupId, $boxtalconnect->shopId, '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
                     ON DUPLICATE KEY UPDATE parcel_point_networks='".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."'"
                 );
             } else {
                 \Db::getInstance()->execute(
                     "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `parcel_point_networks`)
-                    VALUES ('".(int) $carrier['id_carrier']."', '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
+                    VALUES ('".(int) $carrier['id_carrier']."', $boxtalconnect->shopGroupId, $boxtalconnect->shopId, '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
                     ON DUPLICATE KEY UPDATE parcel_point_networks='".pSQL(serialize(array()))."'"
                 );
             }
@@ -103,21 +109,22 @@ class AdminShippingMethodController extends \ModuleAdminController
      */
     private function handleTrackingEventsForm()
     {
+        $boxtalConnect = boxtalConnect::getInstance();
         if (\Tools::isSubmit('orderShipped')) {
             $status = \Tools::getValue('orderShipped');
             if ('' === $status) {
-                ConfigurationUtil::set('BX_ORDER_SHIPPED', null);
+                ConfigurationUtil::set('BX_ORDER_SHIPPED', null, $boxtalConnect->shopGroupId, $boxtalConnect->shopId);
             } else {
-                ConfigurationUtil::set('BX_ORDER_SHIPPED', $status);
+                ConfigurationUtil::set('BX_ORDER_SHIPPED', $status, $boxtalConnect->shopGroupId, $boxtalConnect->shopId);
             }
         }
 
         if (\Tools::isSubmit('orderDelivered')) {
             $status = \Tools::getValue('orderDelivered');
             if ('' === $status) {
-                ConfigurationUtil::set('BX_ORDER_DELIVERED', null);
+                ConfigurationUtil::set('BX_ORDER_DELIVERED', null, $boxtalConnect->shopGroupId, $boxtalConnect->shopId);
             } else {
-                ConfigurationUtil::set('BX_ORDER_DELIVERED', $status);
+                ConfigurationUtil::set('BX_ORDER_DELIVERED', $status, $boxtalConnect->shopGroupId, $boxtalConnect->shopId);
             }
         }
     }

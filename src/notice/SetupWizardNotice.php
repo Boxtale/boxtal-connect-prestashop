@@ -28,16 +28,18 @@ class SetupWizardNotice extends AbstractNotice
     /**
      * Construct function.
      *
-     * @param string $key key for notice.
+     * @param string $key         key for notice.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
      *
      * @void
      */
-    public function __construct($key)
+    public function __construct($key, $shopGroupId, $shopId)
     {
-        parent::__construct($key);
+        parent::__construct($key, $shopGroupId, $shopId);
         $this->type         = 'setupWizard';
         $this->autodestruct = false;
-        $this->onboardingLink = ConfigurationUtil::getOnboardingLink();
+        $this->onboardingLink = ConfigurationUtil::getOnboardingLink($shopGroupId, $shopId);
         $this->template = 'setupWizard';
     }
 }

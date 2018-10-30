@@ -9,5 +9,5 @@
 </script>
 
 <div class="bootstrap bx-notice">
-    <?php include_once $this->template.'.php';?>
+    <?php include $this->template.'.php';?>
 </div>

@@ -33,14 +33,16 @@ class CustomNotice extends AbstractNotice
     /**
      * Construct function.
      *
-     * @param string $key  key for notice.
-     * @param array  $args additional args.
+     * @param string $key         key for notice.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
+     * @param array  $args        additional args.
      *
      * @void
      */
-    public function __construct($key, $args)
+    public function __construct($key, $shopGroupId, $shopId, $args)
     {
-        parent::__construct($key);
+        parent::__construct($key, $shopGroupId, $shopId);
         $this->type         = 'custom';
         $this->autodestruct = isset($args['autodestruct']) ? $args['autodestruct'] : true;
         $this->status       = isset($args['status']) ? $args['status'] : 'info';

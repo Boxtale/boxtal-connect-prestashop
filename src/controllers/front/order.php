@@ -38,7 +38,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
         if ('order' === $route) {
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
-                    case RestClient::$PATCH:
+                    case RestClient::$POST:
                         $this->retrieveOrdersHandler();
                         break;
 
@@ -71,18 +71,22 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
      */
     public function retrieveOrdersHandler()
     {
-        $response = $this->getOrders();
+        $boxtalconnect = boxtalconnect::getInstance();
+        $response = $this->getOrders($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
         ApiUtil::sendApiResponse(200, $response);
     }
 
     /**
      * Get Prestashop orders.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return array $result
      */
-    public function getOrders()
+    public function getOrders($shopGroupId, $shopId)
     {
-        $orders = OrderUtil::getOrders();
+        $orders = OrderUtil::getOrders($shopGroupId, $shopId);
         $result = array();
 
         foreach ($orders as $order) {
@@ -118,8 +122,8 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
             }
 
             $parcelPoint          = null;
-            $parcelPointCode     = OrderStorageUtil::get($orderId, 'bxParcelPointCode');
-            $parcelPointNetwork = OrderStorageUtil::get($orderId, 'bxParcelPointNetwork');
+            $parcelPointCode     = OrderStorageUtil::get($orderId, 'bxParcelPointCode', $shopGroupId, $shopId);
+            $parcelPointNetwork = OrderStorageUtil::get($orderId, 'bxParcelPointNetwork', $shopGroupId, $shopId);
             if ($parcelPointCode && $parcelPointNetwork) {
                 $parcelPoint = array(
                     'code'     => $parcelPointCode,

@@ -1,6 +1,7 @@
 FROM buildpack-deps:stretch-scm
 ARG PHP_VERSION
 ARG PS_VERSION
+ARG MULTISHOP
 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
  && apt-get update && apt-get install -y --no-install-recommends \
@@ -13,7 +14,9 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     xvfb \
     xauth \
     unzip \
-    vim
+    vim \
+    software-properties-common \
+    dirmngr
 
 RUN curl https://packages.sury.org/php/apt.gpg | apt-key add - \
  && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
@@ -37,9 +40,9 @@ RUN sed -i "172,\$s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2
     && sed -i "s/ServerAdmin/ServerName localhost\nServerAdmin/" /etc/apache2/sites-enabled/000-default.conf \
     && sed -i "s/Include ports.conf/Include ports.conf\nServerName localhost\n/" /etc/apache2/apache2.conf
 
-RUN echo "mysql-server-5.6 mysql-server/root_password password password" | sudo debconf-set-selections \
- && echo "mysql-server-5.6 mysql-server/root_password_again password password" | sudo debconf-set-selections \
- && sudo apt-get install -y mysql-server
+RUN echo "mariadb-server mysql-server/root_password password password" | sudo debconf-set-selections \
+ && echo "mariadb-server mysql-server/root_password_again password password" | sudo debconf-set-selections \
+ && sudo apt-get install -y mariadb-server
 RUN /etc/init.d/mysql start \
  && sudo mysql -u root -ppassword -e "CREATE USER 'dbadmin'@'localhost' IDENTIFIED BY 'dbpass';" \
  && sudo mysql -u root -ppassword -e "GRANT ALL PRIVILEGES ON *.* TO 'dbadmin'@'localhost' WITH GRANT OPTION;" \
@@ -52,10 +55,10 @@ ENV HOME=/home/docker
 WORKDIR $HOME
 RUN chown -R docker:docker $HOME
 
-COPY factory/common/install-ps.sh $HOME/factory/common/
+COPY factory/common/ $HOME/factory/common/
 RUN /etc/init.d/apache2 start \
  && /etc/init.d/mysql start \
- && /bin/bash $HOME/factory/common/install-ps.sh $PS_VERSION
+ && /bin/bash $HOME/factory/common/install-ps.sh $PS_VERSION $MULTISTORE
 
 COPY . $HOME
 RUN chown -R docker:docker $HOME

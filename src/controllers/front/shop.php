@@ -3,6 +3,7 @@
  * Contains code for the shop rest controller.
  */
 
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
@@ -39,7 +40,7 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
         if ('pair' === $route) {
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
-                    case RestClient::$PATCH:
+                    case RestClient::$POST:
                         $this->pairingHandler($body);
                         break;
 
@@ -47,15 +48,22 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
                         break;
                 }
             }
-        } elseif ('configuration' === $route) {
+        } elseif ('update-configuration' === $route) {
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
-                    case RestClient::$DELETE:
-                        $this->deleteConfigurationHandler($body);
+                    case RestClient::$POST:
+                        $this->updateConfigurationHandler($body);
                         break;
 
-                    case RestClient::$PATCH:
-                        $this->updateConfigurationHandler($body);
+                    default:
+                        break;
+                }
+            }
+        } elseif ('delete-configuration' === $route) {
+            if (isset($_SERVER['REQUEST_METHOD'])) {
+                switch ($_SERVER['REQUEST_METHOD']) {
+                    case RestClient::$POST:
+                        $this->deleteConfigurationHandler($body);
                         break;
 
                     default:
@@ -95,25 +103,26 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
             }
         }
 
+        $shopContext = ShopUtil::getShopContext();
         if (null !== $accessKey && null !== $secretKey) {
-            if (! AuthUtil::isPluginPaired()) { // initial pairing.
-                AuthUtil::pairPlugin($accessKey, $secretKey);
-                NoticeController::removeNotice(NoticeController::$setupWizard);
-                NoticeController::addNotice(NoticeController::$pairing, array( 'result' => 1 ));
+            if (! AuthUtil::isPluginPaired($shopContext['id_shop_group'], $shopContext['id_shop'])) { // initial pairing.
+                AuthUtil::pairPlugin($accessKey, $secretKey, $shopContext['id_shop_group'], $shopContext['id_shop']);
+                NoticeController::removeNotice(NoticeController::$setupWizard, $shopContext['id_shop_group'], $shopContext['id_shop']);
+                NoticeController::addNotice(NoticeController::$pairing, $shopContext['id_shop_group'], $shopContext['id_shop'], array( 'result' => 1 ));
                 ApiUtil::sendApiResponse(200);
             } else { // pairing update.
                 if (null !== $callbackUrl) {
-                    AuthUtil::pairPlugin($accessKey, $secretKey);
-                    NoticeController::removeNotice(NoticeController::$pairing);
-                    AuthUtil::startPairingUpdate($callbackUrl);
-                    NoticeController::addNotice(NoticeController::$pairingUpdate);
+                    AuthUtil::pairPlugin($accessKey, $secretKey, $shopContext['id_shop_group'], $shopContext['id_shop']);
+                    NoticeController::removeNotice(NoticeController::$pairing, $shopContext['id_shop_group'], $shopContext['id_shop']);
+                    AuthUtil::startPairingUpdate($callbackUrl, $shopContext['id_shop_group'], $shopContext['id_shop']);
+                    NoticeController::addNotice(NoticeController::$pairingUpdate, $shopContext['id_shop_group'], $shopContext['id_shop']);
                     ApiUtil::sendApiResponse(200);
                 } else {
                     ApiUtil::sendApiResponse(403);
                 }
             }
         } else {
-            NoticeController::addNotice(NoticeController::$pairing, array( 'result' => 0 ));
+            NoticeController::addNotice(NoticeController::$pairing, $shopContext['id_shop_group'], $shopContext['id_shop'], array( 'result' => 0 ));
             ApiUtil::sendApiResponse(400);
         }
     }
@@ -131,11 +140,12 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
             ApiUtil::sendApiResponse(400);
         }
 
-        if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey()) {
+        $shopContext = ShopUtil::getShopContext();
+        if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey($shopContext['id_shop_group'], $shopContext['id_shop'])) {
             ApiUtil::sendApiResponse(403);
         }
 
-        ConfigurationUtil::deleteConfiguration();
+        ConfigurationUtil::deleteConfiguration($shopContext['id_shop_group'], $shopContext['id_shop']);
         ApiUtil::sendApiResponse(200);
     }
 

@@ -19,13 +19,15 @@ class ConfigurationFailureNotice extends AbstractNotice
     /**
      * Construct function.
      *
-     * @param string $key key for notice.
+     * @param string $key         key for notice.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
      *
      * @void
      */
-    public function __construct($key)
+    public function __construct($key, $shopGroupId, $shopId)
     {
-        parent::__construct($key);
+        parent::__construct($key, $shopGroupId, $shopId);
         $this->type         = 'configurationFailure';
         $this->autodestruct = false;
         $this->template = 'configurationFailure';

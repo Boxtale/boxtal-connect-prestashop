@@ -31,57 +31,75 @@ class AuthUtil
     /**
      * Is plugin paired.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return boolean
      */
-    public static function isPluginPaired()
+    public static function isPluginPaired($shopGroupId, $shopId)
     {
-        return null !== self::getAccessKey() && null !== self::getSecretKey();
+        return null !== self::getAccessKey($shopGroupId, $shopId) && null !== self::getSecretKey($shopGroupId, $shopId);
     }
 
     /**
      * Can use plugin.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return boolean
      */
-    public static function canUsePlugin()
+    public static function canUsePlugin($shopGroupId, $shopId)
     {
-        return false !== self::isPluginPaired() && null === ConfigurationUtil::get('BX_PAIRING_UPDATE');
+        if (null === $shopGroupId && null === $shopId) {
+            return false;
+        }
+
+        return false !== self::isPluginPaired($shopGroupId, $shopId)
+            && null === ConfigurationUtil::get('BX_PAIRING_UPDATE', $shopGroupId, $shopId);
     }
 
     /**
      * Pair plugin.
      *
-     * @param string $accessKey API access key.
-     * @param string $secretKey API secret key.
+     * @param string $accessKey   API access key.
+     * @param string $secretKey   API secret key.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
      *
      * @void
      */
-    public static function pairPlugin($accessKey, $secretKey)
+    public static function pairPlugin($accessKey, $secretKey, $shopGroupId, $shopId)
     {
-        ConfigurationUtil::set('BX_ACCESS_KEY', $accessKey);
-        ConfigurationUtil::set('BX_SECRET_KEY', $secretKey);
+        ConfigurationUtil::set('BX_ACCESS_KEY', $accessKey, $shopGroupId, $shopId);
+        ConfigurationUtil::set('BX_SECRET_KEY', $secretKey, $shopGroupId, $shopId);
     }
 
     /**
      * Start pairing update (puts plugin on hold).
      *
      * @param string $callbackUrl callback url.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
      *
      * @void
      */
-    public static function startPairingUpdate($callbackUrl)
+    public static function startPairingUpdate($callbackUrl, $shopGroupId, $shopId)
     {
-        ConfigurationUtil::set('BX_PAIRING_UPDATE', $callbackUrl);
+        ConfigurationUtil::set('BX_PAIRING_UPDATE', $callbackUrl, $shopGroupId, $shopId);
     }
 
     /**
      * End pairing update (release plugin).
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @void
      */
-    public static function endPairingUpdate()
+    public static function endPairingUpdate($shopGroupId, $shopId)
     {
-        ConfigurationUtil::delete('BX_PAIRING_UPDATE');
+        ConfigurationUtil::delete('BX_PAIRING_UPDATE', $shopGroupId, $shopId);
     }
 
     /**
@@ -227,33 +245,42 @@ class AuthUtil
     /**
      * Get access key.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return string
      */
-    public static function getAccessKey()
+    public static function getAccessKey($shopGroupId, $shopId)
     {
-        return ConfigurationUtil::get('BX_ACCESS_KEY');
+        return ConfigurationUtil::get('BX_ACCESS_KEY', $shopGroupId, $shopId);
     }
 
     /**
      * Get secret key.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return string
      */
-    public static function getSecretKey()
+    public static function getSecretKey($shopGroupId, $shopId)
     {
-        return ConfigurationUtil::get('BX_SECRET_KEY');
+        return ConfigurationUtil::get('BX_SECRET_KEY', $shopGroupId, $shopId);
     }
 
     /**
      * Get maps token.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return string
      */
-    public static function getMapsToken()
+    public static function getMapsToken($shopGroupId, $shopId)
     {
-        $lib = new ApiClient(self::getAccessKey(), self::getSecretKey());
+        $lib = new ApiClient(self::getAccessKey($shopGroupId, $shopId), self::getSecretKey($shopGroupId, $shopId));
         //phpcs:ignore
-        $response = $lib->restClient->request( RestClient::$POST, ConfigurationUtil::get('BX_MAP_TOKEN_URL') );
+        $response = $lib->restClient->request( RestClient::$POST, ConfigurationUtil::get('BX_MAP_TOKEN_URL', $shopGroupId, $shopId) );
 
         if (! $response->isError() && property_exists($response->response, 'accessToken')) {
             return $response->response->accessToken;

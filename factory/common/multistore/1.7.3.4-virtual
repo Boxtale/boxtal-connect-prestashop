@@ -1,0 +1,7 @@
+-- add virtual url
+
+INSERT INTO `ps_shop_url` (`active`, `main`, `domain`, `domain_ssl`, `id_shop`, `physical_uri`, `virtual_uri`) VALUES ('1', '1', 'localhost', 'localhost', '2', '/', 'alternate/');
+
+INSERT INTO `ps_configuration` (`id_shop_group`, `id_shop`, `name`, `value`, `date_add`, `date_upd`) VALUES (NULL, NULL, 'PS_CCCJS_VERSION', '1', '2018-10-26 14:28:21', '2018-10-26 14:28:21');
+
+INSERT INTO `ps_configuration` (`id_shop_group`, `id_shop`, `name`, `value`, `date_add`, `date_upd`) VALUES (NULL, NULL, 'PS_CCCCSS_VERSION', '1', '2018-10-26 14:28:21', '2018-10-26 14:28:21');

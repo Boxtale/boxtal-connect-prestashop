@@ -9,6 +9,7 @@ use Boxtal;
 use Boxtal\BoxtalPhp\ApiClient;
 use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
+use boxtalconnect;
 
 /**
  * Shipping method util class.
@@ -21,13 +22,16 @@ class ShippingMethodUtil
     /**
      * Get all parcel point networks selected in at least one shipping method.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return array $selectedParcelPointNetworks.
      */
-    public static function getAllSelectedParcelPointNetworks()
+    public static function getAllSelectedParcelPointNetworks($shopGroupId, $shopId)
     {
         $selectedParcelPointNetworks = array();
-        $shippingMethods = self::getShippingMethods();
-        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
+        $shippingMethods = self::getShippingMethods($shopGroupId, $shopId);
+        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS', $shopGroupId, $shopId));
         if (!is_array($parcelPointNetworks)) {
             return array();
         }
@@ -53,15 +57,17 @@ class ShippingMethodUtil
     /**
      * Get all parcel point networks selected in a shipping method.
      *
-     * @param string $id shipping method id.
+     * @param string $id          shipping method id.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
      *
      * @return array $selectedParcelPointNetworks.
      */
-    public static function getSelectedParcelPointNetworks($id)
+    public static function getSelectedParcelPointNetworks($id, $shopGroupId, $shopId)
     {
         $selectedParcelPointNetworks = array();
-        $shippingMethods = self::getShippingMethods();
-        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
+        $shippingMethods = self::getShippingMethods($shopGroupId, $shopId);
+        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS', $shopGroupId, $shopId));
         if (!is_array($parcelPointNetworks)) {
             return array();
         }
@@ -87,15 +93,18 @@ class ShippingMethodUtil
     /**
      * Get parcel point networks associated with shipping methods.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return object shipping methods.
      */
-    public static function getShippingMethods()
+    public static function getShippingMethods($shopGroupId, $shopId)
     {
         $sql = new \DbQuery();
         $sql->select('c.id_carrier, c.name, bc.parcel_point_networks');
         $sql->from('carrier', 'c');
-        $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_shop = '.(int) ShopUtil::getCurrentShop().' AND cl.id_lang = '.(int) \Context::getContext()->language->id);
-        $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier');
+        $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_shop = '.$shopId.' AND cl.id_lang = '.(int) \Context::getContext()->language->id);
+        $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier AND bc.id_shop_group = '.$shopGroupId.' AND bc.id_shop = '.$shopId);
         $sql->where('c.deleted = 0');
 
         return \Db::getInstance()->executeS($sql);
