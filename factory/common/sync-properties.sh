@@ -18,9 +18,12 @@ fi
 if ! [ -z "$PS_SITEURL" ]; then
   if [[ $PS_SITEURL =~ "https" ]]; then
     mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_configuration SET value=1 WHERE name=\"PS_SSL_ENABLED\";"
-    mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_configuration SET value=1 WHERE name=\"PS_SSL_ENABLED_EVERYWHERE\";"
+    mysql -u dbadmin -pdbpass -e "INSERT IGNORE INTO prestashop.ps_configuration (name, value) VALUES ('PS_SSL_ENABLED_EVERYWHERE', 1);"
+    DOMAIN=`echo $PS_SITEURL | cut -c 9-`
+  else
+    DOMAIN=`echo $PS_SITEURL | cut -c 8-`
   fi
 
-    mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_shop_url set domain=\"$PS_SITEURL\";"
-    mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_shop_url set domain_ssl=\"$PS_SITEURL\";"
+    mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_shop_url set domain=\"$DOMAIN\";"
+    mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_shop_url set domain_ssl=\"$DOMAIN\";"
 fi
