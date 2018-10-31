@@ -46,13 +46,13 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                         break;
                 }
             }
-        } elseif ('tracking' === $route) {
-            $orderId = Tools::getValue('order');
+        } elseif ('shipped' === $route || 'delivered' === $route) {
+            $orderId = Tools::getValue('orderId');
             $body = AuthUtil::decryptBody($entityBody);
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
                     case RestClient::$POST:
-                        $this->trackingEventHandler($orderId, $body);
+                        $this->trackingEventHandler($orderId, $route, $body);
                         break;
 
                     default:
@@ -164,41 +164,25 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
     /**
      * Endpoint callback.
      *
-     * @param int    $orderId order id.
-     * @param object $body    request body.
+     * @param int                   $orderId order id.
+     * @param 'shipped'|'delivered' $route   tracking event.
+     * @param object                $body    request body.
      *
      * @void
      */
-    public function trackingEventHandler($orderId, $body)
+    public function trackingEventHandler($orderId, $route, $body)
     {
+        $boxtalconnect = boxtalconnect::getInstance();
+        if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId)) {
+            ApiUtil::sendApiResponse(403);
+        }
+
         if (! is_int($orderId)) {
             ApiUtil::sendApiResponse(400);
         }
 
-        if (! $this::parseTrackingEvent($orderId, $body)) {
-            ApiUtil::sendApiResponse(400);
-        }
+
 
         ApiUtil::sendApiResponse(200);
-    }
-
-    /**
-     * Parse tracking event.
-     *
-     * @param int    $orderId order id.
-     * @param object $body    request body.
-     *
-     * @return boolean
-     */
-    public static function parseTrackingEvent($orderId, $body)
-    {
-        if (! ( is_object($body) && property_exists($body, 'carrierReference')
-            && property_exists($body, 'trackingDate') && property_exists($body, 'trackingCode') ) ) {
-            return false;
-        }
-
-
-
-        return true;
     }
 }

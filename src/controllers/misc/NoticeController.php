@@ -229,12 +229,14 @@ class NoticeController
     /**
      * Whether there are active notices.
      *
+     * @param int $shopGroupId shop group id.
+     * @param int $shopId      shop id.
+     *
      * @return boolean
      */
-    public static function hasNotices()
+    public static function hasNotices($shopGroupId, $shopId)
     {
-        $shopContext = ShopUtil::getShopContext();
-        $notices = self::getNoticeKeys($shopContext['id_shop_group'], $shopContext['id_shop']);
+        $notices = self::getNoticeKeys($shopGroupId, $shopId);
 
         return !empty($notices);
     }

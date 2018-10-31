@@ -219,9 +219,9 @@ class ConfigurationUtil
      */
     private static function parseParcelPointNetworks($body)
     {
-        $shopContext = ShopUtil::getShopContext();
+        $boxtalconnect = boxtalconnect::getInstance();
         if (is_object($body) && property_exists($body, 'parcelPointNetworks')) {
-            $storedNetworks = self::get('BX_PP_NETWORKS', $shopContext['id_shop_group'], $shopContext['id_shop']);
+            $storedNetworks = self::get('BX_PP_NETWORKS', $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
             if (is_array($storedNetworks)) {
                 $removedNetworks = $storedNetworks;
                 //phpcs:ignore
@@ -236,9 +236,11 @@ class ConfigurationUtil
                 if (count($removedNetworks) > 0) {
                     NoticeController::addNotice(
                         NoticeController::$custom,
+                        $boxtalconnect->shopGroupId,
+                        $boxtalconnect->shopId,
                         array(
                             'status'  => 'warning',
-                            'message' => boxtalconnect::getInstance()->l('There\'s been a change in the parcel point network list, we\'ve adapted your shipping method configuration. Please check that everything is in order.'),
+                            'message' => $boxtalconnect->l('There\'s been a change in the parcel point network list, we\'ve adapted your shipping method configuration. Please check that everything is in order.'),
                         )
                     );
                 }
@@ -256,15 +258,17 @@ class ConfigurationUtil
                 if (count($addedNetworks) > 0) {
                     NoticeController::addNotice(
                         NoticeController::$custom,
+                        $boxtalconnect->shopGroupId,
+                        $boxtalconnect->shopId,
                         array(
                             'status'  => 'info',
-                            'message' => boxtalconnect::getInstance()->l('There\'s been a change in the parcel point network list, you can add the extra parcel point network(s) to your shipping method configuration.'),
+                            'message' => $boxtalconnect->l('There\'s been a change in the parcel point network list, you can add the extra parcel point network(s) to your shipping method configuration.'),
                         )
                     );
                 }
             }
             //phpcs:ignore
-            self::set('BX_PP_NETWORKS', serialize(MiscUtil::convertStdClassToArray($body->parcelPointNetworks)), $shopContext['id_shop_group'], $shopContext['id_shop']);
+            self::set('BX_PP_NETWORKS', serialize(MiscUtil::convertStdClassToArray($body->parcelPointNetworks)), $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
 
             return true;
         }
@@ -283,16 +287,16 @@ class ConfigurationUtil
     {
         if (is_object($body) && property_exists($body, 'mapsBootstrapUrl') && property_exists($body, 'mapsTokenUrl')
             && property_exists($body, 'mapsLogoImageUrl') && property_exists($body, 'mapsLogoHrefUrl')) {
-            $shopContext = ShopUtil::getShopContext();
+            $boxtalconnect = boxtalconnect::getInstance();
 
             //phpcs:ignore
-            self::set('BX_MAP_BOOTSTRAP_URL', $body->mapsBootstrapUrl, $shopContext['id_shop_group'], $shopContext['id_shop']);
+            self::set('BX_MAP_BOOTSTRAP_URL', $body->mapsBootstrapUrl, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
             //phpcs:ignore
-            self::set('BX_MAP_TOKEN_URL', $body->mapsTokenUrl, $shopContext['id_shop_group'], $shopContext['id_shop']);
+            self::set('BX_MAP_TOKEN_URL', $body->mapsTokenUrl, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
             //phpcs:ignore
-            self::set('BX_MAP_LOGO_IMAGE_URL', $body->mapsLogoImageUrl, $shopContext['id_shop_group'], $shopContext['id_shop']);
+            self::set('BX_MAP_LOGO_IMAGE_URL', $body->mapsLogoImageUrl, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
             //phpcs:ignore
-            self::set('BX_MAP_LOGO_HREF_URL', $body->mapsLogoHrefUrl, $shopContext['id_shop_group'], $shopContext['id_shop']);
+            self::set('BX_MAP_LOGO_HREF_URL', $body->mapsLogoHrefUrl, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
 
             return true;
         }

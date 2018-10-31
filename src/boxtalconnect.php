@@ -249,26 +249,25 @@ class boxtalconnect extends Module
     public function hookDisplayBackOfficeHeader()
     {
         $controller = $this->getContext()->controller;
-        $boxtalConnect = \boxtalconnect::getInstance();
 
-        if (NoticeController::hasNotices()) {
+        if (NoticeController::hasNotices($this->shopGroupId, $this->shopId)) {
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
                     'bx-notices',
-                    'modules/'.$boxtalConnect->name.'/views/css/notices.min.js',
+                    'modules/'.$this->name.'/views/css/notices.min.js',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addJs('modules/'.$boxtalConnect->name.'/views/js/notices.min.js');
+                $controller->addJs('modules/'.$this->name.'/views/js/notices.min.js');
             }
             if (method_exists($controller, 'registerStylesheet')) {
                 $controller->registerStylesheet(
                     'bx-notices',
-                    'modules/'.$boxtalConnect->name.'/views/css/notices.css',
+                    'modules/'.$this->name.'/views/css/notices.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addCSS('modules/'.$boxtalConnect->name.'/views/css/notices.css', 'all');
+                $controller->addCSS('modules/'.$this->name.'/views/css/notices.css', 'all');
             }
         }
 
@@ -276,11 +275,11 @@ class boxtalconnect extends Module
             if (method_exists($controller, 'registerStylesheet')) {
                 $controller->registerStylesheet(
                     'bx-tracking',
-                    'modules/'.$boxtalConnect->name.'/views/css/tracking.css',
+                    'modules/'.$this->name.'/views/css/tracking.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addCSS('modules/'.$boxtalConnect->name.'/views/css/tracking.css', 'all');
+                $controller->addCSS('modules/'.$this->name.'/views/css/tracking.css', 'all');
             }
         }
     }

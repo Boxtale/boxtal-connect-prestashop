@@ -30,38 +30,34 @@ class SetupWizard
      */
     public function __construct($plugin)
     {
-        $shopContext = ShopUtil::getShopContext();
-
-        if (null === $shopContext['id_shop'] && null === $shopContext['id_shop_group']) {
+        if (null === $plugin->shopId && null === $plugin->shopGroupId) {
             $shops = ShopUtil::getShops();
             foreach ($shops as $shop) {
-                $shopId = $shop['id_shop'];
-                $shopGroupId = $shop['id_shop_group'];
-                if (AuthUtil::isPluginPaired($shopGroupId, $shopId)) {
-                    if (NoticeController::hasNotice(NoticeController::$setupWizard, $shopGroupId, $shopId)) {
-                        NoticeController::removeNotice(NoticeController::$setupWizard, $shopGroupId, $shopId);
+                if (AuthUtil::isPluginPaired($plugin->shopGroupId, $plugin->shopId)) {
+                    if (NoticeController::hasNotice(NoticeController::$setupWizard, $plugin->shopGroupId, $plugin->shopId)) {
+                        NoticeController::removeNotice(NoticeController::$setupWizard, $plugin->shopGroupId, $plugin->shopId);
                     }
-                    if (ConfigurationUtil::hasConfiguration($shopGroupId, $shopId) && NoticeController::hasNotice(NoticeController::$configurationFailure, $shopGroupId, $shopId)) {
-                        NoticeController::removeNotice(NoticeController::$configurationFailure, $shopGroupId, $shopId);
-                    } elseif (! ConfigurationUtil::hasConfiguration($shopGroupId, $shopId) && ! NoticeController::hasNotice(NoticeController::$configurationFailure, $shopGroupId, $shopId)) {
-                        NoticeController::addNotice(NoticeController::$configurationFailure, $shopGroupId, $shopId);
+                    if (ConfigurationUtil::hasConfiguration($plugin->shopGroupId, $plugin->shopId) && NoticeController::hasNotice(NoticeController::$configurationFailure, $plugin->shopGroupId, $plugin->shopId)) {
+                        NoticeController::removeNotice(NoticeController::$configurationFailure, $plugin->shopGroupId, $plugin->shopId);
+                    } elseif (! ConfigurationUtil::hasConfiguration($plugin->shopGroupId, $plugin->shopId) && ! NoticeController::hasNotice(NoticeController::$configurationFailure, $plugin->shopGroupId, $plugin->shopId)) {
+                        NoticeController::addNotice(NoticeController::$configurationFailure, $plugin->shopGroupId, $plugin->shopId);
                     }
-                } elseif (! AuthUtil::isPluginPaired($shopGroupId, $shopId) && ! NoticeController::hasNotice(NoticeController::$setupWizard, $shopGroupId, $shopId)) {
-                    NoticeController::addNotice(NoticeController::$setupWizard, $shopGroupId, $shopId);
+                } elseif (! AuthUtil::isPluginPaired($plugin->shopGroupId, $plugin->shopId) && ! NoticeController::hasNotice(NoticeController::$setupWizard, $plugin->shopGroupId, $plugin->shopId)) {
+                    NoticeController::addNotice(NoticeController::$setupWizard, $plugin->shopGroupId, $plugin->shopId);
                 }
             }
         } else {
-            if (AuthUtil::isPluginPaired($shopContext['id_shop_group'], $shopContext['id_shop'])) {
-                if (NoticeController::hasNotice(NoticeController::$setupWizard, $shopContext['id_shop_group'], $shopContext['id_shop'])) {
-                    NoticeController::removeNotice(NoticeController::$setupWizard, $shopContext['id_shop_group'], $shopContext['id_shop']);
+            if (AuthUtil::isPluginPaired($plugin->shopGroupId, $plugin->shopId)) {
+                if (NoticeController::hasNotice(NoticeController::$setupWizard, $plugin->shopGroupId, $plugin->shopId)) {
+                    NoticeController::removeNotice(NoticeController::$setupWizard, $plugin->shopGroupId, $plugin->shopId);
                 }
-                if (ConfigurationUtil::hasConfiguration($shopContext['id_shop_group'], $shopContext['id_shop']) && NoticeController::hasNotice(NoticeController::$configurationFailure, $shopContext['id_shop_group'], $shopContext['id_shop'])) {
-                    NoticeController::removeNotice(NoticeController::$configurationFailure, $shopContext['id_shop_group'], $shopContext['id_shop']);
-                } elseif (! ConfigurationUtil::hasConfiguration($shopContext['id_shop_group'], $shopContext['id_shop']) && ! NoticeController::hasNotice(NoticeController::$configurationFailure, $shopContext['id_shop_group'], $shopContext['id_shop'])) {
-                    NoticeController::addNotice(NoticeController::$configurationFailure, $shopContext['id_shop_group'], $shopContext['id_shop']);
+                if (ConfigurationUtil::hasConfiguration($plugin->shopGroupId, $plugin->shopId) && NoticeController::hasNotice(NoticeController::$configurationFailure, $plugin->shopGroupId, $plugin->shopId)) {
+                    NoticeController::removeNotice(NoticeController::$configurationFailure, $plugin->shopGroupId, $plugin->shopId);
+                } elseif (! ConfigurationUtil::hasConfiguration($plugin->shopGroupId, $plugin->shopId) && ! NoticeController::hasNotice(NoticeController::$configurationFailure, $plugin->shopGroupId, $plugin->shopId)) {
+                    NoticeController::addNotice(NoticeController::$configurationFailure, $plugin->shopGroupId, $plugin->shopId);
                 }
-            } elseif (! AuthUtil::isPluginPaired($shopContext['id_shop_group'], $shopContext['id_shop']) && ! NoticeController::hasNotice(NoticeController::$setupWizard, $shopContext['id_shop_group'], $shopContext['id_shop'])) {
-                NoticeController::addNotice(NoticeController::$setupWizard, $shopContext['id_shop_group'], $shopContext['id_shop']);
+            } elseif (! AuthUtil::isPluginPaired($plugin->shopGroupId, $plugin->shopId) && ! NoticeController::hasNotice(NoticeController::$setupWizard, $plugin->shopGroupId, $plugin->shopId)) {
+                NoticeController::addNotice(NoticeController::$setupWizard, $plugin->shopGroupId, $plugin->shopId);
             }
         }
     }
