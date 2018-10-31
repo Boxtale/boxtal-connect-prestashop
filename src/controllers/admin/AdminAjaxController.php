@@ -57,8 +57,8 @@ class AdminAjaxController extends \ModuleAdminController
             return false;
         }
         $noticeKey = Tools::getValue('noticeKey');
-        $noticeShopGroupId = Tools::getValue('noticeShopGroupId');
-        $noticeShopId = Tools::getValue('noticeShopId');
+        $noticeShopGroupId = "0" === Tools::getValue('noticeShopGroupId') ? null : Tools::getValue('noticeShopGroupId');
+        $noticeShopId = "0" === Tools::getValue('noticeShopId') ? null : Tools::getValue('noticeShopId');
         NoticeController::removeNotice($noticeKey, $noticeShopGroupId, $noticeShopId);
 
         return true;

@@ -44,14 +44,15 @@ class AuthUtil
     /**
      * Can use plugin.
      *
-     * @param int $shopGroupId shop group id.
-     * @param int $shopId      shop id.
+     * @param int     $shopGroupId shop group id.
+     * @param int     $shopId      shop id.
+     * @param boolean $multistore  whether multistore is on.
      *
      * @return boolean
      */
     public static function canUsePlugin($shopGroupId, $shopId, $multistore)
     {
-        if (null === $shopGroupId && null === $shopId && 1 === $multistore) {
+        if (null === $shopGroupId && null === $shopId && true === $multistore) {
             return false;
         }
 

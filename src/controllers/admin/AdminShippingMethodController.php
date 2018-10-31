@@ -3,6 +3,7 @@
  * Contains code for the shipping method admin controller.
  */
 
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\OrderUtil;
@@ -43,21 +44,21 @@ class AdminShippingMethodController extends \ModuleAdminController
         if (\Tools::isSubmit('submitTrackingEvents')) {
             $this->handleTrackingEventsForm();
         }
-        $boxtalConnect = \boxtalconnect::getInstance();
-        if (\Shop::isFeatureActive() && null === $boxtalConnect->shopGroupId && null === $boxtalConnect->shopId) {
-            $this->content = $boxtalConnect->displayTemplate('admin/multistoreAccessDenied.tpl');
+        $boxtalconnect = \boxtalconnect::getInstance();
+        if (true === $boxtalconnect->multistore && null === $boxtalconnect->shopGroupId && null === $boxtalconnect->shopId) {
+            $this->content = $boxtalconnect->displayTemplate('admin/multistoreAccessDenied.tpl');
             //phpcs:ignore
             return;
-        } elseif (!AuthUtil::canUsePlugin($boxtalConnect->shopGroupId, $boxtalConnect->shopId, $boxtalConnect->multistore)) {
-            $this->content = $boxtalConnect->displayTemplate('admin/accessDenied.tpl');
+        } elseif (!AuthUtil::canUsePlugin($boxtalconnect->shopGroupId, $boxtalconnect->shopId, $boxtalconnect->multistore)) {
+            $this->content = $boxtalconnect->displayTemplate('admin/accessDenied.tpl');
             //phpcs:ignore
             return;
         }
 
-        $smarty = $boxtalConnect->getSmarty();
-        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS', $boxtalConnect->shopGroupId, $boxtalConnect->shopId));
+        $smarty = $boxtalconnect->getSmarty();
+        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS', $boxtalconnect->shopGroupId, $boxtalconnect->shopId));
         $smarty->assign('parcelPointNetworks', $parcelPointNetworks);
-        $carriers = ShippingMethodUtil::getShippingMethods($boxtalConnect->shopGroupId, $boxtalConnect->shopId);
+        $carriers = ShippingMethodUtil::getShippingMethods($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
         foreach ((array) $carriers as $c => $carrier) {
             if (file_exists(_PS_SHIP_IMG_DIR_.(int) $carrier['id_carrier'].'.jpg')) {
                 $carriers[$c]['logo'] = _THEME_SHIP_DIR_.(int) $carrier['id_carrier'].'.jpg';
@@ -70,10 +71,46 @@ class AdminShippingMethodController extends \ModuleAdminController
         $langId = $cookie->id_lang;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
         $smarty->assign('orderStatuses', $orderStatuses);
-        $smarty->assign('orderShipped', ConfigurationUtil::get('BX_ORDER_SHIPPED', $boxtalConnect->shopGroupId, $boxtalConnect->shopId));
-        $smarty->assign('orderDelivered', ConfigurationUtil::get('BX_ORDER_DELIVERED', $boxtalConnect->shopGroupId, $boxtalConnect->shopId));
+        $orderShipped = ConfigurationUtil::get('BX_ORDER_SHIPPED', $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        $orderDelivered = ConfigurationUtil::get('BX_ORDER_DELIVERED', $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
 
-        $this->content = $boxtalConnect->displayTemplate('admin/configuration/settings.tpl');
+        if ('' !== $orderShipped && null !== $orderShipped) {
+            $isValidOrderShipped = false;
+            foreach ($orderStatuses as $status) {
+                if ($status['id_order_state'] === $orderShipped) {
+                    $isValidOrderShipped = true;
+                }
+            }
+
+            if (false === $isValidOrderShipped) {
+                $smarty->assign('orderShipped', null);
+                ConfigurationUtil::set('BX_ORDER_SHIPPED', null, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+            } else {
+                $smarty->assign('orderShipped', $orderShipped);
+            }
+        } else {
+            $smarty->assign('orderShipped', $orderShipped);
+        }
+
+        if ('' !== $orderDelivered && null !== $orderDelivered) {
+            $isValidOrderDelivered = false;
+            foreach ($orderStatuses as $status) {
+                if ($status['id_order_state'] === $orderDelivered) {
+                    $isValidOrderDelivered = true;
+                }
+            }
+
+            if (false === $isValidOrderDelivered) {
+                $smarty->assign('orderDelivered', null);
+                ConfigurationUtil::set('BX_ORDER_DELIVERED', null, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+            } else {
+                $smarty->assign('orderDelivered', $orderDelivered);
+            }
+        } else {
+            $smarty->assign('orderDelivered', $orderDelivered);
+        }
+
+        $this->content = $boxtalconnect->displayTemplate('admin/configuration/settings.tpl');
     }
 
     /**
@@ -94,7 +131,7 @@ class AdminShippingMethodController extends \ModuleAdminController
                 );
             } else {
                 \Db::getInstance()->execute(
-                    "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `parcel_point_networks`)
+                    "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `id_shop_group`, `id_shop`, `parcel_point_networks`)
                     VALUES ('".(int) $carrier['id_carrier']."', $boxtalconnect->shopGroupId, $boxtalconnect->shopId, '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
                     ON DUPLICATE KEY UPDATE parcel_point_networks='".pSQL(serialize(array()))."'"
                 );

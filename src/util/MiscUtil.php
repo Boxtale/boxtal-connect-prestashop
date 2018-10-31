@@ -117,4 +117,35 @@ class MiscUtil
 
         return $date->format(\DateTime::W3C);
     }
+
+    /**
+     * Return first admin user
+     *
+     * @return array
+     */
+    public static function getFirstAdminUser()
+    {
+        $sql = new \DbQuery();
+        $sql->select('e.email');
+        $sql->from('employee', 'e');
+        $sql->where('e.id_profile = 1');
+        $sql->where('e.active = 1');
+        $sql->orderBy('e.id_employee asc');
+        $sql->limit('limit(0,1)');
+        $user = \Db::getInstance()->executeS($sql);
+
+        return isset($user[0]) ? $user[0] : null;
+    }
+
+    /**
+     * Return first admin user email
+     *
+     * @return string
+     */
+    public static function getFirstAdminUserEmail()
+    {
+        $user = self::getFirstAdminUser();
+
+        return isset($user['email']) ? $user['email'] : null;
+    }
 }

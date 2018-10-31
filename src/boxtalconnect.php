@@ -99,7 +99,6 @@ class boxtalconnect extends Module
                 $this->initShopController($this);
                 $this->initAdminAjaxController($this);
 
-
                 if (AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
                     $this->initFrontAjaxController($this);
                     $this->initOrderController($this);

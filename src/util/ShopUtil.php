@@ -103,15 +103,9 @@ class ShopUtil
     public static function getShopContext()
     {
         if (\Shop::isFeatureActive()) {
-            $shopId = self::getCurrentShopId();
-            $shopGroupId = self::getCurrentShopGroupId();
-            if (0 === $shopGroupId && 0 === $shopId) {
-                $shopContext = array('id_shop' => null, 'id_shop_group' => null, 'multistore' => 1);
-            } else {
-                $shopContext = array('id_shop' => (int) $shopId, 'id_shop_group' => (int) $shopGroupId, 'multistore' => 1);
-            }
+            $shopContext = array('id_shop' => self::getCurrentShopId(), 'id_shop_group' => self::getCurrentShopGroupId(), 'multistore' => true);
         } else {
-            $shopContext = array('id_shop' => null, 'id_shop_group' => null, 'multistore' => 0);
+            $shopContext = array('id_shop' => self::getCurrentShopId(), 'id_shop_group' => self::getCurrentShopGroupId(), 'multistore' => false);
         }
 
         return $shopContext;
@@ -124,7 +118,7 @@ class ShopUtil
      */
     private static function getCurrentShopId()
     {
-        return (int) \Shop::getContextShopID(true);
+        return \Shop::getContextShopID(true);
     }
 
     /**
@@ -134,6 +128,6 @@ class ShopUtil
      */
     private static function getCurrentShopGroupId()
     {
-        return (int) \Shop::getContextShopGroupID();
+        return \Shop::getContextShopGroupID(true);
     }
 }

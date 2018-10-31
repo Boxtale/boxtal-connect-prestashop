@@ -95,7 +95,7 @@ class NoticeController
                 if (! in_array($key, self::$coreNotices, true)) {
                     $value = unserialize($notice['value']);
                     if (false !== $value) {
-                        $class             = new CustomNotice($key, (int) $notice['id_shop_group'], (int) $notice['id_shop'], $value);
+                        $class             = new CustomNotice($key, $notice['id_shop_group'], $notice['id_shop'], $value);
                         $noticeInstances[] = $class;
                     } else {
                         self::removeNotice($key, $shopGroupId, $shopId);
@@ -105,9 +105,9 @@ class NoticeController
                     if (class_exists($classname, true)) {
                         $value = unserialize($notice['value']);
                         if (false !== $value && null !== $value) {
-                            $class = new $classname($key, (int) $notice['id_shop_group'], (int) $notice['id_shop'], $value);
+                            $class = new $classname($key, $notice['id_shop_group'], $notice['id_shop'], $value);
                         } else {
-                            $class = new $classname($key, (int) $notice['id_shop_group'], (int) $notice['id_shop']);
+                            $class = new $classname($key, $notice['id_shop_group'], $notice['id_shop']);
                         }
                         $noticeInstances[] = $class;
                     }
@@ -262,7 +262,7 @@ class NoticeController
             $sql = new \DbQuery();
             $sql->select('n.key, n.value, n.id_shop, n.id_shop_group');
             $sql->from('bx_notices', 'n');
-            $sql->where('n.id_shop_group="'.(int) $shopGroupId.'" AND n.id_shop="'.(int) $shopId.'" AND n.key="'.pSQL($noticeKey).'"');
+            $sql->where('n.id_shop_group="'.$shopGroupId.'" AND n.id_shop="'.$shopId.'" AND n.key="'.pSQL($noticeKey).'"');
             $result = \Db::getInstance()->executeS($sql);
         }
 

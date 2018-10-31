@@ -147,6 +147,7 @@ class OrderUtil
         $sql->from('order_state', 'os');
         $sql->innerJoin('order_state_lang', 'osl', 'os.id_order_state = osl.id_order_state');
         $sql->where('osl.id_lang = '.$langId);
+        $sql->where('os.deleted = 0');
 
         return \Db::getInstance()->executeS($sql);
     }

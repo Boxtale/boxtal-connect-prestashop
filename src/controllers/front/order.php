@@ -3,6 +3,8 @@
  * Contains code for the order rest controller.
  */
 
+use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
 use Boxtal\BoxtalPhp\RestClient;
@@ -174,14 +176,73 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
     {
         $boxtalconnect = boxtalconnect::getInstance();
         if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId)) {
-            ApiUtil::sendApiResponse(403);
+            //ApiUtil::sendApiResponse(403);
         }
 
-        if (! is_int($orderId)) {
+        if (! is_numeric($orderId)) {
             ApiUtil::sendApiResponse(400);
         }
 
+        global $cookie;
+        //phpcs:ignore
+        $langId = $cookie->id_lang;
+        $orderStatuses = OrderUtil::getOrderStatuses($langId);
 
+        if ('shipped' === $route) {
+            $orderShipped = ConfigurationUtil::get('BX_ORDER_SHIPPED', $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+            if ('' !== $orderShipped && null !== $orderShipped) {
+                $isValidOrderShipped = false;
+                foreach ($orderStatuses as $status) {
+                    if ($status['id_order_state'] === $orderShipped) {
+                        $isValidOrderShipped = true;
+                    }
+                }
+
+                if (false === $isValidOrderShipped) {
+                    ConfigurationUtil::set('BX_ORDER_SHIPPED', null, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+                    NoticeController::addNotice(
+                        NoticeController::$custom,
+                        $boxtalconnect->shopGroupId,
+                        $boxtalconnect->shopId,
+                        array(
+                            'status'  => 'warning',
+                            'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status list, we\'ve adapted your tracking event configuration. Please check that everything is in order.'),
+                        )
+                    );
+                } else {
+                    $order = new \Order((int)$orderId);
+                    $order->setCurrentState($orderShipped);
+                }
+            }
+        }
+
+        if ('delivered' === $route) {
+            $orderDelivered = ConfigurationUtil::get('BX_ORDER_DELIVERED', $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+            if ('' !== $orderDelivered && null !== $orderDelivered) {
+                $isValidOrderDelivered = false;
+                foreach ($orderStatuses as $status) {
+                    if ($status['id_order_state'] === $orderDelivered) {
+                        $isValidOrderDelivered = true;
+                    }
+                }
+
+                if (false === $isValidOrderDelivered) {
+                    ConfigurationUtil::set('BX_ORDER_DELIVERED', null, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+                    NoticeController::addNotice(
+                        NoticeController::$custom,
+                        $boxtalconnect->shopGroupId,
+                        $boxtalconnect->shopId,
+                        array(
+                            'status'  => 'warning',
+                            'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status list, we\'ve adapted your tracking event configuration. Please check that everything is in order.'),
+                        )
+                    );
+                } else {
+                    $order = new \Order((int)$orderId);
+                    $order->setCurrentState($orderDelivered);
+                }
+            }
+        }
 
         ApiUtil::sendApiResponse(200);
     }

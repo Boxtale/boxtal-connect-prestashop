@@ -30,7 +30,7 @@ class SetupWizard
      */
     public function __construct($plugin)
     {
-        if (1 === $plugin->multistore) {
+        if (true === $plugin->multistore) {
             $shops = ShopUtil::getShops();
             foreach ($shops as $shop) {
                 if (AuthUtil::isPluginPaired($shop['id_shop_group'], $shop['id_shop'])) {

@@ -136,19 +136,13 @@ class ConfigurationUtil
     {
         $boxtalConnect = \boxtalconnect::getInstance();
         $url    = $boxtalConnect->onboardingUrl;
-        $sql = new \DbQuery();
-        $sql->select('e.email');
-        $sql->from('employee', 'e');
-        $sql->where('e.id_profile = 1');
-        $sql->orderBy('e.id_employee asc');
-        $sql->limit('limit(0,1)');
-        $adminUser = \Db::getInstance()->executeS($sql)[0];
+        $email = MiscUtil::getFirstAdminUserEmail();
         $locale = \Language::getIsoById((int) \boxtalconnect::getInstance()->getContext()->cookie->id_lang);
         $shopUrl = ShopUtil::getShopUrl($shopGroupId, $shopId);
 
         $params       = array(
             'acceptLanguage' => $locale,
-            'email'       => $adminUser['email'],
+            'email'       => $email,
             'shopUrl'     => $shopUrl,
             'shopType' => 'prestashop',
         );
