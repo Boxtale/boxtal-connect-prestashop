@@ -106,12 +106,12 @@ class ShopUtil
             $shopId = self::getCurrentShopId();
             $shopGroupId = self::getCurrentShopGroupId();
             if (0 === $shopGroupId && 0 === $shopId) {
-                $shopContext = array('id_shop' => null, 'id_shop_group' => null);
+                $shopContext = array('id_shop' => null, 'id_shop_group' => null, 'multistore' => 1);
             } else {
-                $shopContext = array('id_shop' => (int) $shopId, 'id_shop_group' => (int) $shopGroupId);
+                $shopContext = array('id_shop' => (int) $shopId, 'id_shop_group' => (int) $shopGroupId, 'multistore' => 1);
             }
         } else {
-            $shopContext = array('id_shop' => null, 'id_shop_group' => null);
+            $shopContext = array('id_shop' => null, 'id_shop_group' => null, 'multistore' => 0);
         }
 
         return $shopContext;

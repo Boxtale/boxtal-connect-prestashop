@@ -89,6 +89,7 @@ class boxtalconnect extends Module
         $shopContext = ShopUtil::getShopContext();
         $this->shopId = $shopContext['id_shop'];
         $this->shopGroupId = $shopContext['id_shop_group'];
+        $this->multistore = $shopContext['multistore'];
 
         if ($this->active) {
             $this->initEnvironmentCheck($this);
@@ -99,7 +100,7 @@ class boxtalconnect extends Module
                 $this->initAdminAjaxController($this);
 
 
-                if (AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
+                if (AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
                     $this->initFrontAjaxController($this);
                     $this->initOrderController($this);
                 }
@@ -293,7 +294,7 @@ class boxtalconnect extends Module
      */
     public function hookHeader($params)
     {
-        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
+        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
             return null;
         }
 
@@ -309,7 +310,7 @@ class boxtalconnect extends Module
      */
     public function hookDisplayCarrierList($params)
     {
-        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
+        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
             return null;
         }
 
@@ -325,7 +326,7 @@ class boxtalconnect extends Module
      */
     public function hookDisplayAfterCarrier($params)
     {
-        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
+        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
             return null;
         }
 
@@ -341,7 +342,7 @@ class boxtalconnect extends Module
      */
     public function hooknewOrder($params)
     {
-        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
+        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
             return;
         }
 
@@ -377,8 +378,7 @@ class boxtalconnect extends Module
      */
     public function hookDisplayAdminAfterHeader()
     {
-        $shopContext = ShopUtil::getShopContext();
-        $notices = NoticeController::getNoticeInstances($shopContext['id_shop_group'], $shopContext['id_shop']);
+        $notices = NoticeController::getNoticeInstances($this->shopGroupId, $this->shopId);
         foreach ($notices as $notice) {
             $notice->render();
         }
@@ -394,7 +394,7 @@ class boxtalconnect extends Module
     public function hookAdminOrder($params)
     {
 
-        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId)) {
+        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
             return null;
         }
 

@@ -18,7 +18,7 @@ class EnvironmentUtil
     /**
      * Get warning about PHP version, WC version.
      *
-     * @param Boxtal $plugin plugin object.
+     * @param \boxtalconnect $plugin plugin object.
      *
      * @return string $message
      */

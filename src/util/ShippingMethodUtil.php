@@ -103,8 +103,13 @@ class ShippingMethodUtil
         $sql = new \DbQuery();
         $sql->select('c.id_carrier, c.name, bc.parcel_point_networks');
         $sql->from('carrier', 'c');
-        $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_shop = '.$shopId.' AND cl.id_lang = '.(int) \Context::getContext()->language->id);
-        $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier AND bc.id_shop_group = '.$shopGroupId.' AND bc.id_shop = '.$shopId);
+        if (null !== $shopGroupId && null !== $shopId) {
+            $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_shop = '.$shopId.' AND cl.id_lang = '.(int) \Context::getContext()->language->id);
+            $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier AND bc.id_shop_group = '.$shopGroupId.' AND bc.id_shop = '.$shopId);
+        } else {
+            $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_lang = '.(int) \Context::getContext()->language->id);
+            $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier');
+        }
         $sql->where('c.deleted = 0');
 
         return \Db::getInstance()->executeS($sql);

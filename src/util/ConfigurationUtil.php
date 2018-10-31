@@ -207,7 +207,7 @@ class ConfigurationUtil
         self::delete('BX_PAIRING_UPDATE', $shopGroupId, $shopId);
         self::delete('BX_ORDER_SHIPPED', $shopGroupId, $shopId);
         self::delete('BX_ORDER_DELIVERED', $shopGroupId, $shopId);
-        NoticeController::removeAllNotices($shopGroupId, $shopId);
+        NoticeController::removeAllNoticesForShop($shopGroupId, $shopId);
     }
 
     /**

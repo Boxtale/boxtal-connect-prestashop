@@ -48,7 +48,7 @@ class AdminShippingMethodController extends \ModuleAdminController
             $this->content = $boxtalConnect->displayTemplate('admin/multistoreAccessDenied.tpl');
             //phpcs:ignore
             return;
-        } elseif (!AuthUtil::canUsePlugin($boxtalConnect->shopGroupId, $boxtalConnect->shopId)) {
+        } elseif (!AuthUtil::canUsePlugin($boxtalConnect->shopGroupId, $boxtalConnect->shopId, $boxtalConnect->multistore)) {
             $this->content = $boxtalConnect->displayTemplate('admin/accessDenied.tpl');
             //phpcs:ignore
             return;

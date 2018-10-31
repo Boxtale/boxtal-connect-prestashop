@@ -49,9 +49,9 @@ class AuthUtil
      *
      * @return boolean
      */
-    public static function canUsePlugin($shopGroupId, $shopId)
+    public static function canUsePlugin($shopGroupId, $shopId, $multistore)
     {
-        if (null === $shopGroupId && null === $shopId) {
+        if (null === $shopGroupId && null === $shopId && 1 === $multistore) {
             return false;
         }
 

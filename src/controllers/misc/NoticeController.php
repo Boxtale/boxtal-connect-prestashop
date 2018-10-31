@@ -272,12 +272,24 @@ class NoticeController
     /**
      * Remove all notices.
      *
+     * @void
+     */
+    public static function removeAllNotices()
+    {
+        \DB::getInstance()->execute(
+            'DELETE FROM `'._DB_PREFIX_.'bx_notices`;'
+        );
+    }
+
+    /**
+     * Remove all notices.
+     *
      * @param int $shopGroupId shop group id.
      * @param int $shopId      shop id.
      *
      * @void
      */
-    public static function removeAllNotices($shopGroupId, $shopId)
+    public static function removeAllNoticesForShop($shopGroupId, $shopId)
     {
         \DB::getInstance()->execute(
             'DELETE FROM `'._DB_PREFIX_.'bx_notices`
