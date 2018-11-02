@@ -2,7 +2,7 @@
 
 global $_MODULE;
 $_MODULE = array();
-$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_fc645810e50028ba3909abb9a4bc62ba'] = ' Boxtal Connect';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_fc645810e50028ba3909abb9a4bc62ba'] = 'Boxtal Connect';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_17b073f88b7a3dc289bf32d1729d792b'] = 'Vos expéditions plus simples avec le module gratuit Boxtal ! Gagnez du temps et profitez de tarifs négociés chez 15 transporteurs : Colissimo, Relais...';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_876f23178c29dc2552c0b48bf23cd9bd'] = 'Êtes-vous de vouloir désinstaller ?';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_49eb6a44db57cba8d66b3404fa9f0ad4'] = 'd-m-Y H:i:s';
@@ -20,18 +20,21 @@ $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_c395246f710b0e2c86b7ed82f7f56
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_f6f7fec07f372b7bd5eb196bbca0f3f4'] = 'vendredi';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_6036c3d913f49f28f35d734589840310'] = 'samedi';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_787c74a2e618a696e34e025adda33ad3'] = 'dimanche';
-$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_71e220a6775f63da85287651947da631'] = 'Félicitations ! La liaison de votre site avec Boxtal a été réalisée avec succès.';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_4265575098892394ac2d63bc9707d0f7'] = 'Félicitations ! La liaison de votre site %s avec Boxtal a été réalisée avec succès.';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_5f7118f4a1c594f3a9d8e07e42ae0e99'] = 'Ne plus afficher ce message';
-$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_4f5e1ad50903fc2cab9a8171893a842e'] = 'Il y a eu un problème lors de l\'initialisation du module Boxtal Connect. Veuillez contacter notre équipe support.';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_b8743fbd872846313363f735a044b643'] = '%s : il y a eu un problème lors de l\'initialisation du module Boxtal Connect. Veuillez contacter notre équipe support.';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_c35367fdee2f3f66a11082a3ff5a239d'] = 'La connexion avec Boxtal est incomplète. Veuillez vérifier votre connecteur WooCommerce dans votre compte Boxtal pour un diagnostic plus complet.';
-$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_4c0b5d2a537c64d036c72daa5f477b75'] = 'Alerte de sécurité: quelqu\'un essaie de connecter ce site à Boxtal. Êtes-vous à l\'origine de cette action ?';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_c08f872fedd3ce79a4ac294cadb05e49'] = '%s : alerte de sécurité: quelqu\'un essaie de connecter ce site à Boxtal. Êtes-vous à l\'origine de cette action ?';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_a6105c0a611b41b08f1209506350279e'] = 'oui';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_7fa3b767c460b54a2be4d49030b349c7'] = 'non';
-$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_fc1161fa60bdd517dfabf5bfd30eed80'] = 'Lancez l’assistant de configuration pour connecter votre boutique à Boxtal.';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_ce29d048853d232614ff27018973cbde'] = 'Lancez l’assistant de configuration pour connecter votre boutique %s à Boxtal.';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_b9b0827c59d3c50521315fe4a14314b0'] = 'Je connecte ma boutique';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_e77b7f06e3bd5ea77adee8b52c852dcd'] = 'Boxtal Connect - La version PHP minimale requise pour ce plugin est %1$s. Vous utilisez la version %2$s.';
 $_MODULE['<{boxtalconnect}prestashop>configurationutil_36166fa097de8ff3154b0e4c665c40e5'] = 'La liste des réseaux de points relais a changé, nous avons adapté la configuration de vos méthodes de livraison. Veuillez vérifier que tout est en ordre.';
 $_MODULE['<{boxtalconnect}prestashop>configurationutil_56531cae28f11787de359acdae6c4afa'] = 'La liste des réseaux de points relais a changé, vous pouvez ajouter le(s) nouveau(x) réseau(x) dans la configuration de vos méthodes de livraison.';
 $_MODULE['<{boxtalconnect}prestashop>environmentutil_e77b7f06e3bd5ea77adee8b52c852dcd'] = 'Boxtal Connect - La version PHP minimale requise pour ce plugin est %1$s. Vous utilisez la version %2$s.';
+$_MODULE['<{boxtalconnect}prestashop>multistoreaccessdenied_5cc3ea3e0743c027ff2200f3995bb012'] = 'Accès multiboutique non autorisé';
+$_MODULE['<{boxtalconnect}prestashop>multistoreaccessdenied_7b3fdfa9929578d05faf1a2b34069f7f'] = 'Vous devez choisir une boutique pour utiliser cette page.';
 $_MODULE['<{boxtalconnect}prestashop>accessdenied_08de2fdaabcd120b8ca1388d21179921'] = 'Accès non autorisé';
 $_MODULE['<{boxtalconnect}prestashop>accessdenied_6c42300fcec12cf9769ccb104d165754'] = 'Vous devez d\'abord connecter votre boutique à Boxtal pour pouvoir utiliser cette page.';
 $_MODULE['<{boxtalconnect}prestashop>settings_d329df906d29133b4f80e5fc25cdec32'] = 'Affichage de la carte des points relais';

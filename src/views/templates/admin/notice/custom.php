@@ -25,7 +25,7 @@ switch ($notice->status) {
     <?php echo $notice->message; ?>
     <p>
         <a class="bx-hide-notice" data-key="<?php echo $notice->key; ?>" data-shop-group-id="<?php echo $notice->shopGroupId; ?>" data-shop-id="<?php echo $notice->shopId; ?>">
-            <?php echo sprintf($boxtalConnect->l('%s: hide this notice'), $shopName); ?>
+            <?php echo sprintf($boxtalconnect->l('%s: hide this notice'), $shopName); ?>
         </a>
     </p>
 </div>

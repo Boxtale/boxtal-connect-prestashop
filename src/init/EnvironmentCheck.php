@@ -30,19 +30,18 @@ class EnvironmentCheck
     public function __construct($plugin)
     {
         $environmentWarning = EnvironmentUtil::checkErrors($plugin);
-
         if (false !== $environmentWarning) {
             NoticeController::removeAllNotices();
             NoticeController::addNotice(
                 NoticeController::$environmentWarning,
-                ShopUtil::$shopGroupId,
-                ShopUtil::$shopId,
+                null,
+                null,
                 array(
                     'message' => $environmentWarning,
                 )
             );
-        } elseif (NoticeController::hasNotice(NoticeController::$environmentWarning, ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
-            NoticeController::removeNotice(NoticeController::$environmentWarning, ShopUtil::$shopGroupId, ShopUtil::$shopId);
+        } elseif (NoticeController::hasNotice(NoticeController::$environmentWarning, null, null)) {
+            NoticeController::removeNotice(NoticeController::$environmentWarning, null, null);
         }
     }
 }

@@ -149,20 +149,30 @@ class NoticeController
     {
         if (! in_array($type, self::$coreNotices, true)) {
             $key           = uniqid('bx_', false);
-            $value         = serialize($args);
-            \Db::getInstance()->execute(
-                "INSERT INTO `"._DB_PREFIX_."bx_notices` (`id_shop_group`, `id_shop`, `key`, `value`)
-                VALUES ('.$shopGroupId.', '.$shopId.', '".pSQL($key)."', '".pSQL($value)."')"
-            );
         } else {
-            var_dump('test');
-            var_dump($shopGroupId);
-            $value         = serialize($args);
-            \Db::getInstance()->execute(
-                "INSERT IGNORE INTO `"._DB_PREFIX_."bx_notices` (`id_shop_group`, `id_shop`, `key`, `value`)
-                VALUES ('.$shopGroupId.', '.$shopId.', '".pSQL($type)."', '".pSQL($value)."')"
-            );
+            $key = $type;
         }
+
+        $value         = serialize($args);
+
+        $sql = "INSERT IGNORE INTO `"._DB_PREFIX_."bx_notices` (`id_shop_group`, `id_shop`, `key`, `value`)
+            VALUES (";
+
+        if (null === $shopGroupId) {
+            $sql .= 'null, ';
+        } else {
+            $sql .= $shopGroupId.', ';
+        }
+
+        if (null === $shopId) {
+            $sql .= 'null, ';
+        } else {
+            $sql .= $shopId.', ';
+        }
+
+        $sql .= "'".pSQL($key)."', '".pSQL($value)."')";
+
+        \Db::getInstance()->execute($sql);
     }
 
     /**

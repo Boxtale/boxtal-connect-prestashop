@@ -94,7 +94,7 @@ abstract class AbstractNotice
     {
         $notice = $this;
         if ($notice->isValid()) {
-            $boxtalConnect = \boxtalconnect::getInstance();
+            $boxtalconnect = \boxtalconnect::getInstance();
             $ajaxLink = \Context::getContext()->link->getAdminLink('AdminAjax');
             //phpcs:ignore
             $shopName = ShopUtil::getShopName($notice->shopGroupId, $notice->shopId);

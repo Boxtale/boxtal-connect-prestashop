@@ -31,7 +31,6 @@ class SetupWizard
     public function __construct($plugin)
     {
         $shops = ShopUtil::getShops();
-        var_dump($shops);
         foreach ($shops as $shop) {
             if (AuthUtil::isPluginPaired($shop['id_shop_group'], $shop['id_shop'])) {
                 if (NoticeController::hasNotice(NoticeController::$setupWizard, $shop['id_shop_group'], $shop['id_shop'])) {
