@@ -7,6 +7,7 @@ namespace Boxtal\BoxtalConnectPrestashop\Init;
 
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Util\EnvironmentUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 
 /**
  * Environment check class.
@@ -34,14 +35,14 @@ class EnvironmentCheck
             NoticeController::removeAllNotices();
             NoticeController::addNotice(
                 NoticeController::$environmentWarning,
-                null,
-                null,
+                ShopUtil::$shopGroupId,
+                ShopUtil::$shopId,
                 array(
                     'message' => $environmentWarning,
                 )
             );
-        } elseif (NoticeController::hasNotice(NoticeController::$environmentWarning, null, null)) {
-            NoticeController::removeNotice(NoticeController::$environmentWarning, null, null);
+        } elseif (NoticeController::hasNotice(NoticeController::$environmentWarning, ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
+            NoticeController::removeNotice(NoticeController::$environmentWarning, ShopUtil::$shopGroupId, ShopUtil::$shopId);
         }
     }
 }

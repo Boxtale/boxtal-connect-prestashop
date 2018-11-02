@@ -155,15 +155,13 @@ class NoticeController
                 VALUES ('.$shopGroupId.', '.$shopId.', '".pSQL($key)."', '".pSQL($value)."')"
             );
         } else {
-            $alreadyExists = self::hasNotice($type, $shopGroupId, $shopId);
-
-            if (! $alreadyExists) {
-                $value         = serialize($args);
-                \Db::getInstance()->execute(
-                    "INSERT INTO `"._DB_PREFIX_."bx_notices` (`id_shop_group`, `id_shop`, `key`, `value`)
-                    VALUES ('.$shopGroupId.', '.$shopId.', '".pSQL($type)."', '".pSQL($value)."')"
-                );
-            }
+            var_dump('test');
+            var_dump($shopGroupId);
+            $value         = serialize($args);
+            \Db::getInstance()->execute(
+                "INSERT IGNORE INTO `"._DB_PREFIX_."bx_notices` (`id_shop_group`, `id_shop`, `key`, `value`)
+                VALUES ('.$shopGroupId.', '.$shopId.', '".pSQL($type)."', '".pSQL($value)."')"
+            );
         }
     }
 

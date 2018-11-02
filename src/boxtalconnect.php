@@ -84,7 +84,7 @@ class boxtalconnect extends Module
         $this->minPhpVersion = '5.3.0';
         $this->onboardingUrl = 'https://www.boxtal.com/onboarding';
 
-        $shopContext = ShopUtil::getShopContext();
+        ShopUtil::getShopContext();
 
         if ($this->active) {
             $this->initEnvironmentCheck($this);

@@ -76,23 +76,11 @@ class ShopUtil
      */
     public static function getShops()
     {
-
-        if (\Shop::isFeatureActive()) {
-            $sql = new \DbQuery();
-            $sql->select('s.id_shop, s.id_shop_group');
-            $sql->from('shop', 's');
-            $sql->where('s.active=1 AND s.deleted=0');
-
-            $shops = \Db::getInstance()->executeS($sql);
-        } else {
-            $shops = array();
-            $shops[] = array(
-                'id_shop' => self::getCurrentShopId(),
-                'id_shop_group' => self::getCurrentShopGroupId(),
-            );
-        }
-
-        return $shops;
+        $sql = new \DbQuery();
+        $sql->select('s.id_shop, s.id_shop_group');
+        $sql->from('shop', 's');
+        $sql->where('s.active=1 AND s.deleted=0');
+        return \Db::getInstance()->executeS($sql);
     }
 
     /**
