@@ -125,10 +125,10 @@ class NoticeController
         $sql = new \DbQuery();
         $sql->select('n.key, n.value, n.id_shop, n.id_shop_group');
         $sql->from('bx_notices', 'n');
-        if (null !== ShopUtil::$shopGroupId) {
+        if (ShopUtil::$multistore && null !== ShopUtil::$shopGroupId) {
             $sql->where('n.id_shop_group='.ShopUtil::$shopGroupId);
         }
-        if (null !== ShopUtil::$shopId) {
+        if (ShopUtil::$multistore && null !== ShopUtil::$shopId) {
             $sql->where('n.id_shop='.ShopUtil::$shopId);
         }
 

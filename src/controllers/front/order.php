@@ -74,8 +74,6 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
     public function retrieveOrdersHandler()
     {
         $response = $this->getOrders();
-        echo json_encode($response);
-        die();
         ApiUtil::sendApiResponse(200, $response);
     }
 
