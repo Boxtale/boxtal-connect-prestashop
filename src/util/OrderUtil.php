@@ -16,12 +16,9 @@ class OrderUtil
     /**
      * Get order data.
      *
-     * @param int $shopGroupId shop group id.
-     * @param int $shopId      shop id.
-     *
      * @return array|false|null
      */
-    public static function getOrders($shopGroupId, $shopId)
+    public static function getOrders()
     {
         $sql = new \DbQuery();
         $sql->select('o.id_order, o.reference, c.firstname, c.lastname, c.company, a.address1, a.address2, a.city, a.postcode, co.iso_code as country_iso, s.iso_code as state_iso, c.email, a.phone, osl.name as status, ca.name as shippingMethod, o.total_shipping_tax_excl as shippingAmount, o.date_add as creationDate, o.total_paid_tax_excl as orderAmount');
@@ -34,8 +31,9 @@ class OrderUtil
         $sql->innerJoin('order_state_lang', 'osl', 'os.id_order_state = osl.id_order_state');
         $sql->innerJoin('order_carrier', 'oc', 'o.id_order = oc.id_order');
         $sql->innerJoin('carrier', 'ca', 'oc.id_carrier = ca.id_carrier');
-        $sql->where('os.shipped=0 AND o.id_shop_group="'.$shopGroupId.'" AND o.id_shop="'.$shopId.'"');
+        $sql->where('os.shipped=0 AND o.id_shop_group='.ShopUtil::$shopGroupId.' AND o.id_shop='.ShopUtil::$shopId);
         $sql->groupBy('o.reference');
+        $sql->orderBy('creationDate desc');
 
         return \Db::getInstance()->executeS($sql);
     }

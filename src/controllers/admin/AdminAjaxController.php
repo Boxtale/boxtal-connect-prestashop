@@ -7,6 +7,7 @@
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 
 /**
  * Ajax admin controller class.
@@ -57,8 +58,8 @@ class AdminAjaxController extends \ModuleAdminController
             return false;
         }
         $noticeKey = Tools::getValue('noticeKey');
-        $noticeShopGroupId = "0" === Tools::getValue('noticeShopGroupId') ? null : Tools::getValue('noticeShopGroupId');
-        $noticeShopId = "0" === Tools::getValue('noticeShopId') ? null : Tools::getValue('noticeShopId');
+        $noticeShopGroupId = "" === Tools::getValue('noticeShopGroupId') ? null : Tools::getValue('noticeShopGroupId');
+        $noticeShopId = "" === Tools::getValue('noticeShopId') ? null : Tools::getValue('noticeShopId');
         NoticeController::removeNotice($noticeKey, $noticeShopGroupId, $noticeShopId);
 
         return true;
@@ -78,20 +79,20 @@ class AdminAjaxController extends \ModuleAdminController
 
         $boxtalconnect = boxtalconnect::getInstance();
         $lib = new ApiClient(
-            AuthUtil::getAccessKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId),
-            AuthUtil::getSecretKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId)
+            AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId),
+            AuthUtil::getSecretKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)
         );
         //phpcs:ignore
         $response = $lib->restClient->request(
             RestClient::$PATCH,
-            ConfigurationUtil::get('BW_PAIRING_UPDATE', $boxtalconnect->shopGroupId, $boxtalconnect->shopId),
+            ConfigurationUtil::get('BW_PAIRING_UPDATE'),
             array( 'approve' => $approve )
         );
 
         if (! $response->isError()) {
-            AuthUtil::endPairingUpdate($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
-            NoticeController::removeNotice(NoticeController::$pairingUpdate, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
-            NoticeController::addNotice(NoticeController::$pairing, $boxtalconnect->shopGroupId, $boxtalconnect->shopId, array( 'result' => 1 ));
+            AuthUtil::endPairingUpdate();
+            NoticeController::removeNotice(NoticeController::$pairingUpdate, ShopUtil::$shopGroupId, ShopUtil::$shopId);
+            NoticeController::addNotice(NoticeController::$pairing, ShopUtil::$shopGroupId, ShopUtil::$shopId, array( 'result' => 1 ));
             wp_send_json(true);
         } else {
             wp_send_json_error('pairing validation failed');

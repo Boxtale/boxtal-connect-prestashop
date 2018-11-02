@@ -45,20 +45,20 @@ class AdminShippingMethodController extends \ModuleAdminController
             $this->handleTrackingEventsForm();
         }
         $boxtalconnect = \boxtalconnect::getInstance();
-        if (true === $boxtalconnect->multistore && null === $boxtalconnect->shopGroupId && null === $boxtalconnect->shopId) {
+        if (true === ShopUtil::$multistore && null === ShopUtil::$shopId) {
             $this->content = $boxtalconnect->displayTemplate('admin/multistoreAccessDenied.tpl');
             //phpcs:ignore
             return;
-        } elseif (!AuthUtil::canUsePlugin($boxtalconnect->shopGroupId, $boxtalconnect->shopId, $boxtalconnect->multistore)) {
+        } elseif (!AuthUtil::canUsePlugin()) {
             $this->content = $boxtalconnect->displayTemplate('admin/accessDenied.tpl');
             //phpcs:ignore
             return;
         }
 
         $smarty = $boxtalconnect->getSmarty();
-        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS', $boxtalconnect->shopGroupId, $boxtalconnect->shopId));
+        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
         $smarty->assign('parcelPointNetworks', $parcelPointNetworks);
-        $carriers = ShippingMethodUtil::getShippingMethods($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        $carriers = ShippingMethodUtil::getShippingMethods();
         foreach ((array) $carriers as $c => $carrier) {
             if (file_exists(_PS_SHIP_IMG_DIR_.(int) $carrier['id_carrier'].'.jpg')) {
                 $carriers[$c]['logo'] = _THEME_SHIP_DIR_.(int) $carrier['id_carrier'].'.jpg';
@@ -71,8 +71,8 @@ class AdminShippingMethodController extends \ModuleAdminController
         $langId = $cookie->id_lang;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
         $smarty->assign('orderStatuses', $orderStatuses);
-        $orderShipped = ConfigurationUtil::get('BX_ORDER_SHIPPED', $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
-        $orderDelivered = ConfigurationUtil::get('BX_ORDER_DELIVERED', $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        $orderShipped = ConfigurationUtil::get('BX_ORDER_SHIPPED');
+        $orderDelivered = ConfigurationUtil::get('BX_ORDER_DELIVERED');
 
         if ('' !== $orderShipped && null !== $orderShipped) {
             $isValidOrderShipped = false;
@@ -84,7 +84,7 @@ class AdminShippingMethodController extends \ModuleAdminController
 
             if (false === $isValidOrderShipped) {
                 $smarty->assign('orderShipped', null);
-                ConfigurationUtil::set('BX_ORDER_SHIPPED', null, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+                ConfigurationUtil::set('BX_ORDER_SHIPPED', null);
             } else {
                 $smarty->assign('orderShipped', $orderShipped);
             }
@@ -102,7 +102,7 @@ class AdminShippingMethodController extends \ModuleAdminController
 
             if (false === $isValidOrderDelivered) {
                 $smarty->assign('orderDelivered', null);
-                ConfigurationUtil::set('BX_ORDER_DELIVERED', null, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+                ConfigurationUtil::set('BX_ORDER_DELIVERED', null);
             } else {
                 $smarty->assign('orderDelivered', $orderDelivered);
             }
@@ -120,22 +120,24 @@ class AdminShippingMethodController extends \ModuleAdminController
      */
     private function handleParcelPointNetworksForm()
     {
-        $boxtalconnect = boxtalconnect::getInstance();
-        $carriers = ShippingMethodUtil::getShippingMethods($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        $carriers = ShippingMethodUtil::getShippingMethods();
         foreach ((array) $carriers as $carrier) {
-            if (\Tools::isSubmit('parcelPointNetworks_'.(int) $carrier['id_carrier'])) {
-                \Db::getInstance()->execute(
-                    "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `id_shop_group`, `id_shop`, `parcel_point_networks`)
-                    VALUES ('".(int) $carrier['id_carrier']."', $boxtalconnect->shopGroupId, $boxtalconnect->shopId, '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
-                    ON DUPLICATE KEY UPDATE parcel_point_networks='".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."'"
-                );
-            } else {
-                \Db::getInstance()->execute(
-                    "INSERT INTO `"._DB_PREFIX_."bx_carrier` (`id_carrier`, `id_shop_group`, `id_shop`, `parcel_point_networks`)
-                    VALUES ('".(int) $carrier['id_carrier']."', $boxtalconnect->shopGroupId, $boxtalconnect->shopId, '".pSQL(serialize(\Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier'])))."')
-                    ON DUPLICATE KEY UPDATE parcel_point_networks='".pSQL(serialize(array()))."'"
-                );
-            }
+            $parcelPointNetworks = \Tools::isSubmit('parcelPointNetworks_'.(int) $carrier['id_carrier']) ? \Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier']) : array();
+
+            $data = array(
+                'id_carrier' => (int) $carrier['id_carrier'],
+                'id_shop_group' => ShopUtil::$shopGroupId,
+                'id_shop' => ShopUtil::$shopId,
+                'parcel_point_networks' => pSQL(serialize($parcelPointNetworks)),
+            );
+
+            \Db::getInstance()->insert(
+                'bx_carrier',
+                $data,
+                true,
+                true,
+                \Db::REPLACE
+            );
         }
     }
 
@@ -146,22 +148,21 @@ class AdminShippingMethodController extends \ModuleAdminController
      */
     private function handleTrackingEventsForm()
     {
-        $boxtalConnect = boxtalConnect::getInstance();
         if (\Tools::isSubmit('orderShipped')) {
             $status = \Tools::getValue('orderShipped');
             if ('' === $status) {
-                ConfigurationUtil::set('BX_ORDER_SHIPPED', null, $boxtalConnect->shopGroupId, $boxtalConnect->shopId);
+                ConfigurationUtil::set('BX_ORDER_SHIPPED', null);
             } else {
-                ConfigurationUtil::set('BX_ORDER_SHIPPED', $status, $boxtalConnect->shopGroupId, $boxtalConnect->shopId);
+                ConfigurationUtil::set('BX_ORDER_SHIPPED', $status);
             }
         }
 
         if (\Tools::isSubmit('orderDelivered')) {
             $status = \Tools::getValue('orderDelivered');
             if ('' === $status) {
-                ConfigurationUtil::set('BX_ORDER_DELIVERED', null, $boxtalConnect->shopGroupId, $boxtalConnect->shopId);
+                ConfigurationUtil::set('BX_ORDER_DELIVERED', null);
             } else {
-                ConfigurationUtil::set('BX_ORDER_DELIVERED', $status, $boxtalConnect->shopGroupId, $boxtalConnect->shopId);
+                ConfigurationUtil::set('BX_ORDER_DELIVERED', $status);
             }
         }
     }

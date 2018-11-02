@@ -3,6 +3,7 @@
  * Contains code for the shop rest controller.
  */
 
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
@@ -102,26 +103,25 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
             }
         }
 
-        $boxtalconnect = boxtalconnect::getInstance();
         if (null !== $accessKey && null !== $secretKey) {
-            if (! AuthUtil::isPluginPaired($boxtalconnect->shopGroupId, $boxtalconnect->shopId)) { // initial pairing.
-                AuthUtil::pairPlugin($accessKey, $secretKey, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
-                NoticeController::removeNotice(NoticeController::$setupWizard, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
-                NoticeController::addNotice(NoticeController::$pairing, $boxtalconnect->shopGroupId, $boxtalconnect->shopId, array( 'result' => 1 ));
+            if (! AuthUtil::isPluginPaired(ShopUtil::$shopGroupId, ShopUtil::$shopId)) { // initial pairing.
+                AuthUtil::pairPlugin($accessKey, $secretKey);
+                NoticeController::removeNotice(NoticeController::$setupWizard, ShopUtil::$shopGroupId, ShopUtil::$shopId);
+                NoticeController::addNotice(NoticeController::$pairing, ShopUtil::$shopGroupId, ShopUtil::$shopId, array( 'result' => 1 ));
                 ApiUtil::sendApiResponse(200);
             } else { // pairing update.
                 if (null !== $callbackUrl) {
-                    AuthUtil::pairPlugin($accessKey, $secretKey, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
-                    NoticeController::removeNotice(NoticeController::$pairing, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
-                    AuthUtil::startPairingUpdate($callbackUrl, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
-                    NoticeController::addNotice(NoticeController::$pairingUpdate, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+                    AuthUtil::pairPlugin($accessKey, $secretKey);
+                    NoticeController::removeNotice(NoticeController::$pairing, ShopUtil::$shopGroupId, ShopUtil::$shopId);
+                    AuthUtil::startPairingUpdate($callbackUrl);
+                    NoticeController::addNotice(NoticeController::$pairingUpdate, ShopUtil::$shopGroupId, ShopUtil::$shopId);
                     ApiUtil::sendApiResponse(200);
                 } else {
                     ApiUtil::sendApiResponse(403);
                 }
             }
         } else {
-            NoticeController::addNotice(NoticeController::$pairing, $boxtalconnect->shopGroupId, $boxtalconnect->shopId, array( 'result' => 0 ));
+            NoticeController::addNotice(NoticeController::$pairing, ShopUtil::$shopGroupId, ShopUtil::$shopId, array( 'result' => 0 ));
             ApiUtil::sendApiResponse(400);
         }
     }
@@ -139,12 +139,11 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
             ApiUtil::sendApiResponse(400);
         }
 
-        $boxtalconnect = boxtalconnect::getInstance();
-        if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId)) {
+        if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
             ApiUtil::sendApiResponse(403);
         }
 
-        ConfigurationUtil::deleteConfiguration($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        ConfigurationUtil::deleteConfiguration();
         ApiUtil::sendApiResponse(200);
     }
 

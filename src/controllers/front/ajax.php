@@ -93,11 +93,11 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
         $text = "";
         $selectedCarrierCleanId = ShippingMethodUtil::getCleanId($selectedCarrierId);
         $boxtalconnect = \boxtalconnect::getInstance();
-        $pointsResponse = @unserialize(CartStorageUtil::get((int) $cartId, 'bxParcelPoints', $boxtalconnect->shopGroupId, $boxtalconnect->shopId));
+        $pointsResponse = @unserialize(CartStorageUtil::get((int) $cartId, 'bxParcelPoints'));
         if (false !== $pointsResponse) {
-            $chosenParcelPoint = ParcelPointController::getChosenPoint((int) $cartId, $boxtalconnect->shopGroupId, $boxtalconnect->shopId, $selectedCarrierCleanId);
+            $chosenParcelPoint = ParcelPointController::getChosenPoint((int) $cartId, $selectedCarrierCleanId);
             if (null === $chosenParcelPoint) {
-                $closestParcelPoint = ParcelPointController::getClosestPoint((int) $cartId, $boxtalconnect->shopGroupId, $boxtalconnect->shopId, $selectedCarrierCleanId);
+                $closestParcelPoint = ParcelPointController::getClosestPoint((int) $cartId, $selectedCarrierCleanId);
                 $text .= '<br/><span class="bx-parcel-client">'.$boxtalconnect->l('Closest parcel point:').' <span class="bw-parcel-name">'.$closestParcelPoint->parcelPoint->name.'</span></span>';
             } else {
                 $text .= '<br/><span class="bx-parcel-client">'.$boxtalconnect->l('Your parcel point:').' <span class="bw-parcel-name">'.$chosenParcelPoint->parcelPoint->name.'</span></span>';
@@ -118,10 +118,9 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
      */
     public function getPointsHandler($cartId, $selectedCarrierId)
     {
-        $boxtalconnect = \boxtalconnect::getInstance();
         $selectedCarrierCleanId = ShippingMethodUtil::getCleanId($selectedCarrierId);
-        $pointsResponse = @unserialize(CartStorageUtil::get((int) $cartId, 'bxParcelPoints', $boxtalconnect->shopGroupId, $boxtalconnect->shopId));
-        $networks = ShippingMethodUtil::getSelectedParcelPointNetworks($selectedCarrierCleanId, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        $pointsResponse = @unserialize(CartStorageUtil::get((int) $cartId, 'bxParcelPoints'));
+        $networks = ShippingMethodUtil::getSelectedParcelPointNetworks($selectedCarrierCleanId);
         if (false !== $pointsResponse && property_exists($pointsResponse, 'nearbyParcelPoints') && is_array($pointsResponse->nearbyParcelPoints) && count($pointsResponse->nearbyParcelPoints) > 0) {
             $points = array();
             foreach ($pointsResponse->nearbyParcelPoints as $parcelPoint) {
@@ -165,8 +164,7 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
         $parcelPoint->parcelPoint->code = $code;
         $parcelPoint->parcelPoint->name = $name;
 
-        $boxtalconnect = \boxtalconnect::getInstance();
-        CartStorageUtil::set((int) $cartId, 'bxChosenParcelPoint'.$selectedCarrierCleanId, serialize($parcelPoint), $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        CartStorageUtil::set((int) $cartId, 'bxChosenParcelPoint'.$selectedCarrierCleanId, serialize($parcelPoint));
 
         ApiUtil::sendAjaxResponse(200);
     }

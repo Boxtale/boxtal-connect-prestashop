@@ -18,6 +18,12 @@ use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 class ShopUtil
 {
 
+    public static $shopId;
+
+    public static $shopGroupId;
+
+    public static $multistore;
+
     /**
      * Get shop name.
      *
@@ -49,21 +55,15 @@ class ShopUtil
     public static function getShopUrl($shopGroupId, $shopId)
     {
         $shopUrl = null;
-
-        if (\Shop::isFeatureActive()) {
-            $sql = new \DbQuery();
-            $sql->select('s.domain, s.domain_ssl, s.physical_uri, s.virtual_uri');
-            $sql->from('shop_url', 's');
-            $sql->where('s.id_shop="'.$shopId.'"');
-            $shop = \Db::getInstance()->executeS($sql);
-            if (isset($shop[0]['domain'], $shop[0]['domain_ssl'], $shop[0]['physical_uri'], $shop[0]['virtual_uri'])) {
-                $sslEnabled = ConfigurationUtil::get('PS_SSL_ENABLED', $shopGroupId, $shopId);
-                $shopUrl = $sslEnabled ? 'https://'.$shop[0]['domain_ssl'] : 'http://'.$shop[0]['domain'];
-                $shopUrl .= $shop[0]['physical_uri'].$shop[0]['virtual_uri'];
-            }
-        } else {
-            $sslEnabled = ConfigurationUtil::get('PS_SSL_ENABLED', null, null);
-            $shopUrl = $sslEnabled ? 'https://'.__PS_BASE_URI__ : 'http://'.__PS_BASE_URI__;
+        $sql = new \DbQuery();
+        $sql->select('s.domain, s.domain_ssl, s.physical_uri, s.virtual_uri');
+        $sql->from('shop_url', 's');
+        $sql->where('s.id_shop='.$shopId);
+        $shop = \Db::getInstance()->executeS($sql);
+        if (isset($shop[0]['domain'], $shop[0]['domain_ssl'], $shop[0]['physical_uri'], $shop[0]['virtual_uri'])) {
+            $sslEnabled = ConfigurationUtil::get('PS_SSL_ENABLED', $shopGroupId, $shopId);
+            $shopUrl = $sslEnabled ? 'https://'.$shop[0]['domain_ssl'] : 'http://'.$shop[0]['domain'];
+            $shopUrl .= $shop[0]['physical_uri'].$shop[0]['virtual_uri'];
         }
 
         return $shopUrl;
@@ -98,17 +98,19 @@ class ShopUtil
     /**
      * Get shop context.
      *
-     * @return array with shop id or shop group id, or null if 'all shops' context.
+     * @void
      */
     public static function getShopContext()
     {
         if (\Shop::isFeatureActive()) {
-            $shopContext = array('id_shop' => self::getCurrentShopId(), 'id_shop_group' => self::getCurrentShopGroupId(), 'multistore' => true);
+            self::$shopGroupId = self::getCurrentShopGroupId();
+            self::$shopId = self::getCurrentShopId();
+            self::$multistore = true;
         } else {
-            $shopContext = array('id_shop' => self::getCurrentShopId(), 'id_shop_group' => self::getCurrentShopGroupId(), 'multistore' => false);
+            self::$shopGroupId = self::getCurrentShopGroupId();
+            self::$shopId = self::getCurrentShopId();
+            self::$multistore = false;
         }
-
-        return $shopContext;
     }
 
     /**
@@ -118,7 +120,7 @@ class ShopUtil
      */
     private static function getCurrentShopId()
     {
-        return \Shop::getContextShopID(true);
+        return \Shop::getContextShopID();
     }
 
     /**
@@ -128,6 +130,6 @@ class ShopUtil
      */
     private static function getCurrentShopGroupId()
     {
-        return \Shop::getContextShopGroupID(true);
+        return \Shop::getContextShopGroupID();
     }
 }

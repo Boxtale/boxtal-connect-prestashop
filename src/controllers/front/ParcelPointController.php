@@ -7,6 +7,7 @@ namespace Boxtal\BoxtalConnectPrestashop\Controllers\Front;
 
 use Boxtal\BoxtalConnectPrestashop\Util\CartStorageUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 use Boxtal\BoxtalPhp\ApiClient;
 use Boxtal\BoxtalConnectPrestashop\Util\AddressUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
@@ -56,8 +57,8 @@ class ParcelPointController
         $smarty = $boxtalconnect->getSmarty();
         $smarty->assign('translation', \Tools::jsonEncode($translation));
         $smarty->assign('mapUrl', self::getMapUrl());
-        $smarty->assign('mapLogoImageUrl', ConfigurationUtil::getMapLogoImageUrl($boxtalconnect->shopGroupId, $boxtalconnect->shopId));
-        $smarty->assign('mapLogoHrefUrl', ConfigurationUtil::getMapLogoHrefUrl($boxtalconnect->shopGroupId, $boxtalconnect->shopId));
+        $smarty->assign('mapLogoImageUrl', ConfigurationUtil::getMapLogoImageUrl());
+        $smarty->assign('mapLogoHrefUrl', ConfigurationUtil::getMapLogoHrefUrl());
 
         $controller = $boxtalconnect->getCurrentController();
         if (method_exists($controller, 'registerJavascript')) {
@@ -108,16 +109,15 @@ class ParcelPointController
             return null;
         }
         $cart = $params['cart'];
-        $boxtalconnect = boxtalconnect::getInstance();
-        CartStorageUtil::set($cart->id, 'bxParcelPoints', null, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        CartStorageUtil::set($cart->id, 'bxParcelPoints', null);
         //phpcs:ignore
         $address = new \Address((int) $cart->id_address_delivery);
-        $parcelPointNetworks = ShippingMethodUtil::getAllSelectedParcelPointNetworks($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        $parcelPointNetworks = ShippingMethodUtil::getAllSelectedParcelPointNetworks();
         if (!empty($parcelPointNetworks)) {
-            $lib      = new ApiClient(AuthUtil::getAccessKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId), AuthUtil::getSecretKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId));
+            $lib      = new ApiClient(AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId), AuthUtil::getSecretKey(ShopUtil::$shopGroupId, ShopUtil::$shopId));
             $response = $lib->getParcelPoints(AddressUtil::convert($address), $parcelPointNetworks);
             if (! $response->isError() && property_exists($response->response, 'nearbyParcelPoints') && is_array($response->response->nearbyParcelPoints) && count($response->response->nearbyParcelPoints) > 0) {
-                CartStorageUtil::set((int) $cart->id, 'bxParcelPoints', serialize($response->response), $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+                CartStorageUtil::set((int) $cart->id, 'bxParcelPoints', serialize($response->response));
                 $boxtalconnect = \boxtalconnect::getInstance();
                 $smarty = $boxtalconnect->getSmarty();
                 $smarty->assign('bxCartId', (int) $cart->id);
@@ -138,10 +138,9 @@ class ParcelPointController
      */
     public static function getMapUrl()
     {
-        $boxtalconnect = boxtalconnect::getInstance();
-        $token = AuthUtil::getMapsToken($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        $token = AuthUtil::getMapsToken();
         if (null !== $token) {
-            return str_replace('${access_token}', $token, ConfigurationUtil::get('BX_MAP_BOOTSTRAP_URL', $boxtalconnect->shopGroupId, $boxtalconnect->shopId));
+            return str_replace('${access_token}', $token, ConfigurationUtil::get('BX_MAP_BOOTSTRAP_URL'));
         }
 
         return null;
@@ -150,17 +149,15 @@ class ParcelPointController
     /**
      * Get closest parcel point.
      *
-     * @param int    $cartId      cart id.
-     * @param int    $shopGroupId shop group id.
-     * @param int    $shopId      shop id.
-     * @param string $id          shipping method id.
+     * @param int    $cartId cart id.
+     * @param string $id     shipping method id.
      *
      * @return mixed
      */
-    public static function getClosestPoint($cartId, $shopGroupId, $shopId, $id)
+    public static function getClosestPoint($cartId, $id)
     {
-        $parcelPoints = @unserialize(CartStorageUtil::get($cartId, 'bxParcelPoints', $shopGroupId, $shopId));
-        $networks = ShippingMethodUtil::getSelectedParcelPointNetworks($id, $shopGroupId, $shopId);
+        $parcelPoints = @unserialize(CartStorageUtil::get($cartId, 'bxParcelPoints'));
+        $networks = ShippingMethodUtil::getSelectedParcelPointNetworks($id);
         if (property_exists($parcelPoints, 'nearbyParcelPoints') && is_array($parcelPoints->nearbyParcelPoints) && count($parcelPoints->nearbyParcelPoints) > 0) {
             foreach ($parcelPoints->nearbyParcelPoints as $parcelPoint) {
                 if (property_exists($parcelPoint, 'parcelPoint') && property_exists($parcelPoint->parcelPoint, 'network') && in_array($parcelPoint->parcelPoint->network, $networks)) {
@@ -175,16 +172,14 @@ class ParcelPointController
     /**
      * Get chosen parcel point.
      *
-     * @param int    $cartId      cart id.
-     * @param int    $shopGroupId shop group id.
-     * @param int    $shopId      shop id.
-     * @param string $id          shipping method id.
+     * @param int    $cartId cart id.
+     * @param string $id     shipping method id.
      *
      * @return mixed
      */
-    public static function getChosenPoint($cartId, $shopGroupId, $shopId, $id)
+    public static function getChosenPoint($cartId, $id)
     {
-        $point = @unserialize(CartStorageUtil::get($cartId, 'bxChosenParcelPoint'.$id, $shopGroupId, $shopId));
+        $point = @unserialize(CartStorageUtil::get($cartId, 'bxChosenParcelPoint'.$id));
         if (false !== $point) {
             return $point;
         }
@@ -212,17 +207,17 @@ class ParcelPointController
         $carrierId = $cart->id_carrier;
 
         $boxtalconnect = boxtalconnect::getInstance();
-        $closestPoint = ParcelPointController::getClosestPoint($cart->id, $boxtalconnect->shopGroupId, $boxtalconnect->shopId, $carrierId);
+        $closestPoint = ParcelPointController::getClosestPoint($cart->id, $carrierId);
         if (null !== $closestPoint) {
-            $point = ParcelPointController::getChosenPoint($cart->id, $boxtalconnect->shopGroupId, $boxtalconnect->shopId, $carrierId);
+            $point = ParcelPointController::getChosenPoint($cart->id, $carrierId);
             if (null === $point) {
                 $point = $closestPoint;
             }
 
-            CartStorageUtil::delete($cart->id, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+            CartStorageUtil::delete($cart->id);
 
-            OrderStorageUtil::set($order->id, $boxtalconnect->shopGroupId, $boxtalconnect->shopId, 'bxParcelPointCode', $point->parcelPoint->code);
-            OrderStorageUtil::set($order->id, $boxtalconnect->shopGroupId, $boxtalconnect->shopId, 'bxParcelPointNetwork', $point->parcelPoint->network);
+            OrderStorageUtil::set($order->id, 'bxParcelPointCode', $point->parcelPoint->code);
+            OrderStorageUtil::set($order->id, 'bxParcelPointNetwork', $point->parcelPoint->network);
         }
 
         return;

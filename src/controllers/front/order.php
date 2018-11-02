@@ -7,10 +7,10 @@ use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
-use Boxtal\BoxtalConnectPrestashop\Util\CarrierUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\MiscUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\OrderUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ProductUtil;
@@ -73,22 +73,20 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
      */
     public function retrieveOrdersHandler()
     {
-        $boxtalconnect = boxtalconnect::getInstance();
-        $response = $this->getOrders($boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+        $response = $this->getOrders();
+        echo json_encode($response);
+        die();
         ApiUtil::sendApiResponse(200, $response);
     }
 
     /**
      * Get Prestashop orders.
      *
-     * @param int $shopGroupId shop group id.
-     * @param int $shopId      shop id.
-     *
      * @return array $result
      */
-    public function getOrders($shopGroupId, $shopId)
+    public function getOrders()
     {
-        $orders = OrderUtil::getOrders($shopGroupId, $shopId);
+        $orders = OrderUtil::getOrders();
         $result = array();
 
         foreach ($orders as $order) {
@@ -124,8 +122,8 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
             }
 
             $parcelPoint          = null;
-            $parcelPointCode     = OrderStorageUtil::get($orderId, 'bxParcelPointCode', $shopGroupId, $shopId);
-            $parcelPointNetwork = OrderStorageUtil::get($orderId, 'bxParcelPointNetwork', $shopGroupId, $shopId);
+            $parcelPointCode     = OrderStorageUtil::get($orderId, 'bxParcelPointCode');
+            $parcelPointNetwork = OrderStorageUtil::get($orderId, 'bxParcelPointNetwork');
             if ($parcelPointCode && $parcelPointNetwork) {
                 $parcelPoint = array(
                     'code'     => $parcelPointCode,
@@ -175,8 +173,8 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
     public function trackingEventHandler($orderId, $route, $body)
     {
         $boxtalconnect = boxtalconnect::getInstance();
-        if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey($boxtalconnect->shopGroupId, $boxtalconnect->shopId)) {
-            //ApiUtil::sendApiResponse(403);
+        if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
+            ApiUtil::sendApiResponse(403);
         }
 
         if (! is_numeric($orderId)) {
@@ -189,7 +187,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
 
         if ('shipped' === $route) {
-            $orderShipped = ConfigurationUtil::get('BX_ORDER_SHIPPED', $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+            $orderShipped = ConfigurationUtil::get('BX_ORDER_SHIPPED');
             if ('' !== $orderShipped && null !== $orderShipped) {
                 $isValidOrderShipped = false;
                 foreach ($orderStatuses as $status) {
@@ -199,25 +197,25 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                 }
 
                 if (false === $isValidOrderShipped) {
-                    ConfigurationUtil::set('BX_ORDER_SHIPPED', null, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+                    ConfigurationUtil::set('BX_ORDER_SHIPPED', null);
                     NoticeController::addNotice(
                         NoticeController::$custom,
-                        $boxtalconnect->shopGroupId,
-                        $boxtalconnect->shopId,
+                        ShopUtil::$shopGroupId,
+                        ShopUtil::$shopId,
                         array(
                             'status'  => 'warning',
                             'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status list, we\'ve adapted your tracking event configuration. Please check that everything is in order.'),
                         )
                     );
                 } else {
-                    $order = new \Order((int)$orderId);
+                    $order = new \Order((int) $orderId);
                     $order->setCurrentState($orderShipped);
                 }
             }
         }
 
         if ('delivered' === $route) {
-            $orderDelivered = ConfigurationUtil::get('BX_ORDER_DELIVERED', $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+            $orderDelivered = ConfigurationUtil::get('BX_ORDER_DELIVERED');
             if ('' !== $orderDelivered && null !== $orderDelivered) {
                 $isValidOrderDelivered = false;
                 foreach ($orderStatuses as $status) {
@@ -227,18 +225,16 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                 }
 
                 if (false === $isValidOrderDelivered) {
-                    ConfigurationUtil::set('BX_ORDER_DELIVERED', null, $boxtalconnect->shopGroupId, $boxtalconnect->shopId);
+                    ConfigurationUtil::set('BX_ORDER_DELIVERED', null);
                     NoticeController::addNotice(
                         NoticeController::$custom,
-                        $boxtalconnect->shopGroupId,
-                        $boxtalconnect->shopId,
                         array(
                             'status'  => 'warning',
                             'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status list, we\'ve adapted your tracking event configuration. Please check that everything is in order.'),
                         )
                     );
                 } else {
-                    $order = new \Order((int)$orderId);
+                    $order = new \Order((int) $orderId);
                     $order->setCurrentState($orderDelivered);
                 }
             }

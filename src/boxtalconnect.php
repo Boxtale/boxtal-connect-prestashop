@@ -32,10 +32,8 @@ use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController;
 use Boxtal\BoxtalConnectPrestashop\Init\EnvironmentCheck;
 use Boxtal\BoxtalConnectPrestashop\Init\SetupWizard;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
-use Boxtal\BoxtalConnectPrestashop\Util\CartStorageUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\EnvironmentUtil;
-use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 
 if (!defined('_PS_VERSION_')) {
@@ -87,9 +85,6 @@ class boxtalconnect extends Module
         $this->onboardingUrl = 'https://www.boxtal.com/onboarding';
 
         $shopContext = ShopUtil::getShopContext();
-        $this->shopId = $shopContext['id_shop'];
-        $this->shopGroupId = $shopContext['id_shop_group'];
-        $this->multistore = $shopContext['multistore'];
 
         if ($this->active) {
             $this->initEnvironmentCheck($this);
@@ -99,7 +94,7 @@ class boxtalconnect extends Module
                 $this->initShopController($this);
                 $this->initAdminAjaxController($this);
 
-                if (AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
+                if (AuthUtil::canUsePlugin()) {
                     $this->initFrontAjaxController($this);
                     $this->initOrderController($this);
                 }
@@ -129,44 +124,50 @@ class boxtalconnect extends Module
         \Db::getInstance()->execute(
             "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_notices` (
             `id_notice` int(10) unsigned NOT NULL AUTO_INCREMENT,
-            `id_shop_group` int(11) unsigned,
-            `id_shop` int(11) unsigned,
+            `id_shop_group` int(11) unsigned NULL,
+            `id_shop` int(11) unsigned NULL,
             `key` varchar(255) NOT NULL,
             `value` text,
             PRIMARY KEY (`id_notice`),
-            UNIQUE (`key`, `id_shop_group`, `id_shop`)
+            CONSTRAINT UC_bx_notices UNIQUE (`key`, `id_shop_group`, `id_shop`)
             ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
 
         \Db::getInstance()->execute(
             "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_carrier` (
+            `id_bx_carrier` int(10) unsigned NOT NULL AUTO_INCREMENT,
             `id_carrier` int(10) unsigned NOT NULL,
-            `id_shop_group` int(11) unsigned,
-            `id_shop` int(11) unsigned,
+            `id_shop_group` int(11) unsigned NULL,
+            `id_shop` int(11) unsigned NULL,
             `parcel_point_networks` text,
-            PRIMARY KEY (`id_carrier`, `id_shop_group`, `id_shop`)
+            PRIMARY KEY (`id_bx_carrier`),
+            CONSTRAINT UC_bx_carrier UNIQUE (`id_carrier`, `id_shop_group`, `id_shop`)
             ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
 
         \Db::getInstance()->execute(
             "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_cart_storage` (
+            `id_cart_storage` int(10) unsigned NOT NULL AUTO_INCREMENT,
             `id_cart` int(10) unsigned NOT NULL,
-            `id_shop_group` int(11) unsigned,
-            `id_shop` int(11) unsigned,
+            `id_shop_group` int(11) unsigned NULL,
+            `id_shop` int(11) unsigned NULL,
             `key` varchar(255) NOT NULL,
             `value` mediumtext,
-            PRIMARY KEY (`id_cart`, `key`)
+            PRIMARY KEY (`id_cart_storage`),
+            CONSTRAINT UC_bx_cart_storage UNIQUE (`id_cart`, `id_shop_group`, `id_shop`, `key`)
             ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
 
         \Db::getInstance()->execute(
             "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_order_storage` (
+            `id_order_storage` int(10) unsigned NOT NULL AUTO_INCREMENT,
             `id_order` int(10) unsigned NOT NULL,
-            `id_shop_group` int(11) unsigned,
-            `id_shop` int(11) unsigned,
+            `id_shop_group` int(11) unsigned NULL,
+            `id_shop` int(11) unsigned NULL,
             `key` varchar(255) NOT NULL,
             `value` varchar(255),
-            PRIMARY KEY (`id_order`, `key`)
+            PRIMARY KEY (`id_order_storage`),
+            CONSTRAINT UC_bx_order_storage UNIQUE (`id_order`, `id_shop_group`, `id_shop`, `key`)
             ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
         );
 
@@ -250,7 +251,7 @@ class boxtalconnect extends Module
     {
         $controller = $this->getContext()->controller;
 
-        if (NoticeController::hasNotices($this->shopGroupId, $this->shopId)) {
+        if (NoticeController::hasNotices()) {
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
                     'bx-notices',
@@ -293,7 +294,7 @@ class boxtalconnect extends Module
      */
     public function hookHeader($params)
     {
-        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
+        if (!AuthUtil::canUsePlugin()) {
             return null;
         }
 
@@ -309,7 +310,7 @@ class boxtalconnect extends Module
      */
     public function hookDisplayCarrierList($params)
     {
-        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
+        if (!AuthUtil::canUsePlugin()) {
             return null;
         }
 
@@ -325,7 +326,7 @@ class boxtalconnect extends Module
      */
     public function hookDisplayAfterCarrier($params)
     {
-        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
+        if (!AuthUtil::canUsePlugin()) {
             return null;
         }
 
@@ -341,7 +342,7 @@ class boxtalconnect extends Module
      */
     public function hooknewOrder($params)
     {
-        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
+        if (!AuthUtil::canUsePlugin()) {
             return;
         }
 
@@ -377,7 +378,7 @@ class boxtalconnect extends Module
      */
     public function hookDisplayAdminAfterHeader()
     {
-        $notices = NoticeController::getNoticeInstances($this->shopGroupId, $this->shopId);
+        $notices = NoticeController::getNoticeInstances();
         foreach ($notices as $notice) {
             $notice->render();
         }
@@ -393,7 +394,7 @@ class boxtalconnect extends Module
     public function hookAdminOrder($params)
     {
 
-        if (!AuthUtil::canUsePlugin($this->shopGroupId, $this->shopId, $this->multistore)) {
+        if (!AuthUtil::canUsePlugin()) {
             return null;
         }
 
@@ -492,6 +493,10 @@ class boxtalconnect extends Module
      */
     public function initFrontAjaxController($plugin)
     {
+        if (!AuthUtil::canUsePlugin()) {
+            return;
+        }
+
         require_once __DIR__.'/controllers/front/ajax.php';
     }
 
@@ -504,6 +509,10 @@ class boxtalconnect extends Module
      */
     public function initOrderController($plugin)
     {
+        if (!AuthUtil::canUsePlugin()) {
+            return;
+        }
+
         require_once __DIR__.'/controllers/front/order.php';
     }
 

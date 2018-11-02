@@ -22,16 +22,13 @@ class ShippingMethodUtil
     /**
      * Get all parcel point networks selected in at least one shipping method.
      *
-     * @param int $shopGroupId shop group id.
-     * @param int $shopId      shop id.
-     *
      * @return array $selectedParcelPointNetworks.
      */
-    public static function getAllSelectedParcelPointNetworks($shopGroupId, $shopId)
+    public static function getAllSelectedParcelPointNetworks()
     {
         $selectedParcelPointNetworks = array();
-        $shippingMethods = self::getShippingMethods($shopGroupId, $shopId);
-        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS', $shopGroupId, $shopId));
+        $shippingMethods = self::getShippingMethods();
+        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
         if (!is_array($parcelPointNetworks)) {
             return array();
         }
@@ -57,17 +54,15 @@ class ShippingMethodUtil
     /**
      * Get all parcel point networks selected in a shipping method.
      *
-     * @param string $id          shipping method id.
-     * @param int    $shopGroupId shop group id.
-     * @param int    $shopId      shop id.
+     * @param string $id shipping method id.
      *
      * @return array $selectedParcelPointNetworks.
      */
-    public static function getSelectedParcelPointNetworks($id, $shopGroupId, $shopId)
+    public static function getSelectedParcelPointNetworks($id)
     {
         $selectedParcelPointNetworks = array();
-        $shippingMethods = self::getShippingMethods($shopGroupId, $shopId);
-        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS', $shopGroupId, $shopId));
+        $shippingMethods = self::getShippingMethods();
+        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
         if (!is_array($parcelPointNetworks)) {
             return array();
         }
@@ -93,19 +88,16 @@ class ShippingMethodUtil
     /**
      * Get parcel point networks associated with shipping methods.
      *
-     * @param int $shopGroupId shop group id.
-     * @param int $shopId      shop id.
-     *
      * @return object shipping methods.
      */
-    public static function getShippingMethods($shopGroupId, $shopId)
+    public static function getShippingMethods()
     {
         $sql = new \DbQuery();
         $sql->select('c.id_carrier, c.name, bc.parcel_point_networks');
         $sql->from('carrier', 'c');
-        if (null !== $shopGroupId && null !== $shopId) {
-            $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_shop = '.$shopId.' AND cl.id_lang = '.(int) \Context::getContext()->language->id);
-            $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier AND bc.id_shop_group = '.$shopGroupId.' AND bc.id_shop = '.$shopId);
+        if (null !== ShopUtil::$shopGroupId && null !== ShopUtil::$shopId) {
+            $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_shop = '.ShopUtil::$shopId.' AND cl.id_lang = '.(int) \Context::getContext()->language->id);
+            $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier AND bc.id_shop_group = '.ShopUtil::$shopGroupId.' AND bc.id_shop = '.ShopUtil::$shopId);
         } else {
             $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_lang = '.(int) \Context::getContext()->language->id);
             $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier');
