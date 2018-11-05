@@ -65,9 +65,23 @@ class ConfigurationUtil
      */
     public static function delete($name)
     {
-        \DB::getInstance()->execute(
-            'DELETE FROM `'._DB_PREFIX_.'configuration` WHERE name="'.$name.'" AND id_shop='.ShopUtil::$shopId.' AND id_shop_group='.ShopUtil::$shopGroupId.';'
-        );
+        $sql = 'DELETE FROM `'._DB_PREFIX_.'configuration` WHERE name="'.$name.'" ';
+        $shopId = ShopUtil::$shopId;
+        $shopGroupId = ShopUtil::$shopGroupId;
+
+        if (null === $shopId) {
+            $sql .= 'AND id_shop IS NULL ';
+        } else {
+            $sql .= 'AND id_shop='.$shopId.' ';
+        }
+
+        if (null === $shopGroupId) {
+            $sql .= 'AND id_shop_group IS NULL ';
+        } else {
+            $sql .= 'AND id_shop_group='.$shopGroupId.' ';
+        }
+
+        \Db::getInstance()->execute($sql);
     }
 
 
@@ -138,10 +152,10 @@ class ConfigurationUtil
      */
     public static function getOnboardingLink($shopGroupId, $shopId)
     {
-        $boxtalConnect = \boxtalconnect::getInstance();
-        $url    = $boxtalConnect->onboardingUrl;
+        $boxtalconnect = \boxtalconnect::getInstance();
+        $url    = $boxtalconnect->onboardingUrl;
         $email = MiscUtil::getFirstAdminUserEmail();
-        $locale = \Language::getIsoById((int) \boxtalconnect::getInstance()->getContext()->cookie->id_lang);
+        $locale = \Language::getIsoById((int) $boxtalconnect->getContext()->cookie->id_lang);
         $shopUrl = ShopUtil::getShopUrl($shopGroupId, $shopId);
 
         $params       = array(

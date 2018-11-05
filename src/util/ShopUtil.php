@@ -58,7 +58,11 @@ class ShopUtil
         $sql = new \DbQuery();
         $sql->select('s.domain, s.domain_ssl, s.physical_uri, s.virtual_uri');
         $sql->from('shop_url', 's');
-        $sql->where('s.id_shop='.$shopId);
+        if (null === $shopId) {
+            $sql->where('s.id_shop IS NULL');
+        } else {
+            $sql->where('s.id_shop='.$shopId);
+        }
         $shop = \Db::getInstance()->executeS($sql);
         if (isset($shop[0]['domain'], $shop[0]['domain_ssl'], $shop[0]['physical_uri'], $shop[0]['virtual_uri'])) {
             $sslEnabled = ConfigurationUtil::get('PS_SSL_ENABLED', $shopGroupId, $shopId);

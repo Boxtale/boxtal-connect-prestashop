@@ -6,11 +6,11 @@ addons:
   chrome: stable
 
 php:
-  - 7.2
+  - 7.0
 
 env:
   global:
-    - PS_VERSION=1.7.3.3 PS_MULTISITE=0 RUN_CODE_COVERAGE=1 RUN_PHPCS=1
+    - PS_VERSION=1.7.3.4 PS_MULTISITE=0 RUN_CODE_COVERAGE=1 RUN_PHPCS=1
 
 matrix:
   include:

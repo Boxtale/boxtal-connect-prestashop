@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PS_VERSION=${1-1.7.3.3}
+PS_VERSION=${1-1.7.3.4}
 
 if [[ $(docker inspect -f {{.State.Running}} boxtal_connect_prestashop) = "false" ]]; then
     echo "boxtal_connect_prestashop docker container is not running"
