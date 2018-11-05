@@ -24,6 +24,7 @@ if ! [ -z "$PS_SITEURL" ]; then
     DOMAIN=`echo $PS_SITEURL | cut -c 8-`
   fi
 
-    mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_shop_url set domain=\"$DOMAIN\";"
-    mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_shop_url set domain_ssl=\"$DOMAIN\";"
+   mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_shop_url set domain=\"$DOMAIN\";"
+   mysql -u dbadmin -pdbpass -e "UPDATE prestashop.ps_shop_url set domain_ssl=\"$DOMAIN\";"
+   sudo -u www-data -H sh -c "sed -i \"s/localhost/$DOMAIN/\" $PS_CORE_DIR/.htaccess"
 fi
