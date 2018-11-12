@@ -126,7 +126,7 @@ class MiscUtil
     public static function getFirstAdminUser()
     {
         $sql = new \DbQuery();
-        $sql->select('e.email');
+        $sql->select('*');
         $sql->from('employee', 'e');
         $sql->where('e.id_profile = 1');
         $sql->where('e.active = 1');

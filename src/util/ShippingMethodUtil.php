@@ -52,6 +52,29 @@ class ShippingMethodUtil
     }
 
     /**
+     * Get parcel point networks associated with shipping methods.
+     *
+     * @return object shipping methods.
+     */
+    public static function setSelectedParcelPointNetworks($carrierId, $parcelPointNetworks)
+    {
+        $data = array(
+            'id_carrier' => $carrierId,
+            'id_shop_group' => ShopUtil::$shopGroupId,
+            'id_shop' => ShopUtil::$shopId,
+            'parcel_point_networks' => pSQL(serialize($parcelPointNetworks)),
+        );
+
+        \Db::getInstance()->insert(
+            'bx_carrier',
+            $data,
+            true,
+            true,
+            \Db::REPLACE
+        );
+    }
+
+    /**
      * Get all parcel point networks selected in a shipping method.
      *
      * @param string $id shipping method id.
@@ -105,30 +128,6 @@ class ShippingMethodUtil
         $sql->where('c.deleted = 0');
 
         return \Db::getInstance()->executeS($sql);
-    }
-
-    /**
-     * Get carrier reference from id.
-     *
-     * @param int $carrierId carrier id
-     *
-     * @return int
-     */
-    public static function getReferenceFromId($carrierId)
-    {
-        $sql = new \DbQuery();
-        $sql->select('c.id_reference');
-        $sql->from('carrier', 'c');
-        $sql->where('c.id_carrier = '.$carrierId);
-        $result = \Db::getInstance()->executeS($sql);
-
-        if (!is_array($result)) {
-            return null;
-        }
-
-        $row = array_shift($result);
-
-        return (int) $row['id_reference'];
     }
 
     /**

@@ -31,12 +31,12 @@ class ProductUtil
         $translations = array();
         foreach ($product->name as $langId => $productName) {
             $sql = new \DbQuery();
-            $sql->select('l.locale');
+            $sql->select('l.language_code');
             $sql->from('lang', 'l');
             $sql->where('l.id_lang = '.$langId);
             $result = \Db::getInstance()->executeS($sql);
             $row = array_shift($result);
-            $translations[str_replace('-', '_', $row['locale'])] = $productName;
+            $translations[strtolower(str_replace('-', '_', $row['language_code']))] = $productName;
         }
 
         return $translations;

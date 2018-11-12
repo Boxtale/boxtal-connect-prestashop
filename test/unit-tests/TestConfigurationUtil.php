@@ -34,13 +34,16 @@ class TestConfigurationUtil extends TestCase
      */
     public function testHasConfiguration()
     {
+        $mapBootstrapUrl = ConfigurationUtil::get('BX_MAP_BOOTSTRAP_URL');
+        $mapTokenUrl = ConfigurationUtil::get('BX_MAP_TOKEN_URL');
+        $ppNetworks = ConfigurationUtil::get('BX_PP_NETWORKS');
         \Configuration::deleteByName('BX_MAP_BOOTSTRAP_URL');
         \Configuration::deleteByName('BX_MAP_TOKEN_URL');
         \Configuration::deleteByName('BX_PP_NETWORKS');
-        ConfigurationUtil::set('BX_MAP_BOOTSTRAP_URL', 'value');
-        ConfigurationUtil::set('BX_MAP_TOKEN_URL', 'value');
+        ConfigurationUtil::set('BX_MAP_BOOTSTRAP_URL', $mapBootstrapUrl);
+        ConfigurationUtil::set('BX_MAP_TOKEN_URL', $mapTokenUrl);
         $this->assertFalse(ConfigurationUtil::hasConfiguration(null, null));
-        ConfigurationUtil::set('BX_PP_NETWORKS', 'value');
+        ConfigurationUtil::set('BX_PP_NETWORKS', $ppNetworks);
         $this->assertTrue(ConfigurationUtil::hasConfiguration(null, null));
     }
 

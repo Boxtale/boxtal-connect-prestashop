@@ -5,7 +5,6 @@
 
 namespace Boxtal\BoxtalConnectPrestashop\Notice;
 
-
 /**
  * Environment warning notice class.
  *

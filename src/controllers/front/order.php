@@ -94,6 +94,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                 continue;
             }
 
+            $phone = MiscUtil::notEmptyOrNull($order, 'phone_mobile') === null ? MiscUtil::notEmptyOrNull($order, 'phone') : MiscUtil::notEmptyOrNull($order, 'phone_mobile');
             $recipient = array(
                 'firstname'    => MiscUtil::notEmptyOrNull($order, 'firstname'),
                 'lastname'     => MiscUtil::notEmptyOrNull($order, 'lastname'),
@@ -104,7 +105,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                 'state'        => MiscUtil::notEmptyOrNull($order, 'state_iso'),
                 'postcode'     => MiscUtil::notEmptyOrNull($order, 'postcode'),
                 'country'      => MiscUtil::notEmptyOrNull($order, 'country_iso'),
-                'phone'        => MiscUtil::notEmptyOrNull($order, 'phone'),
+                'phone'        => $phone,
                 'email'        => MiscUtil::notEmptyOrNull($order, 'email'),
             );
             $items = OrderUtil::getItemsFromOrder($orderId);
@@ -133,7 +134,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
             $multilingualShippingMethod = array();
             $shippingMethodName = MiscUtil::notEmptyOrNull($order, 'shippingMethod');
             foreach (\Language::getLanguages(true) as $lang) {
-                $multilingualShippingMethod[str_replace('-', '_', $lang['locale'])] = $shippingMethodName;
+                $multilingualShippingMethod[strtolower(str_replace('-', '_', $lang['locale']))] = $shippingMethodName;
             }
 
             $result[] = array(
@@ -144,7 +145,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                     'translations' => $multilingualStatus,
                 ),
                 'shippingMethod' => array(
-                    'key' => ShippingMethodUtil::getReferenceFromId(OrderUtil::getCarrierId($orderId)),
+                    'key' => OrderUtil::getCarrierReference($orderId),
                     'translations' => $multilingualShippingMethod,
                 ),
                 'shippingAmount' => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'shippingAmount')),

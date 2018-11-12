@@ -54,6 +54,18 @@ class AddressUtil
     }
 
     /**
+     * Get country id from country iso code.
+     *
+     * @param string $countryIso country iso code.
+     *
+     * @return int country id
+     */
+    public static function getCountryIdFromIso($countryIso)
+    {
+        return \Country::getByIso($countryIso);
+    }
+
+    /**
      * Get state iso code from state id.
      *
      * @param int $stateId state id.

@@ -123,21 +123,7 @@ class AdminShippingMethodController extends \ModuleAdminController
         $carriers = ShippingMethodUtil::getShippingMethods();
         foreach ((array) $carriers as $carrier) {
             $parcelPointNetworks = \Tools::isSubmit('parcelPointNetworks_'.(int) $carrier['id_carrier']) ? \Tools::getValue('parcelPointNetworks_'.(int) $carrier['id_carrier']) : array();
-
-            $data = array(
-                'id_carrier' => (int) $carrier['id_carrier'],
-                'id_shop_group' => ShopUtil::$shopGroupId,
-                'id_shop' => ShopUtil::$shopId,
-                'parcel_point_networks' => pSQL(serialize($parcelPointNetworks)),
-            );
-
-            \Db::getInstance()->insert(
-                'bx_carrier',
-                $data,
-                true,
-                true,
-                \Db::REPLACE
-            );
+            ShippingMethodUtil::setSelectedParcelPointNetworks((int) $carrier['id_carrier'], $parcelPointNetworks);
         }
     }
 

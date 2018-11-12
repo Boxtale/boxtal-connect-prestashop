@@ -84,6 +84,7 @@ class ShopUtil
         $sql->select('s.id_shop, s.id_shop_group');
         $sql->from('shop', 's');
         $sql->where('s.active=1 AND s.deleted=0');
+
         return \Db::getInstance()->executeS($sql);
     }
 
