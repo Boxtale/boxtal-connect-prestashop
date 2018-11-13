@@ -54,6 +54,9 @@ class ShippingMethodUtil
     /**
      * Get parcel point networks associated with shipping methods.
      *
+     * @param int   $carrierId           carrier id.
+     * @param array $parcelPointNetworks array of parcel point network codes.
+     *
      * @return object shipping methods.
      */
     public static function setSelectedParcelPointNetworks($carrierId, $parcelPointNetworks)

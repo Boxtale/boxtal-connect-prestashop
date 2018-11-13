@@ -6,23 +6,19 @@
 use Boxtal\BoxtalConnectPrestashop\Util\AddressUtil;
 
 /**
- * Class MockPayment to use PaymentModule
- */
-class MockPayment extends PaymentModule
-{
-    public $active = 1;
-    public $name = 'mock_payment';
-    public $displayName = 'mock_payment';
-}
-
-/**
  * Class OrderHelper.
  */
 class OrderHelper
 {
+    /**
+     * Create an order.
+     *
+     * @return order id
+     */
     public static function createOrder()
     {
         $address = new Address();
+        //phpcs:ignore
         $address->id_country = AddressUtil::getCountryIdFromIso('fr');
         $address->alias = 'test address';
         $address->lastname = 'snow';
@@ -32,6 +28,7 @@ class OrderHelper
         $address->city = 'Paris';
         $address->postcode = '75009';
         $address->phone = '0112341234';
+        //phpcs:ignore
         $address->phone_mobile = '0612341234';
         $address->save();
 
@@ -43,6 +40,7 @@ class OrderHelper
         $customer->save();
 
         $cart = new Cart(null, 1);
+        //phpcs:disable
         $cart->id_currency = Currency::getDefaultCurrency()->id;
         $cart->id_customer = $customer->id;
         $cart->id_address_delivery = $address->id;
@@ -56,6 +54,7 @@ class OrderHelper
         $cart->updateQty(1, $productId, null, false, 'up', $address->id);
         $delivery_option = array($address->id => '2,');
         $cart->setDeliveryOption($delivery_option);
+        //phpcs:enable
         $cart->save();
 
         $payment = new MockPayment();

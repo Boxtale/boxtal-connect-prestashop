@@ -14,6 +14,9 @@ class TestOrderUtil extends TestCase
 
     public static $stack;
 
+    /**
+     * Setup at class instantiation.
+     */
     public static function setUpBeforeClass()
     {
         $orderId = OrderHelper::createOrder();
@@ -28,7 +31,7 @@ class TestOrderUtil extends TestCase
     {
         $orders = OrderUtil::getOrders();
         $this->assertSame($orders[0], array(
-            'id_order' => ''. self::$stack['orderId'],
+            'id_order' => ''.self::$stack['orderId'],
             'reference' => OrderUtil::getOrderReference(self::$stack['orderId']),
             'firstname' => 'jon',
             'lastname' => 'snow',
@@ -63,7 +66,7 @@ class TestOrderUtil extends TestCase
                 'product_price' => '55.000000',
                 'product_quantity' => '1',
                 'product_name' => 'Boxtal test product',
-            )
+            ),
         ));
     }
 

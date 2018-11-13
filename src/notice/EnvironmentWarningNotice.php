@@ -29,6 +29,7 @@ class EnvironmentWarningNotice extends AbstractNotice
      * @param string $key         key for notice.
      * @param int    $shopGroupId shop group id.
      * @param int    $shopId      shop id.
+     * @param array  $args        additional arguments.
      *
      * @void
      */

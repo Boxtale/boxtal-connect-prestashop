@@ -22,7 +22,9 @@ class TestAddressUtil extends TestCase
         $address->address2 = 'address2';
         $address->city = 'city';
         $address->postcode = 'postcode';
+        //phpcs:ignore
         $address->id_country = '8';
+        //phpcs:ignore
         $address->id_state = '10';
         $this->assertSame(AddressUtil::convert($address), array(
             'street' => 'address1 address2',
