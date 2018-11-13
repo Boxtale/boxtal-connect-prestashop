@@ -41,8 +41,8 @@ before_script:
   - mysql -u root -e "CREATE USER 'dbadmin'@'localhost' IDENTIFIED BY 'dbpass'"
   - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'dbadmin'@'localhost' WITH GRANT OPTION;"
   - sudo chown -R travis:travis /var/www/html
-  - bash test/bin/build-test.sh $PS_VERSION true
-  - bash factory/common/sync.sh .
+  - bash factory/common/test/bin/build.sh $PS_VERSION $PS_MULTISITE
+  - bash factory/common/sync.sh
   - bash factory/travis/travis.sh
 
 script:
