@@ -18,13 +18,7 @@ class TestProductUtil extends TestCase
     public function testGetProductDescriptionMultilingual()
     {
         $productId = ProductHelper::createProduct();
-        $this->assertSame(ProductUtil::getProductDescriptionMultilingual($productId), array(
-            'en_us' => 'Boxtal test product',
-        ));
-    }
-
-    protected function tearDown()
-    {
-        $this->stack = [];
+        $productDescriptionMultilingual = ProductUtil::getProductDescriptionMultilingual($productId);
+        $this->assertEquals($productDescriptionMultilingual['en_us'], 'Boxtal test product');
     }
 }

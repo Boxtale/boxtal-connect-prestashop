@@ -42,8 +42,8 @@ class OrderHelper
         $customer->passwd = 'ghost';
         $customer->save();
 
-        $cart = new Cart();
-        $cart->id_currency = 1;
+        $cart = new Cart(null, 1);
+        $cart->id_currency = Currency::getDefaultCurrency()->id;
         $cart->id_customer = $customer->id;
         $cart->id_address_delivery = $address->id;
         $cart->id_address_invoice = $address->id;
@@ -51,6 +51,7 @@ class OrderHelper
         $cart->id_shop_group = 1;
         $cart->id_lang = 1;
         $cart->save();
+        Context::getContext()->cart = $cart;
         $productId = ProductHelper::createProduct();
         $cart->updateQty(1, $productId, null, false, 'up', $address->id);
         $delivery_option = array($address->id => '2,');

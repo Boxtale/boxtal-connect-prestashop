@@ -61,7 +61,7 @@ install_unit_tests() {
   # patch sandbox configuration
   $HOME/factory/common/test/patch-sandbox-configuration.sh $MULTISTORE
 
-  # desactivate new order emails
+  # deactivate new order emails
   mysql -u dbadmin -pdbpass -D "prestashop" -e "UPDATE ps_configuration SET value=3 WHERE name='PS_MAIL_METHOD';"
 
   # add test database (used only in 1.7.x.x)

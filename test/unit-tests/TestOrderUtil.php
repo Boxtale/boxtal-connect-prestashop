@@ -73,10 +73,7 @@ class TestOrderUtil extends TestCase
     public function testGetStatusMultilingual()
     {
         $status = OrderUtil::getStatusMultilingual(self::$stack['orderId']);
-        $this->assertSame($status, array(
-            'en_us' => 'Payment accepted',
-            'fr_fr' => 'Paiement accepté',
-        ));
+        $this->assertEquals($status['en_us'], 'Payment accepted');
     }
 
     /**
