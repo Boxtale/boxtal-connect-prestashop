@@ -66,7 +66,7 @@ install_unit_tests() {
 
   # add test database (used only in 1.7.x.x)
   mysqladmin -u dbadmin -pdbpass create test_prestashop
-  mysqldump  -u dbadmin -pdbpass prestashop | mysql -u dbadmin -pdbpass test_prestashop
+  mysqldump -u dbadmin -pdbpass prestashop | mysql -u dbadmin -pdbpass test_prestashop
 
   # patch sandbox configuration
   $HOME/factory/common/test/patch-sandbox-configuration.sh $MULTISTORE 'test_'
@@ -75,6 +75,11 @@ install_unit_tests() {
   sudo rm -rf $PS_DIR/boxtal-unit-tests-helpers
   sudo mkdir -p $PS_DIR/boxtal-unit-tests-helpers
   sudo cp -R $HOME/test/unit-tests/helper/* $PS_DIR/boxtal-unit-tests-helpers
+
+  # fix dev cache rights
+  if [[ -d $PS_DIR/app/cache/dev ]]; then
+    sudo chown -R www-data:www-data $PS_DIR/app/cache/dev
+  fi
 }
 
 if [ ${TRAVIS} = "false" ]; then
