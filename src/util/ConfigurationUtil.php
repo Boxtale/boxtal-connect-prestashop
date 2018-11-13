@@ -126,7 +126,7 @@ class ConfigurationUtil
      */
     public static function parseConfiguration($body)
     {
-        return self::parseParcelPointNetworks($body) && self::parseMapConfiguration($body);
+        return self::parseParcelPointNetworks($body) && self::parseMapConfiguration($body) && self::parseTrackingConfiguration($body);
     }
 
     /**
@@ -139,7 +139,9 @@ class ConfigurationUtil
      */
     public static function hasConfiguration($shopGroupId, $shopId)
     {
-        return null !== self::get('BX_MAP_BOOTSTRAP_URL', $shopGroupId, $shopId) && null !== self::get('BX_MAP_TOKEN_URL', $shopGroupId, $shopId) && null !== self::get('BX_PP_NETWORKS', $shopGroupId, $shopId);
+        return null !== self::get('BX_MAP_BOOTSTRAP_URL', $shopGroupId, $shopId) && null !== self::get('BX_MAP_TOKEN_URL', $shopGroupId, $shopId)
+            && null !== self::get('BX_MAP_LOGO_IMAGE_URL', $shopGroupId, $shopId) && null !== self::get('BX_MAP_LOGO_HREF_URL', $shopGroupId, $shopId)
+            && null !== self::get('BX_PP_NETWORKS', $shopGroupId, $shopId) && null !== self::get('BX_TRACKING_URL_PATTERN', $shopGroupId, $shopId);
     }
 
     /**
@@ -206,10 +208,10 @@ class ConfigurationUtil
         self::delete('BX_MAP_LOGO_IMAGE_URL');
         self::delete('BX_MAP_LOGO_HREF_URL');
         self::delete('BX_PP_NETWORKS');
-        self::delete('BX_TRACKING_EVENT');
         self::delete('BX_PAIRING_UPDATE');
         self::delete('BX_ORDER_SHIPPED');
         self::delete('BX_ORDER_DELIVERED');
+        self::delete('BX_TRACKING_URL_PATTERN');
         NoticeController::removeAllNoticesForShop();
     }
 
@@ -298,6 +300,25 @@ class ConfigurationUtil
             self::set('BX_MAP_LOGO_IMAGE_URL', $body->mapsLogoImageUrl);
             //phpcs:ignore
             self::set('BX_MAP_LOGO_HREF_URL', $body->mapsLogoHrefUrl);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Parse tracking configuration.
+     *
+     * @param object $body body.
+     *
+     * @return boolean
+     */
+    private static function parseTrackingConfiguration($body)
+    {
+        if (is_object($body) && property_exists($body, 'trackingUrlPattern')) {
+            //phpcs:ignore
+            self::set('BX_TRACKING_URL_PATTERN', $body->trackingUrlPattern);
 
             return true;
         }

@@ -55,7 +55,7 @@ install_unit_tests() {
   sudo chmod 777 $PS_DIR/prestashopConsole.phar
   sudo chown www-data:www-data $PS_DIR/prestashopConsole.phar
   cd $PS_DIR
-  sudo $PS_DIR/prestashopConsole.phar module:install -vvv boxtalconnect
+  ./prestashopConsole.phar module:install -vvv boxtalconnect
   cd $HOME
 
   # patch sandbox configuration
