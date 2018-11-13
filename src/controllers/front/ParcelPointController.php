@@ -157,6 +157,9 @@ class ParcelPointController
     public static function getClosestPoint($cartId, $id)
     {
         $parcelPoints = @unserialize(CartStorageUtil::get($cartId, 'bxParcelPoints'));
+        if (false === $parcelPoints) {
+            return null;
+        }
         $networks = ShippingMethodUtil::getSelectedParcelPointNetworks($id);
         if (property_exists($parcelPoints, 'nearbyParcelPoints') && is_array($parcelPoints->nearbyParcelPoints) && count($parcelPoints->nearbyParcelPoints) > 0) {
             foreach ($parcelPoints->nearbyParcelPoints as $parcelPoint) {
@@ -206,7 +209,6 @@ class ParcelPointController
         //phpcs:ignore
         $carrierId = $cart->id_carrier;
 
-        $boxtalconnect = boxtalconnect::getInstance();
         $closestPoint = ParcelPointController::getClosestPoint($cart->id, $carrierId);
         if (null !== $closestPoint) {
             $point = ParcelPointController::getChosenPoint($cart->id, $carrierId);
