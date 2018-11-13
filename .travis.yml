@@ -41,7 +41,7 @@ before_script:
   - mysql -u root -e "CREATE USER 'dbadmin'@'localhost' IDENTIFIED BY 'dbpass'"
   - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'dbadmin'@'localhost' WITH GRANT OPTION;"
   - sudo chown -R travis:travis /var/www/html
-  - bash factory/common/test/bin/build.sh $PS_VERSION $PS_MULTISITE
+  - bash factory/common/test/build.sh $PS_VERSION $PS_MULTISITE
   - bash factory/common/sync.sh
   - bash factory/travis/travis.sh
 
@@ -49,7 +49,6 @@ script:
   - if [[ $PS_MULTISITE = "0" ]]; then /var/www/html/vendor/phpunit/phpunit/phpunit -c /var/www/html/phpunit.xml -v --debug; fi
   - if [[ $PS_MULTISITE = "1" ]]; then /var/www/html/vendor/phpunit/phpunit/phpunit -c /var/www/html/phpunit-multisite.xml -v --debug; fi
   - if [[ $RUN_PHPCS = "1" ]]; then bash factory/common/phpcs.sh true; fi
-  - if [[ $RUN_E2E = "1" ]]; then bash test/bin/run-e2e-test.sh true $PS_MULTISITE; fi
 
 after_script:
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar; fi
