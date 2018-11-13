@@ -50,6 +50,9 @@ $_MODULE['<{boxtalconnect}prestashop>settings_a67db30ec5875093918d11ea01de8576']
 $_MODULE['<{boxtalconnect}prestashop>settings_e28d759dc240c96b0b840313d0cfbbe8'] = 'Commande expédiée';
 $_MODULE['<{boxtalconnect}prestashop>settings_8a9f6cfabf9fd6f296829330859e60cc'] = 'Pas de statut associé';
 $_MODULE['<{boxtalconnect}prestashop>settings_280d65a8c45fc3b6ec6bf6ca08662e46'] = 'Commande livrée';
+$_MODULE['<{boxtalconnect}prestashop>settings_69d238ebc8475824e170006597afa197'] = 'Url de suivi';
+$_MODULE['<{boxtalconnect}prestashop>settings_8e3089fb821b1f8ec457645fedf3f4ac'] = 'Si vous souhaitez afficher le suivi pour vos commandes expédiées avec Boxtal, voici l\'url de suivi à configurer dans vos transporteurs :';
+$_MODULE['<{boxtalconnect}prestashop>settings_3e9f66f5e5b86543fe3036eef5b05301'] = 'Puis, entrez l\'ID de votre commande PrestaShop comme référence de suivi pour chaque commande que vous envoyez avec Boxtal.';
 $_MODULE['<{boxtalconnect}prestashop>configurationfailure_4f5e1ad50903fc2cab9a8171893a842e'] = 'Il y a eu un problème lors de l\'initialisation du module Boxtal Connect. Veuillez contacter notre équipe support.';
 $_MODULE['<{boxtalconnect}prestashop>custom_5f7118f4a1c594f3a9d8e07e42ae0e99'] = 'Ne plus afficher ce message';
 $_MODULE['<{boxtalconnect}prestashop>pairingfailure_c35367fdee2f3f66a11082a3ff5a239d'] = 'La connexion avec Boxtal est incomplète. Veuillez vérifier votre connecteur Prestashop dans votre compte Boxtal pour un diagnostic plus complet.';

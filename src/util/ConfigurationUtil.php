@@ -195,6 +195,18 @@ class ConfigurationUtil
     }
 
     /**
+     * Get tracking url pattern.
+     *
+     * @return string tracking url pattern
+     */
+    public static function getTrackingUrlPattern()
+    {
+        $url = self::get('BX_TRACKING_URL_PATTERN');
+
+        return str_replace('%s', '@', $url);
+    }
+
+    /**
      * Delete configuration.
      *
      * @void

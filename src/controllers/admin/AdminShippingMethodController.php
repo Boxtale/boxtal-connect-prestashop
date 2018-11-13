@@ -110,6 +110,8 @@ class AdminShippingMethodController extends \ModuleAdminController
             $smarty->assign('orderDelivered', $orderDelivered);
         }
 
+        $smarty->assign('trackingUrlPattern', ConfigurationUtil::getTrackingUrlPattern());
+
         $this->content = $boxtalconnect->displayTemplate('admin/configuration/settings.tpl');
     }
 
