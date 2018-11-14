@@ -45,8 +45,7 @@ install_unit_tests() {
   if [[ -f $PS_REPO_DIR/composer.json ]]; then
     sudo -u www-data -H sh -c "sed -i \"s/https:\/\/github.com\/prestashop\/php-cssjanus/git@github.com:PrestaShop\/php-cssjanus/\" $PS_DIR/composer.json"
     echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> $HOME/.ssh/config
-    ls -al /var/www
-    sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR"
+    # sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR"
     sudo -H -u www-data bash -c "composer update -d $PS_DIR --prefer-dist --no-interaction"
   else
     sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR/tests"
