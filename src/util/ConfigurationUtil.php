@@ -203,7 +203,7 @@ class ConfigurationUtil
     {
         $url = self::get('BX_TRACKING_URL_PATTERN');
 
-        return str_replace('%s', '@', $url);
+        return null !== $url ? str_replace('%s', '@', $url) : null;
     }
 
     /**
@@ -329,6 +329,21 @@ class ConfigurationUtil
     private static function parseTrackingConfiguration($body)
     {
         if (is_object($body) && property_exists($body, 'trackingUrlPattern')) {
+
+            $storedTrackingUrlPattern = self::getTrackingUrlPattern();
+            if (null !== $storedTrackingUrlPattern && $storedTrackingUrlPattern !== $body->trackingUrlPattern) {
+                $boxtalconnect = boxtalconnect::getInstance();
+                NoticeController::addNotice(
+                    NoticeController::$custom,
+                    ShopUtil::$shopGroupId,
+                    ShopUtil::$shopId,
+                    array(
+                        'status'  => 'warning',
+                        'message' => $boxtalconnect->l('The Boxtal tracking url has changed, you should change it in your shipping methods as well. The new link is displayed on the Boxtal settings page.'),
+                    )
+                );
+            }
+
             //phpcs:ignore
             self::set('BX_TRACKING_URL_PATTERN', $body->trackingUrlPattern);
 

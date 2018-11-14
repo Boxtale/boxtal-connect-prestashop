@@ -30,6 +30,7 @@ $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_7fa3b767c460b54a2be4d49030b34
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_ce29d048853d232614ff27018973cbde'] = 'Lancez l’assistant de configuration pour connecter votre boutique %s à Boxtal.';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_b9b0827c59d3c50521315fe4a14314b0'] = 'Je connecte ma boutique';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_e77b7f06e3bd5ea77adee8b52c852dcd'] = 'Boxtal Connect - La version PHP minimale requise pour ce plugin est %1$s. Vous utilisez la version %2$s.';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_7c25d2ae2f7369e65350d126edd6bc36'] = 'L\'url de suivi Boxtal a changé, vous devriez également la changer dans vos méthodes de livraison. Le nouveau lien est affiché dans la page des paramètres Boxtal.';
 $_MODULE['<{boxtalconnect}prestashop>configurationutil_36166fa097de8ff3154b0e4c665c40e5'] = 'La liste des réseaux de points relais a changé, nous avons adapté la configuration de vos méthodes de livraison. Veuillez vérifier que tout est en ordre.';
 $_MODULE['<{boxtalconnect}prestashop>configurationutil_56531cae28f11787de359acdae6c4afa'] = 'La liste des réseaux de points relais a changé, vous pouvez ajouter le(s) nouveau(x) réseau(x) dans la configuration de vos méthodes de livraison.';
 $_MODULE['<{boxtalconnect}prestashop>environmentutil_e77b7f06e3bd5ea77adee8b52c852dcd'] = 'Boxtal Connect - La version PHP minimale requise pour ce plugin est %1$s. Vous utilisez la version %2$s.';
