@@ -109,7 +109,7 @@ class ParcelPointController
             return null;
         }
         $cart = $params['cart'];
-        CartStorageUtil::set($cart->id, 'bxParcelPoints', null);
+
         //phpcs:ignore
         $address = new \Address((int) $cart->id_address_delivery);
         $parcelPointNetworks = ShippingMethodUtil::getAllSelectedParcelPointNetworks();
@@ -127,7 +127,7 @@ class ParcelPointController
                 return $boxtalconnect->displayTemplate('front/shipping-method/parcelPoint.tpl');
             }
         }
-
+        CartStorageUtil::set($cart->id, 'bxParcelPoints', null);
         return null;
     }
 

@@ -24,7 +24,7 @@ class CartStorageUtil
     public static function get($cartId, $key)
     {
         $sql = new \DbQuery();
-        $sql->select('cs.value');
+        $sql->select('*');
         $sql->from('bx_cart_storage', 'cs');
         $sql->where('cs.id_cart='.(int) $cartId);
         $sql->where('cs.key="'.pSQL($key).'"');

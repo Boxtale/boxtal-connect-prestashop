@@ -1,10 +1,18 @@
 <script>
-  const bxCartId = {$bxCartId nofilter};
-  const bxImgDir = "{$bxImgDir nofilter}";
+  bxCartId = {$bxCartId nofilter};
+  bxImgDir = "{$bxImgDir nofilter}";
 
-  document.addEventListener(
-    "DOMContentLoaded", function() {
-      bxParcelPoint.init();
-    }
-  );
+  // more complete version of DOMContentLoaded, otherwise will not work for guest checkout with one page checkout
+  var callback = function() {
+    bxParcelPoint.init();
+  };
+
+  if (
+    document.readyState === "complete" ||
+    (document.readyState !== "loading" && !document.documentElement.doScroll)
+  ) {
+    callback();
+  } else {
+    document.addEventListener("DOMContentLoaded", callback);
+  }
 </script>

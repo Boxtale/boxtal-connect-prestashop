@@ -117,12 +117,12 @@ const bxParcelPoint = {
     let carriers = document.querySelectorAll(".delivery-option");
 
     // for 1.6
-    if (null === carriers) {
-      carriers = document.querySelectorAll(".delivery_option_radio");
+    if (carriers.length === 0) {
+      carriers = document.querySelectorAll("td.delivery_option_radio");
     }
 
     // for 1.5
-    if (null === carriers) {
+    if (carriers.length === 0) {
       carriers = document.querySelectorAll(".delivery_option");
     }
     return carriers;
