@@ -44,7 +44,7 @@ install_unit_tests() {
   sudo mv composer.phar /usr/local/bin/composer
   if [[ -f $PS_REPO_DIR/composer.json ]]; then
     # sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR"
-    echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/home/travis/.ssh/config
+    echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> /home/travis/.ssh/config
     sudo -H -u www-data bash -c "composer update -d $PS_DIR --prefer-dist --no-interaction"
   else
     # sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR/tests"
