@@ -43,10 +43,10 @@ install_unit_tests() {
   sudo php -r "unlink('composer-setup.php');"
   sudo mv composer.phar /usr/local/bin/composer
   if [[ -f $PS_REPO_DIR/composer.json ]]; then
-    sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR"
+    # sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR"
     sudo -H -u www-data bash -c "composer update -d $PS_DIR --prefer-dist --no-interaction"
   else
-    sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR/tests"
+    # sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR/tests"
     sudo -H -u www-data bash -c "composer update -d $PS_DIR/tests --prefer-dist --no-interaction"
   fi
 
