@@ -44,10 +44,11 @@ install_unit_tests() {
   #sudo mv composer.phar /usr/local/bin/composer*/
   if [[ -f $PS_REPO_DIR/composer.json ]]; then
     ## sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR"
-    composer update -d $PS_DIR --prefer-dist --no-interaction
+    #composer update -d $PS_DIR --prefer-dist --no-interaction
   else
+    ls -al $PS_DIR/tests
     # sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR/tests"
-    composer update -d $PS_DIR/tests --prefer-dist --no-interaction
+    #composer update -d $PS_DIR/tests --prefer-dist --no-interaction
   fi
 
   # install plugin
