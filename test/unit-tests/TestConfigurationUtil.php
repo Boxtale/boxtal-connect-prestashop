@@ -45,7 +45,7 @@ class TestConfigurationUtil extends TestCase
         var_dump(ConfigurationUtil::get('BX_MAP_LOGO_HREF_URL'));
         var_dump(ConfigurationUtil::get('BX_PP_NETWORKS'));
         var_dump(ConfigurationUtil::get('BX_TRACKING_URL_PATTERN'));
-        var_dump('test');
+        var_dump('test25');
         $this->assertTrue(ConfigurationUtil::hasConfiguration(ShopUtil::$shopGroupId, ShopUtil::$shopId));
     }
 
