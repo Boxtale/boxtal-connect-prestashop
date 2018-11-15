@@ -37,13 +37,9 @@ class TestConfigurationUtil extends TestCase
     {
         $ppNetworks = ConfigurationUtil::get('BX_PP_NETWORKS');
         \Configuration::deleteByName('BX_PP_NETWORKS');
+        var_dump(ShopUtil::$shopGroupId);
+        var_dump(ShopUtil::$shopId);
         var_dump(ConfigurationUtil::get('BX_MAP_BOOTSTRAP_URL'));
-        var_dump(ConfigurationUtil::get('BX_MAP_TOKEN_URL'));
-        var_dump(ConfigurationUtil::get('BX_MAP_LOGO_IMAGE_URL'));
-        var_dump(ConfigurationUtil::get('BX_MAP_LOGO_HREF_URL'));
-        var_dump(ConfigurationUtil::get('BX_MAP_BOOTSTRAP_URL'));
-        var_dump(ConfigurationUtil::get('BX_PP_NETWORKS'));
-        var_dump(ConfigurationUtil::get('BX_PP_NETWORKS'));
         $this->assertFalse(ConfigurationUtil::hasConfiguration(ShopUtil::$shopGroupId, ShopUtil::$shopId));
         ConfigurationUtil::set('BX_PP_NETWORKS', $ppNetworks);
         $this->assertTrue(ConfigurationUtil::hasConfiguration(ShopUtil::$shopGroupId, ShopUtil::$shopId));

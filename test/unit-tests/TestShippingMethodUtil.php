@@ -18,8 +18,8 @@ class TestShippingMethodUtil extends TestCase
     {
         $parcelPointNetworks = array('SOGP_NETWORK', 'MONR_NETWORK');
         ShippingMethodUtil::setSelectedParcelPointNetworks(1, $parcelPointNetworks);
-        // $this->assertSame(ShippingMethodUtil::getSelectedParcelPointNetworks(1), $parcelPointNetworks);
-        $this->assertSame(ShippingMethodUtil::getAllSelectedParcelPointNetworks(), $parcelPointNetworks);
+        $this->assertSame(ShippingMethodUtil::getSelectedParcelPointNetworks(1), $parcelPointNetworks);
+        // $this->assertSame(ShippingMethodUtil::getAllSelectedParcelPointNetworks(), $parcelPointNetworks);
     }
 
     /**
