@@ -78,6 +78,13 @@ install_unit_tests() {
   if [[ -d $PS_DIR/app/cache/dev ]]; then
     sudo chown -R www-data:www-data $PS_DIR/app/cache/dev
     sudo chmod -R 777 $PS_DIR/app/cache/dev
+    sudo chmod -R 777 $PS_DIR/cache/smarty
+  fi
+
+  # fix smarty cache rights
+  if [[ -d $PS_DIR/cache/smarty ]]; then
+    sudo chown -R www-data:www-data $PS_DIR/cache/smarty
+    sudo chmod -R 777 $PS_DIR/cache/smarty
   fi
 }
 
