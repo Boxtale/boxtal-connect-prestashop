@@ -45,7 +45,7 @@ before_script:
   - bash factory/common/sync.sh
   - bash factory/common/test/build.sh $PS_VERSION $PS_MULTISITE true
   - bash factory/travis/travis.sh
-  - if [[ -d /var/www/html/app/cache/dev ]]; then echo 'yeah'; sudo chown -R www-data:www-data /var/www/html/app/cache/dev; fi
+  - if [[ -d /var/www/html/app/cache/dev ]]; then sudo chmod -R 777 /var/www/html/app/cache/dev; fi
 
 script:
   - phpunit -c /var/www/html/phpunit.xml -v --debug
