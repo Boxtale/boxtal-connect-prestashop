@@ -77,6 +77,7 @@ install_unit_tests() {
   # fix dev cache rights
   if [[ -d $PS_DIR/app/cache/dev ]]; then
     sudo chown -R www-data:www-data $PS_DIR/app/cache/dev
+    sudo chmod -R 777 $PS_DIR/app/cache/dev
   fi
 }
 

@@ -14,7 +14,7 @@ SANDBOX_MAP_TOKEN_URL='https://api.boxtal.build/v2/token/maps'
 SANDBOX_MAP_LOGO_IMAGE_URL='https://resource.boxtal.com/images/boxtal-maps.svg'
 SANDBOX_MAP_LOGO_HREF_URL='https://www.boxtal.com'
 PP_NETWORKS='a:4:{s:12:"CHRP_NETWORK";a:1:{i:0;s:10:"Chronopost";}s:12:"SOGP_NETWORK";a:1:{i:0;s:12:"Relais colis";}s:12:"UPSE_NETWORK";a:1:{i:0;s:3:"UPS";}s:12:"MONR_NETWORK";a:4:{i:0;s:13:"Mondial Relay";i:1;s:10:"Happy Post";i:2;s:10:"Punto Pack";i:3;s:20:"Boxtal Mondial Relay";}}'
-SANDBOX_TRACKING_URL_PATTERN='https://www.boxtal.org/tracking/5V6XM404FA6FD20T2PYS?orderReference=%s'
+SANDBOX_TRACKING_URL_PATTERN='https://www.boxtal.build/tracking/5V6XM404FA6FD20T2PYS?orderReference=%s'
 
 SANDBOX_API_URL='https://api.boxtal.build'
 ESCAPED_APIURL=$(sed 's|/|\\/|g' <<< $SANDBOX_API_URL)
