@@ -4,6 +4,7 @@
  */
 
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -34,17 +35,18 @@ class TestConfigurationUtil extends TestCase
      */
     public function testHasConfiguration()
     {
-        $mapBootstrapUrl = ConfigurationUtil::get('BX_MAP_BOOTSTRAP_URL');
-        $mapTokenUrl = ConfigurationUtil::get('BX_MAP_TOKEN_URL');
         $ppNetworks = ConfigurationUtil::get('BX_PP_NETWORKS');
-        \Configuration::deleteByName('BX_MAP_BOOTSTRAP_URL');
-        \Configuration::deleteByName('BX_MAP_TOKEN_URL');
         \Configuration::deleteByName('BX_PP_NETWORKS');
-        ConfigurationUtil::set('BX_MAP_BOOTSTRAP_URL', $mapBootstrapUrl);
-        ConfigurationUtil::set('BX_MAP_TOKEN_URL', $mapTokenUrl);
-        $this->assertFalse(ConfigurationUtil::hasConfiguration(null, null));
+        var_dump(ConfigurationUtil::get('BX_MAP_BOOTSTRAP_URL'));
+        var_dump(ConfigurationUtil::get('BX_MAP_TOKEN_URL'));
+        var_dump(ConfigurationUtil::get('BX_MAP_LOGO_IMAGE_URL'));
+        var_dump(ConfigurationUtil::get('BX_MAP_LOGO_HREF_URL'));
+        var_dump(ConfigurationUtil::get('BX_MAP_BOOTSTRAP_URL'));
+        var_dump(ConfigurationUtil::get('BX_PP_NETWORKS'));
+        var_dump(ConfigurationUtil::get('BX_PP_NETWORKS'));
+        $this->assertFalse(ConfigurationUtil::hasConfiguration(ShopUtil::$shopGroupId, ShopUtil::$shopId));
         ConfigurationUtil::set('BX_PP_NETWORKS', $ppNetworks);
-        $this->assertTrue(ConfigurationUtil::hasConfiguration(null, null));
+        $this->assertTrue(ConfigurationUtil::hasConfiguration(ShopUtil::$shopGroupId, ShopUtil::$shopId));
     }
 
     /**
