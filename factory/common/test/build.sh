@@ -42,14 +42,14 @@ install_unit_tests() {
   #sudo php composer-setup.php
   #sudo php -r "unlink('composer-setup.php');"
   #sudo mv composer.phar /usr/local/bin/composer*/
-  if [[ -f $PS_REPO_DIR/composer.json ]]; then
+  #if [[ -f $PS_REPO_DIR/composer.json ]]; then
     ## sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR"
     #composer update -d $PS_DIR --prefer-dist --no-interaction
-  else
-    ls -al $PS_DIR/tests
+  #else
+    #ls -al $PS_DIR/tests
     # sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR/tests"
     #composer update -d $PS_DIR/tests --prefer-dist --no-interaction
-  fi
+  #fi
 
   # install plugin
   sudo wget https://github.com/nenes25/prestashop_console/raw/master/bin/prestashopConsole.phar -P $PS_DIR
