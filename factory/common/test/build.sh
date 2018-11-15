@@ -20,10 +20,6 @@ clone_ps_repo() {
   cd $HOME
 }
 
-install_ps() {
-  $HOME/factory/common/install-ps.sh $PS_VERSION
-}
-
 install_unit_tests() {
   sudo mkdir -p $PS_DIR/tests
   sudo cp -R $PS_REPO_DIR/tests/. $PS_DIR/tests
@@ -91,7 +87,6 @@ else
 	HOME='/home/travis/build/Boxtale/boxtal-connect-prestashop'
 	PS_REPO_DIR=$HOME/ps
   clone_ps_repo
-	install_ps
 fi
 
 SOURCE_TEST_DIR=$HOME/test/unit-tests
