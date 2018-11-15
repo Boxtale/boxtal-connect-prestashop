@@ -89,7 +89,6 @@ class ShippingMethodUtil
         $selectedParcelPointNetworks = array();
         $shippingMethods = self::getShippingMethods();
         $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
-        var_dump(ConfigurationUtil::get2('BX_PP_NETWORKS'));
         if (!is_array($parcelPointNetworks)) {
             return array();
         }
