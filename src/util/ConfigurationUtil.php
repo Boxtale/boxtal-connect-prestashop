@@ -39,7 +39,15 @@ class ConfigurationUtil
         }
 
         $value = \Configuration::get($name, null, $shopGroupId, $shopId, $default);
-
+        var_dump($name);
+        var_dump($shopGroupId);
+        var_dump($shopId);
+        $sql = new \DbQuery();
+        $sql->select('*');
+        $sql->from('configuration', 'c');
+        $sql->where('c.name like "BX%"');
+        $conf = \Db::getInstance()->executeS($sql);
+        var_dump($conf);
         return null !== $value && false !== $value ? $value : null;
     }
 
