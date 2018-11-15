@@ -36,21 +36,17 @@ install_unit_tests() {
   sudo chown -R www-data:www-data /var/www
   sudo find /var/www -type d -exec chmod 775 {} \;
   sudo find /var/www -type f -exec chmod 644 {} \;
-  COMPOSER=$PS_DIR/composer.json
-  sudo php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  sudo php -r "if (hash_file('SHA384', 'composer-setup.php') === '93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-  sudo php composer-setup.php
-  sudo php -r "unlink('composer-setup.php');"
-  sudo mv composer.phar /usr/local/bin/composer
-  ls -al /var/www
-  ls -al /var/www/html
+  #COMPOSER=$PS_DIR/composer.json
+  #sudo php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  #sudo php -r "if (hash_file('SHA384', 'composer-setup.php') === '93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+  #sudo php composer-setup.php
+  #sudo php -r "unlink('composer-setup.php');"
+  #sudo mv composer.phar /usr/local/bin/composer*/
   if [[ -f $PS_REPO_DIR/composer.json ]]; then
     ## sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR"
-    echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> /home/travis/.ssh/config
     composer update -d $PS_DIR --prefer-dist --no-interaction
   else
     # sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR/tests"
-    echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> /home/travis/.ssh/config
     composer update -d $PS_DIR/tests --prefer-dist --no-interaction
   fi
 
