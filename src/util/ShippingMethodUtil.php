@@ -121,13 +121,23 @@ class ShippingMethodUtil
         $sql = new \DbQuery();
         $sql->select('c.id_carrier, c.name, bc.parcel_point_networks');
         $sql->from('carrier', 'c');
-        if (null !== ShopUtil::$shopGroupId && null !== ShopUtil::$shopId) {
-            $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_shop = '.ShopUtil::$shopId.' AND cl.id_lang = '.(int) \Context::getContext()->language->id);
-            $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier AND bc.id_shop_group = '.ShopUtil::$shopGroupId.' AND bc.id_shop = '.ShopUtil::$shopId);
+        $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_lang = '.(int) \Context::getContext()->language->id);
+        $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier');
+
+        if (null === ShopUtil::$shopGroupId) {
+            $sql->where('bc.id_shop_group IS NULL');
         } else {
-            $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_lang = '.(int) \Context::getContext()->language->id);
-            $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier');
+            $sql->where('bc.id_shop_group ='.ShopUtil::$shopGroupId);
         }
+
+        if (null === ShopUtil::$shopId) {
+            $sql->where('cl.id_shop IS NULL');
+            $sql->where('bc.id_shop IS NULL');
+        } else {
+            $sql->where('cl.id_shop ='.ShopUtil::$shopId);
+            $sql->where('bc.id_shop ='.ShopUtil::$shopId);
+        }
+
         $sql->where('c.deleted = 0');
 
         return \Db::getInstance()->executeS($sql);
