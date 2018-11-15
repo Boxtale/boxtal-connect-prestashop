@@ -42,6 +42,8 @@ install_unit_tests() {
   sudo php composer-setup.php
   sudo php -r "unlink('composer-setup.php');"
   sudo mv composer.phar /usr/local/bin/composer
+  ls -al /var/www
+  ls -al /var/www/html
   if [[ -f $PS_REPO_DIR/composer.json ]]; then
     ## sudo -H -u www-data bash -c "composer clear-cache -d $PS_DIR"
     echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> /home/travis/.ssh/config
