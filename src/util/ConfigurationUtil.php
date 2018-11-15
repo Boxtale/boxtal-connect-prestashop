@@ -329,7 +329,6 @@ class ConfigurationUtil
     private static function parseTrackingConfiguration($body)
     {
         if (is_object($body) && property_exists($body, 'trackingUrlPattern')) {
-
             $storedTrackingUrlPattern = self::getTrackingUrlPattern();
             if (null !== $storedTrackingUrlPattern && $storedTrackingUrlPattern !== $body->trackingUrlPattern) {
                 $boxtalconnect = boxtalconnect::getInstance();

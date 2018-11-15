@@ -47,8 +47,7 @@ before_script:
   - bash factory/travis/travis.sh
 
 script:
-  - if [[ $PS_MULTISITE = "0" ]]; then phpunit -c /var/www/html/phpunit.xml -v --debug; fi
-  - if [[ $PS_MULTISITE = "1" ]]; then phpunit -c /var/www/html/phpunit-multisite.xml -v --debug; fi
+  - phpunit -c /var/www/html/phpunit.xml -v --debug
   - if [[ $RUN_PHPCS = "1" ]]; then bash factory/common/phpcs.sh true; fi
 
 after_script:

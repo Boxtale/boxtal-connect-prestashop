@@ -128,6 +128,7 @@ class ParcelPointController
             }
         }
         CartStorageUtil::set($cart->id, 'bxParcelPoints', null);
+
         return null;
     }
 
