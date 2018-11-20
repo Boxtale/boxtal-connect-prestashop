@@ -48,8 +48,9 @@ before_script:
   - bash factory/common/sync.sh
   - bash factory/common/test/build.sh $PS_VERSION $PS_MULTISITE true
   - bash factory/travis/travis.sh $RUN_CODE_COVERAGE
-  - ls -l /var/www/html/config/themes
-  - ls -l /var/www/html/config/themes/classic
+  - if [[ -d /var/www/html/config/themes/classic ]]; then sudo chmod 777 -R /var/www/html/config/themes/classic; fi
+  - if [[ -d /var/www/html/config/themes/classic ]]; then ls -l /var/www/html/config/themes; fi
+  - if [[ -d /var/www/html/config/themes/classic ]]; then ls -l /var/www/html/config/themes/classic; fi
 
 script:
   - phpunit -c /var/www/html/phpunit.xml -v --debug
