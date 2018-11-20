@@ -102,39 +102,6 @@ class ConfigurationUtil
         \Configuration::deleteByName($name);
     }
 
-
-    /**
-     * Get configuration.
-     *
-     * @return boolean
-     */
-    public static function getConfiguration()
-    {
-        $lib     = new ApiClient(null, null);
-        $locale = \Language::getIsoById((int) Boxtal::getInstance()->getContext()->cookie->id_lang);
-        $headers = array(
-            'Accept-Language' => $locale,
-        );
-        //phpcs:disable
-        $response = $lib->restClient->request(
-            RestClient::$GET,
-            $lib->getApiUrl() . '/public/plugin/configuration',
-            array(),
-            $headers
-        );
-        //phpcs:enable
-
-        if (! $response->isError()) {
-            if (self::parseConfiguration($response->response)) {
-                return true;
-            }
-
-            return false;
-        }
-
-        return false;
-    }
-
     /**
      * Parse configuration.
      *

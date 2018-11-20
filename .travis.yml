@@ -17,9 +17,9 @@ matrix:
   - php: 5.6
     env: PS_VERSION=1.6.1.4 PS_MULTISITE=0 RUN_CODE_COVERAGE=0 RUN_PHPCS=0
   - php: 7.0
-    env: PS_VERSION=1.7.3.4 PS_MULTISITE=0 RUN_CODE_COVERAGE=0 RUN_PHPCS=0
+    env: PS_VERSION=1.7.3.4 PS_MULTISITE=1 RUN_CODE_COVERAGE=0 RUN_PHPCS=0
   - php: 7.0
-    env: PS_VERSION=1.7.3.4 PS_MULTISITE=1 RUN_CODE_COVERAGE=1 RUN_PHPCS=1
+    env: PS_VERSION=1.7.3.4 PS_MULTISITE=0 RUN_CODE_COVERAGE=1 RUN_PHPCS=1
 
 before_install:
   - sudo add-apt-repository -y ppa:ondrej/php
@@ -53,6 +53,7 @@ script:
 after_script:
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar; fi
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then chmod +x php-coveralls.phar; fi
+  - ls -l /tmp
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then php php-coveralls.phar -x /tmp/coverage.xml --verbose; fi
 
 sudo: required
