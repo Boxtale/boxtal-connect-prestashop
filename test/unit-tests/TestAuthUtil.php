@@ -25,7 +25,7 @@ class TestAuthUtil extends TestCase
         ConfigurationUtil::deleteAllShops('BX_SECRET_KEY');
         $this->assertFalse(AuthUtil::isPluginPaired(ShopUtil::$shopGroupId, ShopUtil::$shopId));
         AuthUtil::pairPlugin($accessKey, $secretKey);
-        $this->assertEquals('test2', $accessKey);
+        $this->assertEquals('test2', ShopUtil::$shopGroupId.' '.ShopUtil::$shopId);
         $this->assertTrue(AuthUtil::isPluginPaired(ShopUtil::$shopGroupId, ShopUtil::$shopId));
     }
 
