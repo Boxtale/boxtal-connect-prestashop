@@ -44,7 +44,7 @@ before_script:
   - bash factory/common/install-ps.sh $PS_VERSION
   - bash factory/common/sync.sh
   - bash factory/common/test/build.sh $PS_VERSION $PS_MULTISITE true
-  - bash factory/travis/travis.sh
+  - bash factory/travis/travis.sh $RUN_CODE_COVERAGE
 
 script:
   - phpunit -c /var/www/html/phpunit.xml -v --debug
