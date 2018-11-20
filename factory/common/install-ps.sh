@@ -13,9 +13,9 @@ TMPSITEADMINEMAIL="test_prestashop@boxtal.com"
 PS_CORE_DIR=/var/www/html
 
 download() {
-  if [ `which curl` ]; then
+  if [[ `which curl` ]]; then
     curl -s "$1" > "$2";
-  elif [ `which wget` ]; then
+  elif [[ `which wget` ]]; then
     wget -nv -O "$2" "$1"
   fi
 }
@@ -29,7 +29,7 @@ install_ps() {
   download https://download.prestashop.com/download/releases/prestashop_${PS_VERSION}.zip  /tmp/prestashop.zip
   unzip -q /tmp/prestashop.zip -d /tmp/prestashop/
   mkdir -p /tmp/prestashop/src
-  if [ -f "/tmp/prestashop/prestashop.zip" ]; then
+  if [[ -f "/tmp/prestashop/prestashop.zip" ]]; then
     unzip -q /tmp/prestashop/prestashop.zip -d /tmp/prestashop/src
   else
     cp -R /tmp/prestashop/prestashop/* /tmp/prestashop/src
