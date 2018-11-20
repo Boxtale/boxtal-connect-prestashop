@@ -49,8 +49,6 @@ before_script:
   - bash factory/common/test/build.sh $PS_VERSION $PS_MULTISITE true
   - bash factory/travis/travis.sh $RUN_CODE_COVERAGE
   - if [[ -d /var/www/html/config/themes/classic ]]; then sudo chmod 777 -R /var/www/html/config/themes/classic; fi
-  - if [[ -d /var/www/html/config/themes/classic ]]; then ls -l /var/www/html/config/themes; fi
-  - if [[ -d /var/www/html/config/themes/classic ]]; then ls -l /var/www/html/config/themes/classic; fi
 
 script:
   - phpunit -c /var/www/html/phpunit.xml -v --debug
@@ -59,10 +57,7 @@ script:
 after_script:
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar; fi
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then chmod +x php-coveralls.phar; fi
-  - ls -l /home/travis
-  - ls -l /home/travis/build/Boxtale
-  - whoami
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then php php-coveralls.phar -c /home/travis/build/Boxtale/boxtal-connect-prestashop/.coveralls.yml -x /tmp/coverage.xml --verbose -r /var/www/html/modules/boxtalconnect; fi
-  - ls -l /home/travis/build/Boxtale/boxtal-connect-prestashop
+  - ls -al /home/travis/build/Boxtale/boxtal-connect-prestashop
 
 sudo: required
