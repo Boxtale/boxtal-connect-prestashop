@@ -8,4 +8,4 @@ else
   PHPUNIT=/var/www/html/vendor/phpunit/phpunit/phpunit
 fi
 
-docker exec -u www-data boxtal_connect_prestashop $PHPUNIT -c /var/www/html/phpunit.xml
+docker exec -u www-data boxtal_connect_prestashop sh -c "$PHPUNIT -c /var/www/html/phpunit.xml"

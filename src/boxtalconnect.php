@@ -215,10 +215,7 @@ class boxtalconnect extends Module
         if (!parent::uninstall()) {
             return false;
         }
-        $shops = ShopUtil::getShops();
-        foreach ($shops as $shop) {
-            ConfigurationUtil::deleteConfiguration($shop['id_shop_group'], $shop['id_shop']);
-        }
+        ConfigurationUtil::deleteConfiguration();
         \DB::getInstance()->execute(
             'SET FOREIGN_KEY_CHECKS = 0;
             DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_notices`;

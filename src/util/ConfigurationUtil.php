@@ -40,7 +40,7 @@ class ConfigurationUtil
 
         $value = \Configuration::get($name, null, $shopGroupId, $shopId, $default);
 
-        return null !== $value && false !== $value ? $value : null;
+        return null !== $value && false !== $value && '' !== $value ? $value : null;
     }
 
     /**
@@ -57,17 +57,22 @@ class ConfigurationUtil
     }
 
     /**
-     * Delete option.
+     * Delete option. Do NOT delete value in configuration cache.
      *
      * @param string $name option name.
+     * @param int    $shopGroupId shop group id.
+     * @param int    $shopId      shop id.
      *
      * @void
      */
-    public static function delete($name)
+    public static function delete($name, $shopGroupId, $shopId)
     {
+        if (true === ShopUtil::$multistore) {
+            self::deleteAllShops($name);
+            return;
+        }
+
         $sql = 'DELETE FROM `'._DB_PREFIX_.'configuration` WHERE name="'.$name.'" ';
-        $shopId = ShopUtil::$shopId;
-        $shopGroupId = ShopUtil::$shopGroupId;
 
         if (null === $shopId) {
             $sql .= 'AND id_shop IS NULL ';
@@ -82,6 +87,21 @@ class ConfigurationUtil
         }
 
         \Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * Delete option for all shops. Deletes value in cache as well.
+     *
+     * @param string $name option name.
+     *
+     * @void
+     */
+    public static function deleteAllShops($name)
+    {
+        \Configuration::deleteByName($name);
+        /*$sql = 'DELETE FROM `'._DB_PREFIX_.'configuration` WHERE name="'.$name.'" ';
+
+        \Db::getInstance()->execute($sql);*/
     }
 
 
@@ -213,17 +233,17 @@ class ConfigurationUtil
      */
     public static function deleteConfiguration()
     {
-        self::delete('BX_ACCESS_KEY');
-        self::delete('BX_SECRET_KEY');
-        self::delete('BX_MAP_BOOTSTRAP_URL');
-        self::delete('BX_MAP_TOKEN_URL');
-        self::delete('BX_MAP_LOGO_IMAGE_URL');
-        self::delete('BX_MAP_LOGO_HREF_URL');
-        self::delete('BX_PP_NETWORKS');
-        self::delete('BX_PAIRING_UPDATE');
-        self::delete('BX_ORDER_SHIPPED');
-        self::delete('BX_ORDER_DELIVERED');
-        self::delete('BX_TRACKING_URL_PATTERN');
+        self::deleteAllShops('BX_ACCESS_KEY');
+        self::deleteAllShops('BX_SECRET_KEY');
+        self::deleteAllShops('BX_MAP_BOOTSTRAP_URL');
+        self::deleteAllShops('BX_MAP_TOKEN_URL');
+        self::deleteAllShops('BX_MAP_LOGO_IMAGE_URL');
+        self::deleteAllShops('BX_MAP_LOGO_HREF_URL');
+        self::deleteAllShops('BX_PP_NETWORKS');
+        self::deleteAllShops('BX_PAIRING_UPDATE');
+        self::deleteAllShops('BX_ORDER_SHIPPED');
+        self::deleteAllShops('BX_ORDER_DELIVERED');
+        self::deleteAllShops('BX_TRACKING_URL_PATTERN');
         NoticeController::removeAllNoticesForShop();
     }
 

@@ -67,7 +67,7 @@ install_unit_tests() {
   mysqldump -u dbadmin -pdbpass prestashop | mysql -u dbadmin -pdbpass test_prestashop
 
   # patch sandbox configuration
-  $HOME/factory/common/test/patch-sandbox-configuration.sh $MULTISTORE 'test_'
+  #$HOME/factory/common/test/patch-sandbox-configuration.sh $MULTISTORE 'test_'
 
   # copy helpers
   sudo rm -rf $PS_DIR/boxtal-unit-tests-helpers

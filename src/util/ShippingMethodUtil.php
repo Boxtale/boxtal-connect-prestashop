@@ -28,7 +28,7 @@ class ShippingMethodUtil
     {
         $selectedParcelPointNetworks = array();
         $shippingMethods = self::getShippingMethods();
-        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
+        $parcelPointNetworks = @unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
         if (!is_array($parcelPointNetworks)) {
             return array();
         }
@@ -88,14 +88,14 @@ class ShippingMethodUtil
     {
         $selectedParcelPointNetworks = array();
         $shippingMethods = self::getShippingMethods();
-        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
+        $parcelPointNetworks = @unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
         if (!is_array($parcelPointNetworks)) {
             return array();
         }
 
         foreach ((array) $shippingMethods as $shippingMethod) {
             if (isset($shippingMethod['parcel_point_networks']) && (int) $shippingMethod['id_carrier'] === (int) $id) {
-                $shippingMethodNetworks = unserialize($shippingMethod['parcel_point_networks']);
+                $shippingMethodNetworks = @unserialize($shippingMethod['parcel_point_networks']);
                 foreach ((array) $shippingMethodNetworks as $shippingMethodNetwork) {
                     if (!in_array($shippingMethodNetwork, $selectedParcelPointNetworks, true)) {
                         foreach ($parcelPointNetworks as $parcelPointNetwork => $carrier) {

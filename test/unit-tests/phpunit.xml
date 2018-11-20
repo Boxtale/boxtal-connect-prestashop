@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="bootstrap.php" backupGlobals="false" colors="true">
+<phpunit bootstrap="bootstrap.php" backupGlobals="false" colors="true" beStrictAboutOutputDuringTests="false"
+         stopOnError="false" stopOnFailure="false">
     <testsuites>
         <testsuite>
             <directory prefix="Test" suffix=".php">boxtal-unit-tests</directory>

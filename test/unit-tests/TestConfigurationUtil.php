@@ -14,16 +14,19 @@ class TestConfigurationUtil extends TestCase
 {
 
     /**
-     * Test set and get functions.
+     * Test set, get and delete functions.
      */
-    public function testSetGet()
+    public function testSetGetDelete()
     {
         ConfigurationUtil::set('test', 'value');
         $this->assertEquals(ConfigurationUtil::get('test'), 'value');
+        ConfigurationUtil::delete('test', ShopUtil::$shopGroupId, ShopUtil::$shopId);
+        \Configuration::clearConfigurationCacheForTesting();
+        $this->assertNull(ConfigurationUtil::get('test'));
     }
 
     /**
-     * Test get function.
+     * Test get function when value is not set.
      */
     public function testGet()
     {
@@ -36,24 +39,17 @@ class TestConfigurationUtil extends TestCase
     public function testHasConfiguration()
     {
         $ppNetworks = ConfigurationUtil::get('BX_PP_NETWORKS');
-        ConfigurationUtil::delete('BX_PP_NETWORKS');
+        ConfigurationUtil::deleteAllShops('BX_PP_NETWORKS');
         $this->assertFalse(ConfigurationUtil::hasConfiguration(ShopUtil::$shopGroupId, ShopUtil::$shopId));
         ConfigurationUtil::set('BX_PP_NETWORKS', $ppNetworks);
-        var_dump(ConfigurationUtil::get('BX_MAP_BOOTSTRAP_URL'));
-        var_dump(ConfigurationUtil::get('BX_MAP_TOKEN_URL'));
-        var_dump(ConfigurationUtil::get('BX_MAP_LOGO_IMAGE_URL'));
-        var_dump(ConfigurationUtil::get('BX_MAP_LOGO_HREF_URL'));
-        var_dump(ConfigurationUtil::get('BX_PP_NETWORKS'));
-        var_dump(ConfigurationUtil::get('BX_TRACKING_URL_PATTERN'));
-        var_dump('test25');
         $this->assertTrue(ConfigurationUtil::hasConfiguration(ShopUtil::$shopGroupId, ShopUtil::$shopId));
     }
 
     /**
-     * Test hasConfiguration function.
+     * Test getOnboardingLink function.
      */
     public function testGetOnboardingLink()
     {
-        $this->assertEquals(ConfigurationUtil::getOnboardingLink(null, null), 'https://www.boxtal.build/onboarding?acceptLanguage=en&email=admin%40boxtal.com&shopType=prestashop');
+        $this->assertEquals(ConfigurationUtil::getOnboardingLink(ShopUtil::$shopGroupId, ShopUtil::$shopId), 'https://www.boxtal.build/onboarding?acceptLanguage=en&email=admin%40boxtal.com&shopUrl=http%3A%2F%2Flocalhost%2F&shopType=prestashop');
     }
 }

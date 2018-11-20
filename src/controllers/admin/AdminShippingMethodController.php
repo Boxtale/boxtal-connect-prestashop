@@ -56,7 +56,7 @@ class AdminShippingMethodController extends \ModuleAdminController
         }
 
         $smarty = $boxtalconnect->getSmarty();
-        $parcelPointNetworks = unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
+        $parcelPointNetworks = @unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
         $smarty->assign('parcelPointNetworks', $parcelPointNetworks);
         $carriers = ShippingMethodUtil::getShippingMethods();
         foreach ((array) $carriers as $c => $carrier) {

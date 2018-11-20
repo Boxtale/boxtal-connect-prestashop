@@ -89,7 +89,7 @@ class AuthUtil
      */
     public static function endPairingUpdate()
     {
-        ConfigurationUtil::delete('BX_PAIRING_UPDATE');
+        ConfigurationUtil::delete('BX_PAIRING_UPDATE', ShopUtil::$shopGroupId, ShopUtil::$shopId);
     }
 
     /**

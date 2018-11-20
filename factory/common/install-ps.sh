@@ -37,7 +37,7 @@ install_ps() {
   sudo mv /tmp/prestashop/src/* $PS_CORE_DIR
   mysqladmin -u dbadmin -pdbpass create prestashop
   sudo rm -rf $PS_CORE_DIR/app/cache/*
-  php $PS_CORE_DIR/install/index_cli.php --domain=$TMPSITEURL --db_name=prestashop --db_user=dbadmin --db_password=dbpass --name="$TMPSITETITLE" --email="admin@boxtal.com" --password=admin
+  php $PS_CORE_DIR/install/index_cli.php --domain="localhost" --db_name=prestashop --db_user=dbadmin --db_password=dbpass --name="$TMPSITETITLE" --email="admin@boxtal.com" --password=admin
   sudo rm -rf $PS_CORE_DIR/install
   sudo mv $PS_CORE_DIR/admin $PS_CORE_DIR/adminboxtal
   sed -i "s/define('_PS_MODE_DEV_', false)/define('_PS_MODE_DEV_', true)/" $PS_CORE_DIR/config/defines.inc.php
