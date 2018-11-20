@@ -53,7 +53,6 @@ script:
 after_script:
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar; fi
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then chmod +x php-coveralls.phar; fi
-  - ls -l /tmp
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then php php-coveralls.phar -x /tmp/coverage.xml --verbose; fi
 
 sudo: required
