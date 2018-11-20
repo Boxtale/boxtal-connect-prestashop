@@ -59,7 +59,7 @@ class ConfigurationUtil
     /**
      * Delete option. Do NOT delete value in configuration cache.
      *
-     * @param string $name option name.
+     * @param string $name        option name.
      * @param int    $shopGroupId shop group id.
      * @param int    $shopId      shop id.
      *
@@ -67,8 +67,9 @@ class ConfigurationUtil
      */
     public static function delete($name, $shopGroupId, $shopId)
     {
-        if (true === ShopUtil::$multistore) {
+        if (false === ShopUtil::$multistore) {
             self::deleteAllShops($name);
+
             return;
         }
 
@@ -99,9 +100,6 @@ class ConfigurationUtil
     public static function deleteAllShops($name)
     {
         \Configuration::deleteByName($name);
-        /*$sql = 'DELETE FROM `'._DB_PREFIX_.'configuration` WHERE name="'.$name.'" ';
-
-        \Db::getInstance()->execute($sql);*/
     }
 
 
