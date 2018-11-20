@@ -57,9 +57,10 @@ script:
 after_script:
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar; fi
   - if [[ $RUN_CODE_COVERAGE == 1 ]]; then chmod +x php-coveralls.phar; fi
-  - if [[ $RUN_CODE_COVERAGE == 1 ]]; then sudo php php-coveralls.phar -c /home/travis/build/Boxtale/boxtal-connect-prestashop/.coveralls.yml -x /tmp/coverage.xml --verbose; fi
-  - if [[ $RUN_CODE_COVERAGE == 1 ]]; then sudo php php-coveralls.phar -c /home/travis/build/Boxtale/boxtal-connect-prestashop/.coveralls.yml -x /tmp/coverage.xml --verbose -r /home/travis/build/Boxtale/boxtal-connect-prestashop/src; fi
-  - if [[ $RUN_CODE_COVERAGE == 1 ]]; then sudo php php-coveralls.phar -c /home/travis/build/Boxtale/boxtal-connect-prestashop/.coveralls.yml -x /tmp/coverage.xml --verbose -r /var/www/html/modules/boxtalconnect; fi
+  - if [[ -f /home/travis/build/Boxtale/boxtal-connect-prestashop/coverage.json ]]; then sudo chmod 777 /home/travis/build/Boxtale/boxtal-connect-prestashop/coverage.json; fi
+  - if [[ $RUN_CODE_COVERAGE == 1 ]]; then sudo php php-coveralls.phar -c /home/travis/build/Boxtale/boxtal-connect-prestashop/.coveralls.yml -x /tmp/coverage.xml --verbose --json_path /home/travis/build/Boxtale/boxtal-connect-prestashop/coverage.json; fi
+  - if [[ $RUN_CODE_COVERAGE == 1 ]]; then sudo php php-coveralls.phar -c /home/travis/build/Boxtale/boxtal-connect-prestashop/.coveralls.yml -x /tmp/coverage.xml --verbose -r /home/travis/build/Boxtale/boxtal-connect-prestashop/src --json_path /home/travis/build/Boxtale/boxtal-connect-prestashop/coverage.json; fi
+  - if [[ $RUN_CODE_COVERAGE == 1 ]]; then sudo php php-coveralls.phar -c /home/travis/build/Boxtale/boxtal-connect-prestashop/.coveralls.yml -x /tmp/coverage.xml --verbose -r /var/www/html/modules/boxtalconnect --json_path /home/travis/build/Boxtale/boxtal-connect-prestashop/coverage.json; fi
   - ls -al /home/travis/build/Boxtale/boxtal-connect-prestashop
 
 sudo: required
