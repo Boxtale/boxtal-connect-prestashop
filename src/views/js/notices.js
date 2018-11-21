@@ -40,13 +40,13 @@
                     httpRequest.onreadystatechange = function() {
                         if (httpRequest.readyState === 4) {
                             if (httpRequest.status === 200) {
-                                notice.closest(".bw-notice").style.display = 'none';
+                                notice.closest(".bx-notice").style.display = 'none';
                             } else {
                                 console.log("Error: " + httpRequest.status);
                             }
                         }
                     };
-                    httpRequest.open("POST", ajaxurl);
+                    httpRequest.open("POST", ajaxLink);
                     httpRequest.setRequestHeader(
                         "Content-Type",
                         "application/x-www-form-urlencoded"

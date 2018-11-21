@@ -134,7 +134,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
             $multilingualShippingMethod = array();
             $shippingMethodName = MiscUtil::notEmptyOrNull($order, 'shippingMethod');
             foreach (\Language::getLanguages(true) as $lang) {
-                $multilingualShippingMethod[strtolower(str_replace('-', '_', $lang['locale']))] = $shippingMethodName;
+                $multilingualShippingMethod[strtolower(str_replace('-', '_', $lang['language_code']))] = $shippingMethodName;
             }
 
             $result[] = array(
@@ -227,6 +227,8 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                     ConfigurationUtil::set('BX_ORDER_DELIVERED', null);
                     NoticeController::addNotice(
                         NoticeController::$custom,
+                        ShopUtil::$shopGroupId,
+                        ShopUtil::$shopId,
                         array(
                             'status'  => 'warning',
                             'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status list, we\'ve adapted your tracking event configuration. Please check that everything is in order.'),

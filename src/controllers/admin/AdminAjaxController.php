@@ -5,6 +5,7 @@
 
 
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
+use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
@@ -27,42 +28,38 @@ class AdminAjaxController extends \ModuleAdminController
 
         $action = Tools::getValue('action'); // Get action
 
-        $json = false;
+        header('Content-Type: application/json; charset=utf-8');
 
         switch ($action) {
             case 'hideNotice':
-                $json = $this->hideNoticeCallback();
+                $this->hideNoticeCallback();
                 break;
 
             case 'pairingUpdateValidate':
-                $json = $this->pairingUpdateValidateCallback();
+                $this->pairingUpdateValidateCallback();
                 break;
 
             default:
                 break;
         }
-
-        header('Content-Type: application/json; charset=utf-8');
-        die(json_encode($json));
     }
 
     /**
      * Hide notice callback.
      *
-     * @return boolean
+     * @void
      */
     public function hideNoticeCallback()
     {
 
         if (!Tools::getValue('noticeKey')) {
-            return false;
+            ApiUtil::sendAjaxResponse(400);
         }
         $noticeKey = Tools::getValue('noticeKey');
         $noticeShopGroupId = "" === Tools::getValue('noticeShopGroupId') ? null : Tools::getValue('noticeShopGroupId');
         $noticeShopId = "" === Tools::getValue('noticeShopId') ? null : Tools::getValue('noticeShopId');
         NoticeController::removeNotice($noticeKey, $noticeShopGroupId, $noticeShopId);
-
-        return true;
+        ApiUtil::sendAjaxResponse(200);
     }
 
     /**
@@ -72,12 +69,11 @@ class AdminAjaxController extends \ModuleAdminController
      */
     public function pairingUpdateValidateCallback()
     {
-        if (! isset($_REQUEST['approve'])) {
-            wp_send_json_error('missing input');
+        if (! Tools::isSubmit('approve')) {
+            ApiUtil::sendAjaxResponse(400, 'missing input');
         }
-        $approve = sanitize_text_field(wp_unslash($_REQUEST['approve']));
+        $approve = Tools::getValue('approve');
 
-        $boxtalconnect = boxtalconnect::getInstance();
         $lib = new ApiClient(
             AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId),
             AuthUtil::getSecretKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)
@@ -93,9 +89,9 @@ class AdminAjaxController extends \ModuleAdminController
             AuthUtil::endPairingUpdate();
             NoticeController::removeNotice(NoticeController::$pairingUpdate, ShopUtil::$shopGroupId, ShopUtil::$shopId);
             NoticeController::addNotice(NoticeController::$pairing, ShopUtil::$shopGroupId, ShopUtil::$shopId, array( 'result' => 1 ));
-            wp_send_json(true);
+            ApiUtil::sendAjaxResponse(200);
         } else {
-            wp_send_json_error('pairing validation failed');
+            ApiUtil::sendAjaxResponse(404);
         }
     }
 }
