@@ -23,6 +23,7 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
+
 use Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController;
@@ -74,10 +75,9 @@ class BoxtalConnect extends Module
         parent::__construct();
 
         $this->displayName = $this->l('Boxtal Connect');
-        $this->description = $this->l(
-            'Managing your shipments becomes easier with our free plugin Boxtal! Save time and enjoy negotiated rates ' .
-            'with 15 carriers: Colissimo, Mondial Relay...'
-        );
+        $description = 'Managing your shipments becomes easier with our free plugin Boxtal! Save time and enjoy ' .
+            'negotiated rates with 15 carriers: Colissimo, Mondial Relay...';
+        $this->description = $this->l($description);
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         $this->minPhpVersion = '5.3.0';

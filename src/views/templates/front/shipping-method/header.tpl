@@ -26,8 +26,8 @@
 *}
 <script>
   const bxTranslation = {$translation nofilter};
-  const bxMapUrl = "{$mapUrl|escape:'htmlall':'UTF-8'}";
-  const bxMapLogoImageUrl = "{$mapLogoImageUrl|escape:'htmlall':'UTF-8'}";
-  const bxMapLogoHrefUrl = "{$mapLogoHrefUrl|escape:'htmlall':'UTF-8'}";
+  const bxMapUrl = "{$mapUrl nofilter}";
+  const bxMapLogoImageUrl = "{$mapLogoImageUrl nofilter}";
+  const bxMapLogoHrefUrl = "{$mapLogoHrefUrl nofilter}";
   const bxAjaxUrl = "{$link->getModuleLink('boxtalconnect', 'ajax', array()) nofilter}";
 </script>
