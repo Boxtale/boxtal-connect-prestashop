@@ -5,11 +5,6 @@
 
 namespace Boxtal\BoxtalConnectPrestashop\Util;
 
-use Boxtal;
-use Boxtal\BoxtalPhp\ApiClient;
-use Boxtal\BoxtalPhp\RestClient;
-use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
-
 /**
  * Shop util class.
  *

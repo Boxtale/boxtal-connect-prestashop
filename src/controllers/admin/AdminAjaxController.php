@@ -9,6 +9,8 @@ use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
+use Boxtal\BoxtalPhp\ApiClient;
+use Boxtal\BoxtalPhp\RestClient;
 
 /**
  * Ajax admin controller class.
@@ -81,7 +83,7 @@ class AdminAjaxController extends \ModuleAdminController
         //phpcs:ignore
         $response = $lib->restClient->request(
             RestClient::$PATCH,
-            ConfigurationUtil::get('BW_PAIRING_UPDATE'),
+            ConfigurationUtil::get('BX_PAIRING_UPDATE'),
             array( 'approve' => $approve )
         );
 

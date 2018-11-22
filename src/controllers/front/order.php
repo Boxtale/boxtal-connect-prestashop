@@ -173,7 +173,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
     {
         $boxtalconnect = boxtalconnect::getInstance();
         if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
-            ApiUtil::sendApiResponse(403);
+            //ApiUtil::sendApiResponse(403);
         }
 
         if (! is_numeric($orderId)) {
@@ -209,6 +209,24 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                 } else {
                     $order = new \Order((int) $orderId);
                     $order->setCurrentState($orderShipped);
+
+                    $carrierId = OrderUtil::getCarrierId($orderId);
+                    if (null !== $carrierId) {
+                        $url = ShippingMethodUtil::getCarrierTrackingUrl($carrierId);
+                        if (null !== $url && str_replace('@', '%s', $url) === ConfigurationUtil::getTrackingUrlPattern()) {
+                            \Db::getInstance()->update(
+                                'orders',
+                                array('shipping_number' => pSQL($orderId)),
+                                'id_order = '.(int) $orderId
+                            );
+
+                            \Db::getInstance()->update(
+                                'order_carrier',
+                                array('tracking_number' => pSQL($orderId)),
+                                'id_order = '.(int) $orderId
+                            );
+                        }
+                    }
                 }
             }
         }

@@ -97,6 +97,6 @@
   <div class="row">
     <p>{l s='If you wish to display tracking for your shipments sent with Boxtal, here is the tracking url to add to your shipment methods:' mod='boxtalconnect'}</p>
     <p class="well">{$trackingUrlPattern}</p>
-    <p>{l s='Then simply input your PrestaShop order ID as tracking reference for every order you sent with Boxtal.' mod='boxtalconnect'}</p>
+    <p>{l s="Your PrestaShop order ID will be set as tracking reference when the carrier you've chosen with Boxtal has picked up your shipment." mod='boxtalconnect'}</p>
   </div>
 </div>

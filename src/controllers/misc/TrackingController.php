@@ -8,7 +8,6 @@ namespace Boxtal\BoxtalConnectPrestashop\Controllers\Misc;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 use Boxtal\BoxtalPhp\ApiClient;
-use boxtalconnect;
 
 /**
  * Tracking controller class.

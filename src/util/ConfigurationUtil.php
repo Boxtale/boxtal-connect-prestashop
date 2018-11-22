@@ -5,8 +5,6 @@
 
 namespace Boxtal\BoxtalConnectPrestashop\Util;
 
-use Boxtal\BoxtalPhp\ApiClient;
-use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use boxtalconnect;
 
@@ -139,7 +137,7 @@ class ConfigurationUtil
      */
     public static function getOnboardingLink($shopGroupId, $shopId)
     {
-        $boxtalconnect = \boxtalconnect::getInstance();
+        $boxtalconnect = boxtalconnect::getInstance();
         $url    = $boxtalconnect->onboardingUrl;
         $email = MiscUtil::getFirstAdminUserEmail();
         $locale = \Language::getIsoById((int) $boxtalconnect->getContext()->cookie->id_lang);
@@ -188,7 +186,7 @@ class ConfigurationUtil
     {
         $url = self::get('BX_TRACKING_URL_PATTERN');
 
-        return null !== $url ? str_replace('%s', '@', $url) : null;
+        return $url;
     }
 
     /**

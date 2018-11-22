@@ -166,8 +166,9 @@ class OrderUtil
     public static function getCarrierId($orderId)
     {
         $sql = new \DbQuery();
-        $sql->select('o.id_carrier');
+        $sql->select('oc.id_carrier');
         $sql->from('orders', 'o');
+        $sql->innerJoin('order_carrier', 'oc', 'o.id_order = oc.id_order');
         $sql->where('o.id_order = '.$orderId);
         $result = \Db::getInstance()->executeS($sql);
 

@@ -5,12 +5,6 @@
 
 namespace Boxtal\BoxtalConnectPrestashop\Util;
 
-use Boxtal;
-use Boxtal\BoxtalPhp\ApiClient;
-use Boxtal\BoxtalPhp\RestClient;
-use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
-use boxtalconnect;
-
 /**
  * Shipping method util class.
  *
@@ -122,22 +116,24 @@ class ShippingMethodUtil
         $sql->select('c.id_carrier, c.name, bc.parcel_point_networks');
         $sql->from('carrier', 'c');
         $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_lang = '.(int) \Context::getContext()->language->id);
-        $sql->leftJoin('bx_carrier', 'bc', 'c.id_carrier = bc.id_carrier');
+
+        $bxCarrierJoin = 'c.id_carrier = bc.id_carrier';
 
         if (null === ShopUtil::$shopGroupId) {
-            $sql->where('bc.id_shop_group IS NULL');
+            $bxCarrierJoin .= ' AND bc.id_shop_group IS NULL';
         } else {
-            $sql->where('bc.id_shop_group ='.ShopUtil::$shopGroupId);
+            $bxCarrierJoin .= ' AND bc.id_shop_group ='.ShopUtil::$shopGroupId;
         }
 
         if (null === ShopUtil::$shopId) {
+            $bxCarrierJoin .= ' AND bc.id_shop IS NULL';
             $sql->where('cl.id_shop IS NULL');
-            $sql->where('bc.id_shop IS NULL');
         } else {
+            $bxCarrierJoin .= ' AND bc.id_shop ='.ShopUtil::$shopId;
             $sql->where('cl.id_shop ='.ShopUtil::$shopId);
-            $sql->where('bc.id_shop ='.ShopUtil::$shopId);
         }
 
+        $sql->leftJoin('bx_carrier', 'bc', $bxCarrierJoin);
         $sql->where('c.deleted = 0');
 
         return \Db::getInstance()->executeS($sql);
@@ -153,5 +149,23 @@ class ShippingMethodUtil
     public static function getCleanId($carrierId)
     {
         return (int) $carrierId;
+    }
+
+    /**
+     * Get carrier tracking url.
+     *
+     * @param string $carrierId carrier id
+     *
+     * @return string
+     */
+    public static function getCarrierTrackingUrl($carrierId)
+    {
+        $sql = new \DbQuery();
+        $sql->select('c.url');
+        $sql->from('carrier', 'c');
+        $sql->where('c.id_carrier = '.$carrierId);
+        $result = \Db::getInstance()->executeS($sql);
+
+        return isset($result[0]['url']) && !empty($result[0]['url']) ? $result[0]['url'] : null;
     }
 }
