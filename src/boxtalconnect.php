@@ -40,16 +40,16 @@ if (!defined('_PS_VERSION_')) {
 require_once dirname(__FILE__) . '/autoloader.php';
 
 /**
- * Class boxtalconnect
+ * Class BoxtalConnect
  *
  *  Main module class.
  */
-class boxtalconnect extends Module
+class BoxtalConnect extends Module
 {
     /**
      * Instance.
      *
-     * @var boxtalconnect
+     * @var BoxtalConnect
      */
     private static $instance;
 
@@ -231,7 +231,7 @@ class boxtalconnect extends Module
     /**
      * Get module instance.
      *
-     * @return boxtalconnect
+     * @return BoxtalConnect
      */
     public static function getInstance()
     {
@@ -419,7 +419,7 @@ class boxtalconnect extends Module
     /**
      * Check PHP version.
      *
-     * @param boxtalconnect $plugin plugin array
+     * @param BoxtalConnect $plugin plugin array
      *
      * @return EnvironmentCheck $object static environment check instance
      */
@@ -439,7 +439,7 @@ class boxtalconnect extends Module
     /**
      * Init setup wizard.
      *
-     * @param boxtalconnect $plugin plugin array
+     * @param BoxtalConnect $plugin plugin array
      *
      * @return SetupWizard $object static setup wizard instance
      */
@@ -459,7 +459,7 @@ class boxtalconnect extends Module
     /**
      * Init shop controller.
      *
-     * @param boxtalconnect $plugin plugin array
+     * @param BoxtalConnect $plugin plugin array
      *
      * @void
      */
@@ -471,7 +471,7 @@ class boxtalconnect extends Module
     /**
      * Init admin ajax controller.
      *
-     * @param boxtalconnect $plugin plugin array
+     * @param BoxtalConnect $plugin plugin array
      *
      * @void
      */
@@ -483,7 +483,7 @@ class boxtalconnect extends Module
     /**
      * Init front ajax controller.
      *
-     * @param boxtalconnect $plugin plugin array
+     * @param BoxtalConnect $plugin plugin array
      *
      * @void
      */
@@ -499,7 +499,7 @@ class boxtalconnect extends Module
     /**
      * Init order controller.
      *
-     * @param boxtalconnect $plugin plugin array
+     * @param BoxtalConnect $plugin plugin array
      *
      * @void
      */

@@ -31,14 +31,14 @@
 <div class="module_error alert alert-danger">
     <?php
         echo sprintf(
-            $boxtalconnect->l('%s: security alert! Someone is trying to pair your site with Boxtal. Was it you?'),
+            $boxtalConnect->l('%s: security alert! Someone is trying to pair your site with Boxtal. Was it you?'),
             $shopName
         );
         ?>
     <button class="bx-pairing-update-validate btn btn-danger" bx-pairing-update-validate="1" href="#">
-        <?php echo $boxtalconnect->l('yes'); ?>
+        <?php echo $boxtalConnect->l('yes'); ?>
     </button>
     <button class="bx-pairing-update-validate btn btn-secondary" bx-pairing-update-validate="0" href="#">
-        <?php echo $boxtalconnect->l('no'); ?>
+        <?php echo $boxtalConnect->l('no'); ?>
     </button>
 </div>

@@ -30,6 +30,8 @@
 
 namespace Boxtal\BoxtalConnectPrestashop\Util;
 
+use BoxtalConnect;
+
 /**
  * Api util class.
  *
@@ -47,8 +49,8 @@ class ApiUtil
      */
     public static function sendApiResponse($code, $body = null)
     {
-        $boxtalconnect = \boxtalconnect::getInstance();
-        header('X-Version: ' . $boxtalconnect->version);
+        $boxtalConnect = BoxtalConnect::getInstance();
+        header('X-Version: ' . $boxtalConnect->version);
         http_response_code($code);
         header('Content-Type: application/json; charset=utf-8');
         if (null !== $body) {

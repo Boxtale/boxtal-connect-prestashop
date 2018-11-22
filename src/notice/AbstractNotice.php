@@ -33,7 +33,7 @@ namespace Boxtal\BoxtalConnectPrestashop\Notice;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\Notice;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
-use boxtalconnect;
+use BoxtalConnect;
 
 /**
  * Abstract notice class.
@@ -45,9 +45,9 @@ use boxtalconnect;
 abstract class AbstractNotice
 {
     /**
-     * boxtalconnect instance.
+     * BoxtalConnect instance.
      *
-     * @var \boxtalconnect
+     * @var \BoxtalConnect
      */
     protected $boxtalConnect;
 
@@ -118,8 +118,8 @@ abstract class AbstractNotice
     {
         $notice = $this;
         if ($notice->isValid()) {
-            $boxtalconnect = boxtalconnect::getInstance();
-            $ajaxLink = $boxtalconnect->getContext()->link->getAdminLink('AdminAjax');
+            $boxtalConnect = BoxtalConnect::getInstance();
+            $ajaxLink = $boxtalConnect->getContext()->link->getAdminLink('AdminAjax');
             //phpcs:ignore
             $shopName = ShopUtil::getShopName($notice->shopGroupId, $notice->shopId);
             include realpath(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR .

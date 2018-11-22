@@ -38,7 +38,7 @@ use Boxtal\BoxtalConnectPrestashop\Util\AddressUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
-use boxtalconnect;
+use BoxtalConnect;
 
 /**
  * Parcel point controller class.
@@ -54,67 +54,67 @@ class ParcelPointController
      */
     public static function addScripts()
     {
-        $boxtalconnect = boxtalconnect::getInstance();
+        $boxtalConnect = BoxtalConnect::getInstance();
         $translation = array(
             'error' => array(
-                'carrierNotFound' => $boxtalconnect->l('Unable to find carrier'),
-                'couldNotSelectPoint' => $boxtalconnect->l('An error occurred during parcel point selection'),
+                'carrierNotFound' => $boxtalConnect->l('Unable to find carrier'),
+                'couldNotSelectPoint' => $boxtalConnect->l('An error occurred during parcel point selection'),
             ),
             'text' => array(
-                'openingHours' => $boxtalconnect->l('Opening hours'),
-                'chooseParcelPoint' => $boxtalconnect->l('Choose this parcel point'),
-                'closeMap' => $boxtalconnect->l('Close map'),
+                'openingHours' => $boxtalConnect->l('Opening hours'),
+                'chooseParcelPoint' => $boxtalConnect->l('Choose this parcel point'),
+                'closeMap' => $boxtalConnect->l('Close map'),
             ),
             'day' => array(
-                'MONDAY' => $boxtalconnect->l('monday'),
-                'TUESDAY' => $boxtalconnect->l('tuesday'),
-                'WEDNESDAY' => $boxtalconnect->l('wednesday'),
-                'THURSDAY' => $boxtalconnect->l('thursday'),
-                'FRIDAY' => $boxtalconnect->l('friday'),
-                'SATURDAY' => $boxtalconnect->l('saturday'),
-                'SUNDAY' => $boxtalconnect->l('sunday'),
+                'MONDAY' => $boxtalConnect->l('monday'),
+                'TUESDAY' => $boxtalConnect->l('tuesday'),
+                'WEDNESDAY' => $boxtalConnect->l('wednesday'),
+                'THURSDAY' => $boxtalConnect->l('thursday'),
+                'FRIDAY' => $boxtalConnect->l('friday'),
+                'SATURDAY' => $boxtalConnect->l('saturday'),
+                'SUNDAY' => $boxtalConnect->l('sunday'),
             ),
         );
 
-        $smarty = $boxtalconnect->getSmarty();
+        $smarty = $boxtalConnect->getSmarty();
         $smarty->assign('translation', \Tools::jsonEncode($translation));
         $smarty->assign('mapUrl', self::getMapUrl());
         $smarty->assign('mapLogoImageUrl', ConfigurationUtil::getMapLogoImageUrl());
         $smarty->assign('mapLogoHrefUrl', ConfigurationUtil::getMapLogoHrefUrl());
 
-        $controller = $boxtalconnect->getCurrentController();
+        $controller = $boxtalConnect->getCurrentController();
         if (method_exists($controller, 'registerJavascript')) {
             $controller->registerJavascript(
                 'bx-mapbox-gl',
-                'modules/' . $boxtalconnect->name . '/views/js/mapbox-gl.min.js',
+                'modules/' . $boxtalConnect->name . '/views/js/mapbox-gl.min.js',
                 array('priority' => 100, 'server' => 'local')
             );
             $controller->registerJavascript(
                 'bx-parcel-point',
-                'modules/' . $boxtalconnect->name . '/views/js/parcel-point.min.js',
+                'modules/' . $boxtalConnect->name . '/views/js/parcel-point.min.js',
                 array('priority' => 100, 'server' => 'local')
             );
         } else {
-            $controller->addJs('modules/' . $boxtalconnect->name . '/views/js/mapbox-gl.min.js');
-            $controller->addJs('modules/' . $boxtalconnect->name . '/views/js/parcel-point.min.js');
+            $controller->addJs('modules/' . $boxtalConnect->name . '/views/js/mapbox-gl.min.js');
+            $controller->addJs('modules/' . $boxtalConnect->name . '/views/js/parcel-point.min.js');
         }
         if (method_exists($controller, 'registerStylesheet')) {
             $controller->registerStylesheet(
                 'bx-mapbox-gl',
-                'modules/' . $boxtalconnect->name . '/views/css/mapbox-gl.css',
+                'modules/' . $boxtalConnect->name . '/views/css/mapbox-gl.css',
                 array('priority' => 100, 'server' => 'local')
             );
             $controller->registerStylesheet(
                 'bx-parcel-point',
-                'modules/' . $boxtalconnect->name . '/views/css/parcel-point.css',
+                'modules/' . $boxtalConnect->name . '/views/css/parcel-point.css',
                 array('priority' => 100, 'server' => 'local')
             );
         } else {
-            $controller->addCss('modules/' . $boxtalconnect->name . '/views/css/mapbox-gl.css', 'all');
-            $controller->addCss('modules/' . $boxtalconnect->name . '/views/css/parcel-point.css', 'all');
+            $controller->addCss('modules/' . $boxtalConnect->name . '/views/css/mapbox-gl.css', 'all');
+            $controller->addCss('modules/' . $boxtalConnect->name . '/views/css/parcel-point.css', 'all');
         }
 
-        return $boxtalconnect->displayTemplate('front/shipping-method/header.tpl');
+        return $boxtalConnect->displayTemplate('front/shipping-method/header.tpl');
     }
 
     /**
@@ -144,13 +144,13 @@ class ParcelPointController
                 && is_array($response->response->nearbyParcelPoints)
                 && count($response->response->nearbyParcelPoints) > 0) {
                 CartStorageUtil::set((int) $cart->id, 'bxParcelPoints', serialize($response->response));
-                $boxtalconnect = boxtalconnect::getInstance();
-                $smarty = $boxtalconnect->getSmarty();
+                $boxtalConnect = BoxtalConnect::getInstance();
+                $smarty = $boxtalConnect->getSmarty();
                 $smarty->assign('bxCartId', (int) $cart->id);
                 $host = \Tools::getShopProtocol() . \Tools::getHttpHost() . __PS_BASE_URI__;
-                $smarty->assign('bxImgDir', $host . 'modules/' . $boxtalconnect->name . '/views/img/');
+                $smarty->assign('bxImgDir', $host . 'modules/' . $boxtalConnect->name . '/views/img/');
 
-                return $boxtalconnect->displayTemplate('front/shipping-method/parcelPoint.tpl');
+                return $boxtalConnect->displayTemplate('front/shipping-method/parcelPoint.tpl');
             }
         }
         CartStorageUtil::set($cart->id, 'bxParcelPoints', null);

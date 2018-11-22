@@ -64,18 +64,18 @@ class AdminShippingMethodController extends \ModuleAdminController
         if (\Tools::isSubmit('submitTrackingEvents')) {
             $this->handleTrackingEventsForm();
         }
-        $boxtalconnect = boxtalconnect::getInstance();
+        $boxtalConnect = BoxtalConnect::getInstance();
         if (true === ShopUtil::$multistore && null === ShopUtil::$shopId) {
-            $this->content = $boxtalconnect->displayTemplate('admin/multistoreAccessDenied.tpl');
+            $this->content = $boxtalConnect->displayTemplate('admin/multistoreAccessDenied.tpl');
             //phpcs:ignore
             return;
         } elseif (!AuthUtil::canUsePlugin()) {
-            $this->content = $boxtalconnect->displayTemplate('admin/accessDenied.tpl');
+            $this->content = $boxtalConnect->displayTemplate('admin/accessDenied.tpl');
             //phpcs:ignore
             return;
         }
 
-        $smarty = $boxtalconnect->getSmarty();
+        $smarty = $boxtalConnect->getSmarty();
         $parcelPointNetworks = @unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
         $smarty->assign('parcelPointNetworks', $parcelPointNetworks);
         $carriers = ShippingMethodUtil::getShippingMethods();
@@ -88,7 +88,7 @@ class AdminShippingMethodController extends \ModuleAdminController
         $smarty->assign('carriers', $carriers);
 
         //phpcs:ignore
-        $langId = $boxtalconnect->getContext()->language->id;
+        $langId = $boxtalConnect->getContext()->language->id;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
         $smarty->assign('orderStatuses', $orderStatuses);
         $orderShipped = ConfigurationUtil::get('BX_ORDER_SHIPPED');
@@ -133,7 +133,7 @@ class AdminShippingMethodController extends \ModuleAdminController
         $trackingUrlPattern = ConfigurationUtil::getTrackingUrlPattern();
         $smarty->assign('trackingUrlPattern', str_replace('%s', '@', $trackingUrlPattern));
 
-        $this->content = $boxtalconnect->displayTemplate('admin/configuration/settings.tpl');
+        $this->content = $boxtalConnect->displayTemplate('admin/configuration/settings.tpl');
     }
 
     /**

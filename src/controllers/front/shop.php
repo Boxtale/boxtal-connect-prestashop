@@ -39,7 +39,7 @@ use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
  *
  * Opens API endpoint to pair.
  */
-class boxtalconnectShopModuleFrontController extends ModuleFrontController
+class BoxtalConnectShopModuleFrontController extends ModuleFrontController
 {
     /**
      * Processes request.

@@ -31,7 +31,7 @@
 namespace Boxtal\BoxtalConnectPrestashop\Util;
 
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
-use boxtalconnect;
+use BoxtalConnect;
 
 /**
  * Configuration util class.
@@ -165,10 +165,10 @@ class ConfigurationUtil
      */
     public static function getOnboardingLink($shopGroupId, $shopId)
     {
-        $boxtalconnect = boxtalconnect::getInstance();
-        $url = $boxtalconnect->onboardingUrl;
+        $boxtalConnect = BoxtalConnect::getInstance();
+        $url = $boxtalConnect->onboardingUrl;
         $email = MiscUtil::getFirstAdminUserEmail();
-        $locale = \Language::getIsoById((int) $boxtalconnect->getContext()->cookie->id_lang);
+        $locale = \Language::getIsoById((int) $boxtalConnect->getContext()->cookie->id_lang);
         $shopUrl = ShopUtil::getShopUrl($shopGroupId, $shopId);
 
         $params = array(
@@ -247,7 +247,7 @@ class ConfigurationUtil
      */
     private static function parseParcelPointNetworks($body)
     {
-        $boxtalconnect = boxtalconnect::getInstance();
+        $boxtalConnect = BoxtalConnect::getInstance();
         if (is_object($body) && property_exists($body, 'parcelPointNetworks')) {
             $storedNetworks = self::get('BX_PP_NETWORKS');
             if (is_array($storedNetworks)) {
@@ -268,7 +268,7 @@ class ConfigurationUtil
                         ShopUtil::$shopId,
                         array(
                             'status' => 'warning',
-                            'message' => $boxtalconnect->l('There\'s been a change in the parcel point network list, ' .
+                            'message' => $boxtalConnect->l('There\'s been a change in the parcel point network list, ' .
                                 'we\'ve adapted your shipping method configuration. Please check that everything is in' .
                                 ' order.'),
                         )
@@ -292,7 +292,7 @@ class ConfigurationUtil
                         ShopUtil::$shopId,
                         array(
                             'status' => 'info',
-                            'message' => $boxtalconnect->l('There\'s been a change in the parcel point network list, ' .
+                            'message' => $boxtalConnect->l('There\'s been a change in the parcel point network list, ' .
                                 'you can add the extra parcel point network(s) to your shipping method configuration.'),
                         )
                     );
@@ -347,14 +347,14 @@ class ConfigurationUtil
         if (is_object($body) && property_exists($body, 'trackingUrlPattern')) {
             $storedTrackingUrlPattern = self::getTrackingUrlPattern();
             if (null !== $storedTrackingUrlPattern && $storedTrackingUrlPattern !== $body->trackingUrlPattern) {
-                $boxtalconnect = boxtalconnect::getInstance();
+                $boxtalConnect = BoxtalConnect::getInstance();
                 NoticeController::addNotice(
                     NoticeController::$custom,
                     ShopUtil::$shopGroupId,
                     ShopUtil::$shopId,
                     array(
                         'status' => 'warning',
-                        'message' => $boxtalconnect->l('The Boxtal tracking url has changed, you should change it in ' .
+                        'message' => $boxtalConnect->l('The Boxtal tracking url has changed, you should change it in ' .
                             'your shipping methods as well. The new link is displayed on the Boxtal settings page.'),
                     )
                 );

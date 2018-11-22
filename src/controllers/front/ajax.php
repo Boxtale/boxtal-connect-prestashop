@@ -113,19 +113,19 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
     {
         $text = '';
         $selectedCarrierCleanId = ShippingMethodUtil::getCleanId($selectedCarrierId);
-        $boxtalconnect = \boxtalconnect::getInstance();
+        $boxtalConnect = BoxtalConnect::getInstance();
         $pointsResponse = @unserialize(CartStorageUtil::get((int) $cartId, 'bxParcelPoints'));
         if (false !== $pointsResponse) {
             $chosenParcelPoint = ParcelPointController::getChosenPoint((int) $cartId, $selectedCarrierCleanId);
             if (null === $chosenParcelPoint) {
                 $closestParcelPoint = ParcelPointController::getClosestPoint((int) $cartId, $selectedCarrierCleanId);
-                $text .= '<br/><span class="bx-parcel-client">' . $boxtalconnect->l('Closest parcel point:')
+                $text .= '<br/><span class="bx-parcel-client">' . $boxtalConnect->l('Closest parcel point:')
                     . ' <span class="bw-parcel-name">' . $closestParcelPoint->parcelPoint->name . '</span></span>';
             } else {
-                $text .= '<br/><span class="bx-parcel-client">' . $boxtalconnect->l('Your parcel point:')
+                $text .= '<br/><span class="bx-parcel-client">' . $boxtalConnect->l('Your parcel point:')
                     . ' <span class="bw-parcel-name">' . $chosenParcelPoint->parcelPoint->name . '</span></span>';
             }
-            $text .= '<br/><span class="bx-select-parcel">' . $boxtalconnect->l('Choose another') . '</span>';
+            $text .= '<br/><span class="bx-select-parcel">' . $boxtalConnect->l('Choose another') . '</span>';
         }
 
         ApiUtil::sendAjaxResponse(200, $text);

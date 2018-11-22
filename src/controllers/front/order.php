@@ -44,7 +44,7 @@ use Boxtal\BoxtalConnectPrestashop\Util\ProductUtil;
  *
  * Opens API endpoint to sync orders.
  */
-class boxtalconnectOrderModuleFrontController extends ModuleFrontController
+class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
 {
     /**
      * Processes request.
@@ -197,7 +197,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
      */
     public function trackingEventHandler($orderId, $route, $body)
     {
-        $boxtalconnect = boxtalconnect::getInstance();
+        $boxtalConnect = BoxtalConnect::getInstance();
         if (!is_object($body) || !property_exists($body, 'accessKey')
             || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
             //ApiUtil::sendApiResponse(403);
@@ -208,7 +208,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
         }
 
         //phpcs:ignore
-        $langId = $boxtalconnect->getContext()->language->id;
+        $langId = $boxtalConnect->getContext()->language->id;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
 
         if ('shipped' === $route) {
@@ -229,7 +229,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                         ShopUtil::$shopId,
                         array(
                             'status' => 'warning',
-                            'message' => $boxtalconnect->l(
+                            'message' => $boxtalConnect->l(
                                 'Boxtal connect: there\'s been a change in your order status list, we\'ve adapted ' .
                                 'your tracking event configuration. Please check that everything is in order.'),
                         )
@@ -278,7 +278,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                         ShopUtil::$shopId,
                         array(
                             'status' => 'warning',
-                            'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status' .
+                            'message' => $boxtalConnect->l('Boxtal connect: there\'s been a change in your order status' .
                                 ' list, we\'ve adapted your tracking event configuration. Please check that everything' .
                                 ' is in order.'),
                         )
