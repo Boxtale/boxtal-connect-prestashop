@@ -24,6 +24,9 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
+/**
+ * Main plugin file.
+ */
 use Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController;
