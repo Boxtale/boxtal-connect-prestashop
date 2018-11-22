@@ -230,8 +230,8 @@ class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
                         array(
                             'status' => 'warning',
                             'message' => $boxtalConnect->l(
-                              'Boxtal connect: there\'s been a change in your order status list, we\'ve adapted ' .
-                              'your tracking event configuration. Please check that everything is in order.'
+                                'Boxtal connect: there\'s been a change in your order status list, we\'ve adapted ' .
+                                'your tracking event configuration. Please check that everything is in order.'
                             ),
                         )
                     );
@@ -279,9 +279,9 @@ class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
                         ShopUtil::$shopId,
                         array(
                             'status' => 'warning',
-                            'message' => $boxtalConnect->l('Boxtal connect: there\'s been a change in your order ' .
-                                'status list, we\'ve adapted your tracking event configuration. Please check that ' .
-                                'everything is in order.'
+                            'message' => $boxtalConnect->l(
+                                'Boxtal connect: there\'s been a change in your order status list, we\'ve adapted ' .
+                                'your tracking event configuration. Please check that everything is in order.'
                             ),
                         )
                     );
