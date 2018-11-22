@@ -2,7 +2,6 @@
 /**
  * Order util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\OrderUtil;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +10,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TestOrderUtil extends TestCase
 {
-
     public static $stack;
 
     /**
@@ -31,7 +29,7 @@ class TestOrderUtil extends TestCase
     {
         $orders = OrderUtil::getOrders();
         $this->assertSame($orders[0], array(
-            'id_order' => ''.self::$stack['orderId'],
+            'id_order' => '' . self::$stack['orderId'],
             'reference' => OrderUtil::getOrderReference(self::$stack['orderId']),
             'firstname' => 'jon',
             'lastname' => 'snow',

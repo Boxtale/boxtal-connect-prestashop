@@ -2,7 +2,6 @@
 /**
  * Mock plugin class
  */
-
 class MockPlugin
 {
     public $minPhpVersion;
@@ -10,7 +9,7 @@ class MockPlugin
     /**
      * Mock prestashop module l function.
      *
-     * @param string $arg string to translate.
+     * @param string $arg string to translate
      *
      * @return string localized string
      */

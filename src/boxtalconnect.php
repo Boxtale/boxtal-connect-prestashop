@@ -19,13 +19,10 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Boxtal <api@boxtal.com>
- *
  * @copyright 2007-2018 PrestaShop SA / 2018-2018 Boxtal
- *
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
-
 use Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController;
@@ -40,7 +37,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-require_once  __DIR__.'/autoloader.php';
+require_once dirname(__FILE__) . '/autoloader.php';
 
 /**
  * Class boxtalconnect
@@ -49,7 +46,6 @@ require_once  __DIR__.'/autoloader.php';
  */
 class boxtalconnect extends Module
 {
-
     /**
      * Instance.
      *
@@ -105,7 +101,7 @@ class boxtalconnect extends Module
     /**
      * Install function.
      *
-     * @return boolean
+     * @return bool
      */
     public function install()
     {
@@ -122,7 +118,7 @@ class boxtalconnect extends Module
         }
 
         \Db::getInstance()->execute(
-            "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_notices` (
+            'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'bx_notices` (
             `id_notice` int(10) unsigned NOT NULL AUTO_INCREMENT,
             `id_shop_group` int(11) unsigned NULL,
             `id_shop` int(11) unsigned NULL,
@@ -130,11 +126,11 @@ class boxtalconnect extends Module
             `value` text,
             PRIMARY KEY (`id_notice`),
             CONSTRAINT UC_bx_notices UNIQUE (`key`, `id_shop_group`, `id_shop`)
-            ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8'
         );
 
         \Db::getInstance()->execute(
-            "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_carrier` (
+            'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'bx_carrier` (
             `id_bx_carrier` int(10) unsigned NOT NULL AUTO_INCREMENT,
             `id_carrier` int(10) unsigned NOT NULL,
             `id_shop_group` int(11) unsigned NULL,
@@ -142,11 +138,11 @@ class boxtalconnect extends Module
             `parcel_point_networks` text,
             PRIMARY KEY (`id_bx_carrier`),
             CONSTRAINT UC_bx_carrier UNIQUE (`id_carrier`, `id_shop_group`, `id_shop`)
-            ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8'
         );
 
         \Db::getInstance()->execute(
-            "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_cart_storage` (
+            'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'bx_cart_storage` (
             `id_cart_storage` int(10) unsigned NOT NULL AUTO_INCREMENT,
             `id_cart` int(10) unsigned NOT NULL,
             `id_shop_group` int(11) unsigned NULL,
@@ -155,11 +151,11 @@ class boxtalconnect extends Module
             `value` mediumtext,
             PRIMARY KEY (`id_cart_storage`),
             CONSTRAINT UC_bx_cart_storage UNIQUE (`id_cart`, `id_shop_group`, `id_shop`, `key`)
-            ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8'
         );
 
         \Db::getInstance()->execute(
-            "CREATE TABLE IF NOT EXISTS `"._DB_PREFIX_."bx_order_storage` (
+            'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'bx_order_storage` (
             `id_order_storage` int(10) unsigned NOT NULL AUTO_INCREMENT,
             `id_order` int(10) unsigned NOT NULL,
             `id_shop_group` int(11) unsigned NULL,
@@ -168,7 +164,7 @@ class boxtalconnect extends Module
             `value` varchar(255),
             PRIMARY KEY (`id_order_storage`),
             CONSTRAINT UC_bx_order_storage UNIQUE (`id_order`, `id_shop_group`, `id_shop`, `key`)
-            ) ENGINE="._MYSQL_ENGINE_." DEFAULT CHARSET=utf8"
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8'
         );
 
         // add invisible tab for admin ajax controller
@@ -208,7 +204,7 @@ class boxtalconnect extends Module
     /**
      * Uninstall function.
      *
-     * @return boolean
+     * @return bool
      */
     public function uninstall()
     {
@@ -218,11 +214,11 @@ class boxtalconnect extends Module
         ConfigurationUtil::deleteConfiguration();
         \DB::getInstance()->execute(
             'SET FOREIGN_KEY_CHECKS = 0;
-            DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_notices`;
-            DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_carrier`;
-            DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_cart_storage`;
-            DROP TABLE IF EXISTS `'._DB_PREFIX_.'bx_order_storage`;
-            DELETE FROM `'._DB_PREFIX_.'configuration` WHERE name like "BX_%";
+            DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'bx_notices`;
+            DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'bx_carrier`;
+            DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'bx_cart_storage`;
+            DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'bx_order_storage`;
+            DELETE FROM `' . _DB_PREFIX_ . 'configuration` WHERE name like "BX_%";
             SET FOREIGN_KEY_CHECKS = 1;'
         );
 
@@ -252,20 +248,20 @@ class boxtalconnect extends Module
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
                     'bx-notices',
-                    'modules/'.$this->name.'/views/css/notices.min.js',
+                    'modules/' . $this->name . '/views/css/notices.min.js',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addJs('modules/'.$this->name.'/views/js/notices.min.js');
+                $controller->addJs('modules/' . $this->name . '/views/js/notices.min.js');
             }
             if (method_exists($controller, 'registerStylesheet')) {
                 $controller->registerStylesheet(
                     'bx-notices',
-                    'modules/'.$this->name.'/views/css/notices.css',
+                    'modules/' . $this->name . '/views/css/notices.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addCSS('modules/'.$this->name.'/views/css/notices.css', 'all');
+                $controller->addCSS('modules/' . $this->name . '/views/css/notices.css', 'all');
             }
         }
 
@@ -273,11 +269,11 @@ class boxtalconnect extends Module
             if (method_exists($controller, 'registerStylesheet')) {
                 $controller->registerStylesheet(
                     'bx-tracking',
-                    'modules/'.$this->name.'/views/css/tracking.css',
+                    'modules/' . $this->name . '/views/css/tracking.css',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
-                $controller->addCSS('modules/'.$this->name.'/views/css/tracking.css', 'all');
+                $controller->addCSS('modules/' . $this->name . '/views/css/tracking.css', 'all');
             }
         }
     }
@@ -333,7 +329,7 @@ class boxtalconnect extends Module
     /**
      * Order creation hook.
      *
-     * @param array $params list of order params.
+     * @param array $params list of order params
      *
      * @void
      */
@@ -349,7 +345,7 @@ class boxtalconnect extends Module
     /**
      * Update carrier hook. Used to update carrier id.
      *
-     * @param array $params List of params used in the operation.
+     * @param array $params list of params used in the operation
      *
      * @void
      */
@@ -362,7 +358,7 @@ class boxtalconnect extends Module
         \Db::getInstance()->update(
             'bx_carrier',
             $data,
-            'id_carrier = '.$idCarrierOld,
+            'id_carrier = ' . $idCarrierOld,
             0,
             true
         );
@@ -384,19 +380,18 @@ class boxtalconnect extends Module
     /**
      * adminOrder hook. Used to display tracking in admin orders.
      *
-     * @param array $params List of params used in the operation.
+     * @param array $params list of params used in the operation
      *
      * @return string html
      */
     public function hookAdminOrder($params)
     {
-
         if (!AuthUtil::canUsePlugin()) {
             return null;
         }
 
         $tracking = TrackingController::getOrderTracking($params['id_order']);
-        if (null === $tracking || ! property_exists($tracking, 'shipmentsTracking') || empty($tracking->shipmentsTracking)) {
+        if (null === $tracking || !property_exists($tracking, 'shipmentsTracking') || empty($tracking->shipmentsTracking)) {
             return null;
         }
 
@@ -420,9 +415,9 @@ class boxtalconnect extends Module
     /**
      * Check PHP version.
      *
-     * @param boxtalconnect $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array
      *
-     * @return EnvironmentCheck $object static environment check instance.
+     * @return EnvironmentCheck $object static environment check instance
      */
     public function initEnvironmentCheck($plugin)
     {
@@ -432,7 +427,7 @@ class boxtalconnect extends Module
             return $object;
         }
 
-        $object =  new EnvironmentCheck($plugin);
+        $object = new EnvironmentCheck($plugin);
 
         return $object;
     }
@@ -440,9 +435,9 @@ class boxtalconnect extends Module
     /**
      * Init setup wizard.
      *
-     * @param boxtalconnect $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array
      *
-     * @return SetupWizard $object static setup wizard instance.
+     * @return SetupWizard $object static setup wizard instance
      */
     public function initSetupWizard($plugin)
     {
@@ -452,7 +447,7 @@ class boxtalconnect extends Module
             return $object;
         }
 
-        $object =  new SetupWizard($plugin);
+        $object = new SetupWizard($plugin);
 
         return $object;
     }
@@ -460,31 +455,31 @@ class boxtalconnect extends Module
     /**
      * Init shop controller.
      *
-     * @param boxtalconnect $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array
      *
      * @void
      */
     public function initShopController($plugin)
     {
-        require_once __DIR__.'/controllers/front/shop.php';
+        require_once dirname(__FILE__) . '/controllers/front/shop.php';
     }
 
     /**
      * Init admin ajax controller.
      *
-     * @param boxtalconnect $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array
      *
      * @void
      */
     public function initAdminAjaxController($plugin)
     {
-        require_once __DIR__.'/controllers/admin/AdminAjaxController.php';
+        require_once dirname(__FILE__) . '/controllers/admin/AdminAjaxController.php';
     }
 
     /**
      * Init front ajax controller.
      *
-     * @param boxtalconnect $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array
      *
      * @void
      */
@@ -494,13 +489,13 @@ class boxtalconnect extends Module
             return;
         }
 
-        require_once __DIR__.'/controllers/front/ajax.php';
+        require_once dirname(__FILE__) . '/controllers/front/ajax.php';
     }
 
     /**
      * Init order controller.
      *
-     * @param boxtalconnect $plugin plugin array.
+     * @param boxtalconnect $plugin plugin array
      *
      * @void
      */
@@ -510,9 +505,8 @@ class boxtalconnect extends Module
             return;
         }
 
-        require_once __DIR__.'/controllers/front/order.php';
+        require_once dirname(__FILE__) . '/controllers/front/order.php';
     }
-
 
     /**
      * Get smarty.
@@ -537,12 +531,12 @@ class boxtalconnect extends Module
     /**
      * Display template.
      *
-     * @param string $templatePath path to template from module folder.
+     * @param string $templatePath path to template from module folder
      *
      * @return string html
      */
     public function displayTemplate($templatePath)
     {
-        return $this->display(__FILE__, '/views/templates/'.$templatePath);
+        return $this->display(__FILE__, '/views/templates/' . $templatePath);
     }
 }

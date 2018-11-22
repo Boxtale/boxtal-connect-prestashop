@@ -2,7 +2,6 @@
 /**
  * Shipping method util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
 use PHPUnit\Framework\TestCase;
 

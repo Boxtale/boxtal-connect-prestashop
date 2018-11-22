@@ -2,7 +2,6 @@
 /**
  * Configuration util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +11,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TestConfigurationUtil extends TestCase
 {
-
     /**
      * Test set, get and delete functions.
      */

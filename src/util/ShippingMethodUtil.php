@@ -1,5 +1,30 @@
 <?php
 /**
+ * 2007-2018 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    Boxtal <api@boxtal.com>
+ * @copyright 2007-2018 PrestaShop SA / 2018-2018 Boxtal
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * International Registered Trademark & Property of PrestaShop SA
+ */
+
+/**
  * Contains code for shipping method util class.
  */
 
@@ -12,11 +37,10 @@ namespace Boxtal\BoxtalConnectPrestashop\Util;
  */
 class ShippingMethodUtil
 {
-
     /**
      * Get all parcel point networks selected in at least one shipping method.
      *
-     * @return array $selectedParcelPointNetworks.
+     * @return array $selectedParcelPointNetworks
      */
     public static function getAllSelectedParcelPointNetworks()
     {
@@ -48,10 +72,10 @@ class ShippingMethodUtil
     /**
      * Get parcel point networks associated with shipping methods.
      *
-     * @param int   $carrierId           carrier id.
-     * @param array $parcelPointNetworks array of parcel point network codes.
+     * @param int $carrierId carrier id
+     * @param array $parcelPointNetworks array of parcel point network codes
      *
-     * @return object shipping methods.
+     * @return object shipping methods
      */
     public static function setSelectedParcelPointNetworks($carrierId, $parcelPointNetworks)
     {
@@ -74,9 +98,9 @@ class ShippingMethodUtil
     /**
      * Get all parcel point networks selected in a shipping method.
      *
-     * @param string $id shipping method id.
+     * @param string $id shipping method id
      *
-     * @return array $selectedParcelPointNetworks.
+     * @return array $selectedParcelPointNetworks
      */
     public static function getSelectedParcelPointNetworks($id)
     {
@@ -108,29 +132,29 @@ class ShippingMethodUtil
     /**
      * Get parcel point networks associated with shipping methods.
      *
-     * @return object shipping methods.
+     * @return object shipping methods
      */
     public static function getShippingMethods()
     {
         $sql = new \DbQuery();
         $sql->select('c.id_carrier, c.name, bc.parcel_point_networks');
         $sql->from('carrier', 'c');
-        $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_lang = '.(int) \Context::getContext()->language->id);
+        $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_lang = ' . (int) \Context::getContext()->language->id);
 
         $bxCarrierJoin = 'c.id_carrier = bc.id_carrier';
 
         if (null === ShopUtil::$shopGroupId) {
             $bxCarrierJoin .= ' AND bc.id_shop_group IS NULL';
         } else {
-            $bxCarrierJoin .= ' AND bc.id_shop_group ='.ShopUtil::$shopGroupId;
+            $bxCarrierJoin .= ' AND bc.id_shop_group =' . ShopUtil::$shopGroupId;
         }
 
         if (null === ShopUtil::$shopId) {
             $bxCarrierJoin .= ' AND bc.id_shop IS NULL';
             $sql->where('cl.id_shop IS NULL');
         } else {
-            $bxCarrierJoin .= ' AND bc.id_shop ='.ShopUtil::$shopId;
-            $sql->where('cl.id_shop ='.ShopUtil::$shopId);
+            $bxCarrierJoin .= ' AND bc.id_shop =' . ShopUtil::$shopId;
+            $sql->where('cl.id_shop =' . ShopUtil::$shopId);
         }
 
         $sql->leftJoin('bx_carrier', 'bc', $bxCarrierJoin);
@@ -163,7 +187,7 @@ class ShippingMethodUtil
         $sql = new \DbQuery();
         $sql->select('c.url');
         $sql->from('carrier', 'c');
-        $sql->where('c.id_carrier = '.$carrierId);
+        $sql->where('c.id_carrier = ' . $carrierId);
         $result = \Db::getInstance()->executeS($sql);
 
         return isset($result[0]['url']) && !empty($result[0]['url']) ? $result[0]['url'] : null;

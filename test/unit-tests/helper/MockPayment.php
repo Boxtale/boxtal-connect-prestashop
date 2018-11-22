@@ -3,7 +3,6 @@
  * Mock payment helper
  */
 
-
 /**
  * Class MockPayment to use PaymentModule
  */

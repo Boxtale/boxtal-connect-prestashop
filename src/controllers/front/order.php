@@ -1,8 +1,32 @@
 <?php
 /**
- * Contains code for the order rest controller.
+ * 2007-2018 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    Boxtal <api@boxtal.com>
+ * @copyright 2007-2018 PrestaShop SA / 2018-2018 Boxtal
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * International Registered Trademark & Property of PrestaShop SA
  */
 
+/**
+ * Contains code for the order rest controller.
+ */
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
@@ -22,7 +46,6 @@ use Boxtal\BoxtalConnectPrestashop\Util\ProductUtil;
  */
 class boxtalconnectOrderModuleFrontController extends ModuleFrontController
 {
-
     /**
      * Processes request.
      *
@@ -30,8 +53,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
      */
     public function postProcess()
     {
-
-        $entityBody = file_get_contents('php://input');
+        $entityBody = Tools::file_get_contents('php://input');
 
         AuthUtil::authenticate($entityBody);
 
@@ -96,36 +118,36 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
 
             $phone = MiscUtil::notEmptyOrNull($order, 'phone_mobile') === null ? MiscUtil::notEmptyOrNull($order, 'phone') : MiscUtil::notEmptyOrNull($order, 'phone_mobile');
             $recipient = array(
-                'firstname'    => MiscUtil::notEmptyOrNull($order, 'firstname'),
-                'lastname'     => MiscUtil::notEmptyOrNull($order, 'lastname'),
-                'company'      => MiscUtil::notEmptyOrNull($order, 'company'),
+                'firstname' => MiscUtil::notEmptyOrNull($order, 'firstname'),
+                'lastname' => MiscUtil::notEmptyOrNull($order, 'lastname'),
+                'company' => MiscUtil::notEmptyOrNull($order, 'company'),
                 'addressLine1' => MiscUtil::notEmptyOrNull($order, 'address1'),
                 'addressLine2' => MiscUtil::notEmptyOrNull($order, 'address2'),
-                'city'         => MiscUtil::notEmptyOrNull($order, 'city'),
-                'state'        => MiscUtil::notEmptyOrNull($order, 'state_iso'),
-                'postcode'     => MiscUtil::notEmptyOrNull($order, 'postcode'),
-                'country'      => MiscUtil::notEmptyOrNull($order, 'country_iso'),
-                'phone'        => $phone,
-                'email'        => MiscUtil::notEmptyOrNull($order, 'email'),
+                'city' => MiscUtil::notEmptyOrNull($order, 'city'),
+                'state' => MiscUtil::notEmptyOrNull($order, 'state_iso'),
+                'postcode' => MiscUtil::notEmptyOrNull($order, 'postcode'),
+                'country' => MiscUtil::notEmptyOrNull($order, 'country_iso'),
+                'phone' => $phone,
+                'email' => MiscUtil::notEmptyOrNull($order, 'email'),
             );
             $items = OrderUtil::getItemsFromOrder($orderId);
             $products = array();
             foreach ($items as $item) {
-                $product                = array();
-                $product['weight']      = 0 !== (float) $item['product_weight'] ? (float) $item['product_weight'] : null;
-                $product['quantity']    = (int) $item['product_quantity'];
-                $product['price']       = (float) $item['product_price'];
+                $product = array();
+                $product['weight'] = 0 !== (float) $item['product_weight'] ? (float) $item['product_weight'] : null;
+                $product['quantity'] = (int) $item['product_quantity'];
+                $product['price'] = (float) $item['product_price'];
                 $description = ProductUtil::getProductDescriptionMultilingual((int) $item['product_id']);
                 $product['description'] = $description;
-                $products[]             = $product;
+                $products[] = $product;
             }
 
-            $parcelPoint          = null;
-            $parcelPointCode     = OrderStorageUtil::get($orderId, 'bxParcelPointCode');
+            $parcelPoint = null;
+            $parcelPointCode = OrderStorageUtil::get($orderId, 'bxParcelPointCode');
             $parcelPointNetwork = OrderStorageUtil::get($orderId, 'bxParcelPointNetwork');
             if ($parcelPointCode && $parcelPointNetwork) {
                 $parcelPoint = array(
-                    'code'     => $parcelPointCode,
+                    'code' => $parcelPointCode,
                     'network' => $parcelPointNetwork,
                 );
             }
@@ -134,13 +156,13 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
             $multilingualShippingMethod = array();
             $shippingMethodName = MiscUtil::notEmptyOrNull($order, 'shippingMethod');
             foreach (\Language::getLanguages(true) as $lang) {
-                $multilingualShippingMethod[strtolower(str_replace('-', '_', $lang['language_code']))] = $shippingMethodName;
+                $multilingualShippingMethod[Tools::strtolower(str_replace('-', '_', $lang['language_code']))] = $shippingMethodName;
             }
 
             $result[] = array(
-                'internalReference'      => $orderId,
-                'reference'      => MiscUtil::notEmptyOrNull($order, 'reference'),
-                'status'         => array(
+                'internalReference' => $orderId,
+                'reference' => MiscUtil::notEmptyOrNull($order, 'reference'),
+                'status' => array(
                     'key' => OrderUtil::getStatusId($orderId),
                     'translations' => $multilingualStatus,
                 ),
@@ -149,11 +171,11 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                     'translations' => $multilingualShippingMethod,
                 ),
                 'shippingAmount' => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'shippingAmount')),
-                'creationDate'   => MiscUtil::dateW3Cformat(MiscUtil::notEmptyOrNull($order, 'creationDate')),
-                'orderAmount'    => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'orderAmount')),
-                'recipient'      => $recipient,
-                'products'       => $products,
-                'parcelPoint'    => $parcelPoint,
+                'creationDate' => MiscUtil::dateW3Cformat(MiscUtil::notEmptyOrNull($order, 'creationDate')),
+                'orderAmount' => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'orderAmount')),
+                'recipient' => $recipient,
+                'products' => $products,
+                'parcelPoint' => $parcelPoint,
             );
         }
 
@@ -163,26 +185,25 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
     /**
      * Endpoint callback.
      *
-     * @param int                   $orderId order id.
-     * @param 'shipped'|'delivered' $route   tracking event.
-     * @param object                $body    request body.
+     * @param int $orderId order id
+     * @param 'shipped'|'delivered' $route tracking event
+     * @param object $body request body
      *
      * @void
      */
     public function trackingEventHandler($orderId, $route, $body)
     {
         $boxtalconnect = boxtalconnect::getInstance();
-        if (! is_object($body) || ! property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
+        if (!is_object($body) || !property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
             //ApiUtil::sendApiResponse(403);
         }
 
-        if (! is_numeric($orderId)) {
+        if (!is_numeric($orderId)) {
             ApiUtil::sendApiResponse(400);
         }
 
-        global $cookie;
         //phpcs:ignore
-        $langId = $cookie->id_lang;
+        $langId = \Context::getContext()->language->id;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
 
         if ('shipped' === $route) {
@@ -202,7 +223,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                         ShopUtil::$shopGroupId,
                         ShopUtil::$shopId,
                         array(
-                            'status'  => 'warning',
+                            'status' => 'warning',
                             'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status list, we\'ve adapted your tracking event configuration. Please check that everything is in order.'),
                         )
                     );
@@ -217,13 +238,13 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                             \Db::getInstance()->update(
                                 'orders',
                                 array('shipping_number' => pSQL($orderId)),
-                                'id_order = '.(int) $orderId
+                                'id_order = ' . (int) $orderId
                             );
 
                             \Db::getInstance()->update(
                                 'order_carrier',
                                 array('tracking_number' => pSQL($orderId)),
-                                'id_order = '.(int) $orderId
+                                'id_order = ' . (int) $orderId
                             );
                         }
                     }
@@ -248,7 +269,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                         ShopUtil::$shopGroupId,
                         ShopUtil::$shopId,
                         array(
-                            'status'  => 'warning',
+                            'status' => 'warning',
                             'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status list, we\'ve adapted your tracking event configuration. Please check that everything is in order.'),
                         )
                     );

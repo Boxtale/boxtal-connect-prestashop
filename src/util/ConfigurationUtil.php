@@ -1,5 +1,30 @@
 <?php
 /**
+ * 2007-2018 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    Boxtal <api@boxtal.com>
+ * @copyright 2007-2018 PrestaShop SA / 2018-2018 Boxtal
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * International Registered Trademark & Property of PrestaShop SA
+ */
+
+/**
  * Contains code for configuration util class.
  */
 
@@ -15,16 +40,15 @@ use boxtalconnect;
  */
 class ConfigurationUtil
 {
-
     /**
      * Get option.
      *
-     * @param string $name        option name.
-     * @param int    $shopGroupId shop group id.
-     * @param int    $shopId      shop id.
-     * @param mixed  $default     option default value.
+     * @param string $name option name
+     * @param int $shopGroupId shop group id
+     * @param int $shopId shop id
+     * @param mixed $default option default value
      *
-     * @return string option value.
+     * @return string option value
      */
     public static function get($name, $shopGroupId = null, $shopId = null, $default = null)
     {
@@ -44,8 +68,8 @@ class ConfigurationUtil
     /**
      * Set option.
      *
-     * @param string $name  option name.
-     * @param string $value option value.
+     * @param string $name option name
+     * @param string $value option value
      *
      * @void
      */
@@ -57,9 +81,9 @@ class ConfigurationUtil
     /**
      * Delete option. Do NOT delete value in configuration cache.
      *
-     * @param string $name        option name.
-     * @param int    $shopGroupId shop group id.
-     * @param int    $shopId      shop id.
+     * @param string $name option name
+     * @param int $shopGroupId shop group id
+     * @param int $shopId shop id
      *
      * @void
      */
@@ -71,18 +95,18 @@ class ConfigurationUtil
             return;
         }
 
-        $sql = 'DELETE FROM `'._DB_PREFIX_.'configuration` WHERE name="'.$name.'" ';
+        $sql = 'DELETE FROM `' . _DB_PREFIX_ . 'configuration` WHERE name="' . $name . '" ';
 
         if (null === $shopId) {
             $sql .= 'AND id_shop IS NULL ';
         } else {
-            $sql .= 'AND id_shop='.$shopId.' ';
+            $sql .= 'AND id_shop=' . $shopId . ' ';
         }
 
         if (null === $shopGroupId) {
             $sql .= 'AND id_shop_group IS NULL ';
         } else {
-            $sql .= 'AND id_shop_group='.$shopGroupId.' ';
+            $sql .= 'AND id_shop_group=' . $shopGroupId . ' ';
         }
 
         \Db::getInstance()->execute($sql);
@@ -91,7 +115,7 @@ class ConfigurationUtil
     /**
      * Delete option for all shops. Deletes value in cache as well.
      *
-     * @param string $name option name.
+     * @param string $name option name
      *
      * @void
      */
@@ -103,9 +127,9 @@ class ConfigurationUtil
     /**
      * Parse configuration.
      *
-     * @param object $body body.
+     * @param object $body body
      *
-     * @return boolean
+     * @return bool
      */
     public static function parseConfiguration($body)
     {
@@ -115,10 +139,10 @@ class ConfigurationUtil
     /**
      * Has configuration.
      *
-     * @param int $shopGroupId shop group id.
-     * @param int $shopId      shop id.
+     * @param int $shopGroupId shop group id
+     * @param int $shopId shop id
      *
-     * @return boolean
+     * @return bool
      */
     public static function hasConfiguration($shopGroupId, $shopId)
     {
@@ -130,27 +154,27 @@ class ConfigurationUtil
     /**
      * Build onboarding link.
      *
-     * @param int $shopGroupId shop group id.
-     * @param int $shopId      shop id.
+     * @param int $shopGroupId shop group id
+     * @param int $shopId shop id
      *
      * @return string onboarding link
      */
     public static function getOnboardingLink($shopGroupId, $shopId)
     {
         $boxtalconnect = boxtalconnect::getInstance();
-        $url    = $boxtalconnect->onboardingUrl;
+        $url = $boxtalconnect->onboardingUrl;
         $email = MiscUtil::getFirstAdminUserEmail();
         $locale = \Language::getIsoById((int) $boxtalconnect->getContext()->cookie->id_lang);
         $shopUrl = ShopUtil::getShopUrl($shopGroupId, $shopId);
 
-        $params       = array(
+        $params = array(
             'acceptLanguage' => $locale,
-            'email'       => $email,
-            'shopUrl'     => $shopUrl,
+            'email' => $email,
+            'shopUrl' => $shopUrl,
             'shopType' => 'prestashop',
         );
 
-        return $url.'?'.http_build_query($params);
+        return $url . '?' . http_build_query($params);
     }
 
     /**
@@ -213,9 +237,9 @@ class ConfigurationUtil
     /**
      * Parse parcel point operators response.
      *
-     * @param object $body body.
+     * @param object $body body
      *
-     * @return boolean
+     * @return bool
      */
     private static function parseParcelPointNetworks($body)
     {
@@ -225,7 +249,7 @@ class ConfigurationUtil
             if (is_array($storedNetworks)) {
                 $removedNetworks = $storedNetworks;
                 //phpcs:ignore
-                foreach ( $body->parcelPointNetworks as $newNetwork => $newNetworkCarriers) {
+                foreach ($body->parcelPointNetworks as $newNetwork => $newNetworkCarriers) {
                     foreach ($storedNetworks as $oldNetwork => $oldNetworkCarriers) {
                         if ($newNetwork === $oldNetwork) {
                             unset($removedNetworks[$oldNetwork]);
@@ -239,7 +263,7 @@ class ConfigurationUtil
                         ShopUtil::$shopGroupId,
                         ShopUtil::$shopId,
                         array(
-                            'status'  => 'warning',
+                            'status' => 'warning',
                             'message' => $boxtalconnect->l('There\'s been a change in the parcel point network list, we\'ve adapted your shipping method configuration. Please check that everything is in order.'),
                         )
                     );
@@ -248,7 +272,7 @@ class ConfigurationUtil
                 //phpcs:ignore
                 $addedNetworks = $body->parcelPointNetworks;
                 //phpcs:ignore
-                foreach ( $body->parcelPointNetworks as $newNetwork => $newNetworkCarriers ) {
+                foreach ($body->parcelPointNetworks as $newNetwork => $newNetworkCarriers) {
                     foreach ($storedNetworks as $oldNetwork => $oldNetworkCarriers) {
                         if ($newNetwork === $oldNetwork) {
                             unset($addedNetworks[$oldNetwork]);
@@ -261,7 +285,7 @@ class ConfigurationUtil
                         ShopUtil::$shopGroupId,
                         ShopUtil::$shopId,
                         array(
-                            'status'  => 'info',
+                            'status' => 'info',
                             'message' => $boxtalconnect->l('There\'s been a change in the parcel point network list, you can add the extra parcel point network(s) to your shipping method configuration.'),
                         )
                     );
@@ -279,9 +303,9 @@ class ConfigurationUtil
     /**
      * Parse map configuration.
      *
-     * @param object $body body.
+     * @param object $body body
      *
-     * @return boolean
+     * @return bool
      */
     private static function parseMapConfiguration($body)
     {
@@ -305,9 +329,9 @@ class ConfigurationUtil
     /**
      * Parse tracking configuration.
      *
-     * @param object $body body.
+     * @param object $body body
      *
-     * @return boolean
+     * @return bool
      */
     private static function parseTrackingConfiguration($body)
     {
@@ -320,7 +344,7 @@ class ConfigurationUtil
                     ShopUtil::$shopGroupId,
                     ShopUtil::$shopId,
                     array(
-                        'status'  => 'warning',
+                        'status' => 'warning',
                         'message' => $boxtalconnect->l('The Boxtal tracking url has changed, you should change it in your shipping methods as well. The new link is displayed on the Boxtal settings page.'),
                     )
                 );

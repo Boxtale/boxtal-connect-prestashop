@@ -2,7 +2,6 @@
 /**
  * Custom notice rendering
  */
-
 $classes = '';
 switch ($notice->status) {
     case 'warning':

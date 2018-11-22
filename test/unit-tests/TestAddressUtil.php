@@ -2,7 +2,6 @@
 /**
  * Address util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\AddressUtil;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +10,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TestAddressUtil extends TestCase
 {
-
     /**
      * Test convert function.
      */

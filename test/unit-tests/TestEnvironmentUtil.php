@@ -2,7 +2,6 @@
 /**
  * Environment util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\EnvironmentUtil;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +10,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TestEnvironmentUtil extends TestCase
 {
-
     /**
      * Test checkErrors function.
      */

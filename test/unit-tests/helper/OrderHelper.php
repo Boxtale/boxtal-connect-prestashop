@@ -2,7 +2,6 @@
 /**
  * Test order helper
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\AddressUtil;
 
 /**

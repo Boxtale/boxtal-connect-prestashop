@@ -2,7 +2,6 @@
 /**
  * Cart storage util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\CartStorageUtil;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +10,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TestCartStorageUtil extends TestCase
 {
-
     /**
      * Test get set delete functions.
      */

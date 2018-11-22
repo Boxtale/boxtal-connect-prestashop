@@ -1,5 +1,30 @@
 <?php
 /**
+ * 2007-2018 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    Boxtal <api@boxtal.com>
+ * @copyright 2007-2018 PrestaShop SA / 2018-2018 Boxtal
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * International Registered Trademark & Property of PrestaShop SA
+ */
+
+/**
  * Contains code for address util class.
  */
 
@@ -12,21 +37,20 @@ namespace Boxtal\BoxtalConnectPrestashop\Util;
  */
 class AddressUtil
 {
-
     /**
      * Convert prestashop address to boxtal address.
      *
-     * @param \Address $address prestashop address.
+     * @param \Address $address prestashop address
      *
      * @return array converted address
      */
     public static function convert($address)
     {
         $convertedAddress = array(
-            'street'   => trim(MiscUtil::propertyExistsOrNull($address, 'address1').' '.MiscUtil::propertyExistsOrNull($address, 'address2')),
-            'city'     => trim(MiscUtil::propertyExistsOrNull($address, 'city')),
+            'street' => trim(MiscUtil::propertyExistsOrNull($address, 'address1') . ' ' . MiscUtil::propertyExistsOrNull($address, 'address2')),
+            'city' => trim(MiscUtil::propertyExistsOrNull($address, 'city')),
             'zipCode' => trim(MiscUtil::propertyExistsOrNull($address, 'postcode')),
-            'country'  => self::getCountryIsoFromId(MiscUtil::propertyExistsOrNull($address, 'id_country')),
+            'country' => self::getCountryIsoFromId(MiscUtil::propertyExistsOrNull($address, 'id_country')),
         );
 
         //phpcs:ignore
@@ -41,7 +65,7 @@ class AddressUtil
     /**
      * Get country iso code from country id.
      *
-     * @param int $countryId country id.
+     * @param int $countryId country id
      *
      * @return string country iso code
      */
@@ -50,13 +74,13 @@ class AddressUtil
         $country = new \Country($countryId);
 
         //phpcs:ignore
-        return property_exists($country, 'iso_code') ? strtolower($country->iso_code) : null;
+        return property_exists($country, 'iso_code') ? Tools::strtolower($country->iso_code) : null;
     }
 
     /**
      * Get country id from country iso code.
      *
-     * @param string $countryIso country iso code.
+     * @param string $countryIso country iso code
      *
      * @return int country id
      */
@@ -68,7 +92,7 @@ class AddressUtil
     /**
      * Get state iso code from state id.
      *
-     * @param int $stateId state id.
+     * @param int $stateId state id
      *
      * @return string state iso code
      */
@@ -77,6 +101,6 @@ class AddressUtil
         $state = new \State($stateId);
 
         //phpcs:ignore
-        return property_exists($state, 'iso_code') ? strtolower($state->iso_code) : null;
+        return property_exists($state, 'iso_code') ? Tools::strtolower($state->iso_code) : null;
     }
 }

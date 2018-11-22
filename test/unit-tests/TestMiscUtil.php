@@ -2,7 +2,6 @@
 /**
  * Misc util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\MiscUtil;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +10,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TestMiscUtil extends TestCase
 {
-
     /**
      * Test isSetOrNull function.
      */

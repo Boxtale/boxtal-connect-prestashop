@@ -26,7 +26,7 @@ class ProductHelper
         $product->id_manufacturer = 1;
         $product->id_category_default = 5;
         //phpcs:enable
-        $product->reference = 'box'.$rand;
+        $product->reference = 'box' . $rand;
         $product->save();
         StockAvailable::setQuantity($product->id, 0, 10);
 

@@ -2,7 +2,6 @@
 /**
  * Product util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\ProductUtil;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +10,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TestProductUtil extends TestCase
 {
-
     /**
      * Test getProductDescriptionMultilingual function.
      */

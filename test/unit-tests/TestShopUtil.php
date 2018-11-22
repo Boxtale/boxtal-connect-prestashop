@@ -2,7 +2,6 @@
 /**
  * Shop util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +10,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TestShopUtil extends TestCase
 {
-
     /**
      * Test getShopUrl function.
      */

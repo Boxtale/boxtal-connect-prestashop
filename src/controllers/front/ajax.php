@@ -1,11 +1,34 @@
 <?php
 /**
- * Contains code for the front ajax controller class.
+ * 2007-2018 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    Boxtal <api@boxtal.com>
+ * @copyright 2007-2018 PrestaShop SA / 2018-2018 Boxtal
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * International Registered Trademark & Property of PrestaShop SA
  */
 
+/**
+ * Contains code for the front ajax controller class.
+ */
 use Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController;
 use Boxtal\BoxtalConnectPrestashop\Util\CartStorageUtil;
-use Boxtal\BoxtalConnectPrestashop\Util\CookieUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
 use Boxtal\BoxtalPhp\RestClient;
 use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
@@ -14,11 +37,9 @@ use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
  * Front ajax controller class.
  *
  * @class       boxtalconnectajaxModuleFrontController
- *
  */
 class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
 {
-
     /**
      * Ajax front controller.
      *
@@ -83,14 +104,14 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
     /**
      * Returns selected carrier text.
      *
-     * @param int    $cartId            cart id
+     * @param int $cartId cart id
      * @param string $selectedCarrierId selected carrier id
      *
      * @void
      */
     public function getSelectedCarrierTextHandler($cartId, $selectedCarrierId)
     {
-        $text = "";
+        $text = '';
         $selectedCarrierCleanId = ShippingMethodUtil::getCleanId($selectedCarrierId);
         $boxtalconnect = \boxtalconnect::getInstance();
         $pointsResponse = @unserialize(CartStorageUtil::get((int) $cartId, 'bxParcelPoints'));
@@ -98,11 +119,11 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
             $chosenParcelPoint = ParcelPointController::getChosenPoint((int) $cartId, $selectedCarrierCleanId);
             if (null === $chosenParcelPoint) {
                 $closestParcelPoint = ParcelPointController::getClosestPoint((int) $cartId, $selectedCarrierCleanId);
-                $text .= '<br/><span class="bx-parcel-client">'.$boxtalconnect->l('Closest parcel point:').' <span class="bw-parcel-name">'.$closestParcelPoint->parcelPoint->name.'</span></span>';
+                $text .= '<br/><span class="bx-parcel-client">' . $boxtalconnect->l('Closest parcel point:') . ' <span class="bw-parcel-name">' . $closestParcelPoint->parcelPoint->name . '</span></span>';
             } else {
-                $text .= '<br/><span class="bx-parcel-client">'.$boxtalconnect->l('Your parcel point:').' <span class="bw-parcel-name">'.$chosenParcelPoint->parcelPoint->name.'</span></span>';
+                $text .= '<br/><span class="bx-parcel-client">' . $boxtalconnect->l('Your parcel point:') . ' <span class="bw-parcel-name">' . $chosenParcelPoint->parcelPoint->name . '</span></span>';
             }
-            $text .= '<br/><span class="bx-select-parcel">'.$boxtalconnect->l('Choose another').'</span>';
+            $text .= '<br/><span class="bx-select-parcel">' . $boxtalconnect->l('Choose another') . '</span>';
         }
 
         ApiUtil::sendAjaxResponse(200, $text);
@@ -111,7 +132,7 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
     /**
      * Returns selected carrier text.
      *
-     * @param int    $cartId            cart id
+     * @param int $cartId cart id
      * @param string $selectedCarrierId selected carrier id
      *
      * @void
@@ -142,11 +163,11 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
     /**
      * Returns selected carrier text.
      *
-     * @param int    $cartId            cart id
+     * @param int $cartId cart id
      * @param string $selectedCarrierId selected carrier id
-     * @param string $name              point name
-     * @param string $code              point code
-     * @param string $network           point network
+     * @param string $name point name
+     * @param string $code point code
+     * @param string $network point network
      *
      * @void
      */
@@ -164,7 +185,7 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
         $parcelPoint->parcelPoint->code = $code;
         $parcelPoint->parcelPoint->name = $name;
 
-        CartStorageUtil::set((int) $cartId, 'bxChosenParcelPoint'.$selectedCarrierCleanId, serialize($parcelPoint));
+        CartStorageUtil::set((int) $cartId, 'bxChosenParcelPoint' . $selectedCarrierCleanId, serialize($parcelPoint));
 
         ApiUtil::sendAjaxResponse(200);
     }

@@ -2,7 +2,6 @@
 /**
  * Order storage util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +10,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TestOrderStorageUtil extends TestCase
 {
-
     /**
      * Test get set functions.
      */

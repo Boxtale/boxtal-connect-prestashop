@@ -2,7 +2,6 @@
 /**
  * Auth util tests
  */
-
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
@@ -13,7 +12,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TestAuthUtil extends TestCase
 {
-
     /**
      * Test isPluginPaired function.
      */
