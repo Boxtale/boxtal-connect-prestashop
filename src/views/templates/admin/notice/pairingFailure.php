@@ -35,6 +35,7 @@
                 '%s: pairing with Boxtal is not complete. Please check your Prestashop connector in ' .
                 'your boxtal account for a more complete diagnostic.'
             ),
-            $shopName);
+            $shopName
+        );
         ?></p>
 </div>
