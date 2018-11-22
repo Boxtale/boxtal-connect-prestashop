@@ -268,9 +268,9 @@ class ConfigurationUtil
                         ShopUtil::$shopId,
                         array(
                             'status' => 'warning',
-                            'message' => $boxtalConnect->l('There\'s been a change in the parcel point network list, ' .
-                                'we\'ve adapted your shipping method configuration. Please check that everything is in' .
-                                ' order.'),
+                            'message' => $boxtalConnect->l('There\'s been a change in the parcel point network list,' .
+                                ' we\'ve adapted your shipping method configuration. Please check that everything is' .
+                                ' in order.'),
                         )
                     );
                 }

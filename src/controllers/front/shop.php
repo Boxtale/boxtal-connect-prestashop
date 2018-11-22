@@ -112,7 +112,8 @@ class BoxtalConnectShopModuleFrontController extends ModuleFrontController
         $accessKey = null;
         $secretKey = null;
         $callbackUrl = null;
-        if (is_object($body) && property_exists($body, 'accessKey') && property_exists($body, 'secretKey')) {
+        if (is_object($body) && property_exists($body, 'accessKey')
+            && property_exists($body, 'secretKey')) {
             $accessKey = $body->accessKey;
             $secretKey = $body->secretKey;
 
@@ -179,7 +180,8 @@ class BoxtalConnectShopModuleFrontController extends ModuleFrontController
             ApiUtil::sendApiResponse(400);
         }
 
-        if (!is_object($body) || !property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
+        if (!is_object($body) || !property_exists($body, 'accessKey')
+            || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
             ApiUtil::sendApiResponse(403);
         }
 

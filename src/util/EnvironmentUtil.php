@@ -50,8 +50,8 @@ class EnvironmentUtil
     {
         if (version_compare(PHP_VERSION, $plugin->minPhpVersion, '<')) {
             /* translators: 1) int version 2) int version */
-            $message = $plugin->l('Boxtal Connect - The minimum PHP version required for this plugin is %1$s. You are ' .
-                'running %2$s.');
+            $message = $plugin->l('Boxtal Connect - The minimum PHP version required for this plugin is %1$s. You ' .
+                'are running %2$s.');
 
             return sprintf($message, $plugin->minPhpVersion, PHP_VERSION);
         }
