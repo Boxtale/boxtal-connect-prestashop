@@ -78,9 +78,7 @@ class BoxtalConnect extends Module
         parent::__construct();
 
         $this->displayName = $this->l('Boxtal Connect');
-        $description = 'Managing your shipments becomes easier with our free plugin Boxtal! Save time and enjoy ' .
-            'negotiated rates with 15 carriers: Colissimo, Mondial Relay...';
-        $this->description = $this->l($description);
+        $this->description = $this->l('Managing your shipments becomes easier with our free plugin Boxtal! Save time and enjoy negotiated rates with 15 carriers: Colissimo, Mondial Relay...');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         $this->minPhpVersion = '5.3.0';
