@@ -47,7 +47,8 @@ class AddressUtil
     public static function convert($address)
     {
         $convertedAddress = array(
-            'street' => trim(MiscUtil::propertyExistsOrNull($address, 'address1') . ' ' . MiscUtil::propertyExistsOrNull($address, 'address2')),
+            'street' => trim(MiscUtil::propertyExistsOrNull($address, 'address1') . ' '
+                . MiscUtil::propertyExistsOrNull($address, 'address2')),
             'city' => trim(MiscUtil::propertyExistsOrNull($address, 'city')),
             'zipCode' => trim(MiscUtil::propertyExistsOrNull($address, 'postcode')),
             'country' => self::getCountryIsoFromId(MiscUtil::propertyExistsOrNull($address, 'id_country')),
@@ -74,7 +75,7 @@ class AddressUtil
         $country = new \Country($countryId);
 
         //phpcs:ignore
-        return property_exists($country, 'iso_code') ? Tools::strtolower($country->iso_code) : null;
+        return property_exists($country, 'iso_code') ? \Tools::strtolower($country->iso_code) : null;
     }
 
     /**
@@ -101,6 +102,6 @@ class AddressUtil
         $state = new \State($stateId);
 
         //phpcs:ignore
-        return property_exists($state, 'iso_code') ? Tools::strtolower($state->iso_code) : null;
+        return property_exists($state, 'iso_code') ? \Tools::strtolower($state->iso_code) : null;
     }
 }

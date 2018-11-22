@@ -50,7 +50,10 @@ class TrackingController
      */
     public static function getOrderTracking($orderId)
     {
-        $lib = new ApiClient(AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId), AuthUtil::getSecretKey(ShopUtil::$shopGroupId, ShopUtil::$shopId));
+        $lib = new ApiClient(
+            AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId),
+            AuthUtil::getSecretKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)
+        );
         $response = $lib->getOrder($orderId);
         if ($response->isError()) {
             return null;

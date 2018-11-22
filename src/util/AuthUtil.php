@@ -127,7 +127,8 @@ class AuthUtil
     {
         $body = json_decode($jsonBody);
 
-        if (null === $body || !is_object($body) || !property_exists($body, 'encryptedKey') || !property_exists($body, 'encryptedData')) {
+        if (null === $body || !is_object($body) || !property_exists($body, 'encryptedKey')
+            || !property_exists($body, 'encryptedData')) {
             return null;
         }
 
@@ -159,7 +160,9 @@ class AuthUtil
         return json_encode(
             array(
                 'encryptedKey' => MiscUtil::base64OrNull(self::encryptPublicKey($key)),
-                'encryptedData' => MiscUtil::base64OrNull(self::encryptRc4((is_array($body) ? json_encode($body) : $body), $key)),
+                'encryptedData' => MiscUtil::base64OrNull(
+                    self::encryptRc4((is_array($body) ? json_encode($body) : $body), $key)
+                ),
             )
         );
     }
@@ -190,7 +193,8 @@ class AuthUtil
     public static function encryptPublicKey($str)
     {
         // phpcs:ignore
-        $publicKey = Tools::file_get_contents(realpath(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'resource' . DIRECTORY_SEPARATOR . 'publickey');
+        $publicKey = \Tools::file_get_contents(realpath(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR
+            . 'resource' . DIRECTORY_SEPARATOR . 'publickey');
         $encrypted = '';
         if (openssl_public_encrypt($str, $encrypted, $publicKey)) {
             return $encrypted;
@@ -209,7 +213,8 @@ class AuthUtil
     public static function decryptPublicKey($str)
     {
         // phpcs:ignore
-        $publicKey = Tools::file_get_contents(realpath(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'resource' . DIRECTORY_SEPARATOR . 'publickey');
+        $publicKey = \Tools::file_get_contents(realpath(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR
+            . 'resource' . DIRECTORY_SEPARATOR . 'publickey');
         $decrypted = '';
         if (openssl_public_decrypt(base64_decode($str), $decrypted, $publicKey)) {
             return json_decode($decrypted);
@@ -234,7 +239,7 @@ class AuthUtil
         }
         $j = 0;
         for ($i = 0; $i < 256; ++$i) {
-            $j = ($j + $s[$i] + ord($key[$i % Tools::strlen($key)])) % 256;
+            $j = ($j + $s[$i] + ord($key[$i % strlen($key)])) % 256;
             $x = $s[$i];
             $s[$i] = $s[$j];
             $s[$j] = $x;
@@ -289,7 +294,10 @@ class AuthUtil
      */
     public static function getMapsToken()
     {
-        $lib = new ApiClient(self::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId), self::getSecretKey(ShopUtil::$shopGroupId, ShopUtil::$shopId));
+        $lib = new ApiClient(
+            self::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId),
+            self::getSecretKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)
+        );
         //phpcs:ignore
         $response = $lib->restClient->request(RestClient::$POST, ConfigurationUtil::get('BX_MAP_TOKEN_URL'));
 

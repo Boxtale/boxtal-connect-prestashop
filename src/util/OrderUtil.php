@@ -45,7 +45,12 @@ class OrderUtil
     public static function getOrders()
     {
         $sql = new \DbQuery();
-        $sql->select('o.id_order, o.reference, c.firstname, c.lastname, c.company, a.address1, a.address2, a.city, a.postcode, co.iso_code as country_iso, s.iso_code as state_iso, c.email, a.phone, a.phone_mobile, osl.name as status, ca.name as shippingMethod, o.total_shipping_tax_excl as shippingAmount, o.date_add as creationDate, o.total_paid_tax_excl as orderAmount');
+        $sql->select(
+            'o.id_order, o.reference, c.firstname, c.lastname, c.company, a.address1, a.address2, a.city, ' .
+            'a.postcode, co.iso_code as country_iso, s.iso_code as state_iso, c.email, a.phone, a.phone_mobile, ' .
+            'osl.name as status, ca.name as shippingMethod, o.total_shipping_tax_excl as shippingAmount, ' .
+            'o.date_add as creationDate, o.total_paid_tax_excl as orderAmount'
+        );
         $sql->from('orders', 'o');
         $sql->innerJoin('customer', 'c', 'o.id_customer = c.id_customer');
         $sql->innerJoin('address', 'a', 'o.id_address_delivery = a.id_address');
@@ -55,7 +60,9 @@ class OrderUtil
         $sql->innerJoin('order_state_lang', 'osl', 'os.id_order_state = osl.id_order_state');
         $sql->innerJoin('order_carrier', 'oc', 'o.id_order = oc.id_order');
         $sql->innerJoin('carrier', 'ca', 'oc.id_carrier = ca.id_carrier');
-        $sql->where('os.shipped=0 AND o.id_shop_group=' . ShopUtil::$shopGroupId . ' AND o.id_shop=' . ShopUtil::$shopId);
+        $sql->where(
+            'os.shipped=0 AND o.id_shop_group=' . ShopUtil::$shopGroupId . ' AND o.id_shop=' . ShopUtil::$shopId
+        );
         $sql->groupBy('o.reference');
         $sql->orderBy('creationDate desc');
 
@@ -101,7 +108,8 @@ class OrderUtil
 
         $translations = array();
         foreach ($result as $statusTranslation) {
-            $translations[Tools::strtolower(str_replace('-', '_', $statusTranslation['language_code']))] = $statusTranslation['name'];
+            $translations[\Tools::strtolower(str_replace('-', '_', $statusTranslation['language_code']))]
+                = $statusTranslation['name'];
         }
 
         return $translations;

@@ -110,7 +110,12 @@ class AdminAjaxController extends \ModuleAdminController
         if (!$response->isError()) {
             AuthUtil::endPairingUpdate();
             NoticeController::removeNotice(NoticeController::$pairingUpdate, ShopUtil::$shopGroupId, ShopUtil::$shopId);
-            NoticeController::addNotice(NoticeController::$pairing, ShopUtil::$shopGroupId, ShopUtil::$shopId, array('result' => 1));
+            NoticeController::addNotice(
+                NoticeController::$pairing,
+                ShopUtil::$shopGroupId,
+                ShopUtil::$shopId,
+                array('result' => 1)
+            );
             ApiUtil::sendAjaxResponse(200);
         } else {
             ApiUtil::sendAjaxResponse(404);

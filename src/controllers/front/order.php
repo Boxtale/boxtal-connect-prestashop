@@ -116,7 +116,9 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                 continue;
             }
 
-            $phone = MiscUtil::notEmptyOrNull($order, 'phone_mobile') === null ? MiscUtil::notEmptyOrNull($order, 'phone') : MiscUtil::notEmptyOrNull($order, 'phone_mobile');
+            $phone = MiscUtil::notEmptyOrNull($order, 'phone_mobile') === null ?
+                MiscUtil::notEmptyOrNull($order, 'phone')
+                : MiscUtil::notEmptyOrNull($order, 'phone_mobile');
             $recipient = array(
                 'firstname' => MiscUtil::notEmptyOrNull($order, 'firstname'),
                 'lastname' => MiscUtil::notEmptyOrNull($order, 'lastname'),
@@ -156,7 +158,9 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
             $multilingualShippingMethod = array();
             $shippingMethodName = MiscUtil::notEmptyOrNull($order, 'shippingMethod');
             foreach (\Language::getLanguages(true) as $lang) {
-                $multilingualShippingMethod[Tools::strtolower(str_replace('-', '_', $lang['language_code']))] = $shippingMethodName;
+                $multilingualShippingMethod[
+                    Tools::strtolower(str_replace('-', '_', $lang['language_code']))
+                ] = $shippingMethodName;
             }
 
             $result[] = array(
@@ -194,7 +198,8 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
     public function trackingEventHandler($orderId, $route, $body)
     {
         $boxtalconnect = boxtalconnect::getInstance();
-        if (!is_object($body) || !property_exists($body, 'accessKey') || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
+        if (!is_object($body) || !property_exists($body, 'accessKey')
+            || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
             //ApiUtil::sendApiResponse(403);
         }
 
@@ -203,7 +208,7 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
         }
 
         //phpcs:ignore
-        $langId = \Context::getContext()->language->id;
+        $langId = $boxtalconnect->getContext()->language->id;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
 
         if ('shipped' === $route) {
@@ -224,7 +229,9 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                         ShopUtil::$shopId,
                         array(
                             'status' => 'warning',
-                            'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status list, we\'ve adapted your tracking event configuration. Please check that everything is in order.'),
+                            'message' => $boxtalconnect->l(
+                                'Boxtal connect: there\'s been a change in your order status list, we\'ve adapted ' .
+                                'your tracking event configuration. Please check that everything is in order.'),
                         )
                     );
                 } else {
@@ -234,7 +241,8 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                     $carrierId = OrderUtil::getCarrierId($orderId);
                     if (null !== $carrierId) {
                         $url = ShippingMethodUtil::getCarrierTrackingUrl($carrierId);
-                        if (null !== $url && str_replace('@', '%s', $url) === ConfigurationUtil::getTrackingUrlPattern()) {
+                        if (null !== $url && str_replace('@', '%s', $url) ===
+                            ConfigurationUtil::getTrackingUrlPattern()) {
                             \Db::getInstance()->update(
                                 'orders',
                                 array('shipping_number' => pSQL($orderId)),
@@ -270,7 +278,9 @@ class boxtalconnectOrderModuleFrontController extends ModuleFrontController
                         ShopUtil::$shopId,
                         array(
                             'status' => 'warning',
-                            'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status list, we\'ve adapted your tracking event configuration. Please check that everything is in order.'),
+                            'message' => $boxtalconnect->l('Boxtal connect: there\'s been a change in your order status' .
+                                ' list, we\'ve adapted your tracking event configuration. Please check that everything' .
+                                ' is in order.'),
                         )
                     );
                 } else {

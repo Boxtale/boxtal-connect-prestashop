@@ -60,7 +60,8 @@ class ProductUtil
             $sql->where('l.id_lang = ' . $langId);
             $result = \Db::getInstance()->executeS($sql);
             $row = array_shift($result);
-            $translations[Tools::strtolower(str_replace('-', '_', $row['language_code']))] = $productName;
+            $translations[\Tools::strtolower(str_replace('-', '_', $row['language_code']))]
+                = $productName;
         }
 
         return $translations;

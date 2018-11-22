@@ -113,13 +113,10 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
         $secretKey = null;
         $callbackUrl = null;
         if (is_object($body) && property_exists($body, 'accessKey') && property_exists($body, 'secretKey')) {
-            //phpcs:ignore
             $accessKey = $body->accessKey;
-            //phpcs:ignore
             $secretKey = $body->secretKey;
 
             if (property_exists($body, 'pairCallbackUrl')) {
-                //phpcs:ignore
                 $callbackUrl = $body->pairCallbackUrl;
             }
         }
@@ -127,22 +124,44 @@ class boxtalconnectShopModuleFrontController extends ModuleFrontController
         if (null !== $accessKey && null !== $secretKey) {
             if (!AuthUtil::isPluginPaired(ShopUtil::$shopGroupId, ShopUtil::$shopId)) { // initial pairing.
                 AuthUtil::pairPlugin($accessKey, $secretKey);
-                NoticeController::removeNotice(NoticeController::$setupWizard, ShopUtil::$shopGroupId, ShopUtil::$shopId);
-                NoticeController::addNotice(NoticeController::$pairing, ShopUtil::$shopGroupId, ShopUtil::$shopId, array('result' => 1));
+                NoticeController::removeNotice(
+                    NoticeController::$setupWizard,
+                    ShopUtil::$shopGroupId,
+                    ShopUtil::$shopId
+                );
+                NoticeController::addNotice(
+                    NoticeController::$pairing,
+                    ShopUtil::$shopGroupId,
+                    ShopUtil::$shopId,
+                    array('result' => 1)
+                );
                 ApiUtil::sendApiResponse(200);
             } else { // pairing update.
                 if (null !== $callbackUrl) {
                     AuthUtil::pairPlugin($accessKey, $secretKey);
-                    NoticeController::removeNotice(NoticeController::$pairing, ShopUtil::$shopGroupId, ShopUtil::$shopId);
+                    NoticeController::removeNotice(
+                        NoticeController::$pairing,
+                        ShopUtil::$shopGroupId,
+                        ShopUtil::$shopId
+                    );
                     AuthUtil::startPairingUpdate($callbackUrl);
-                    NoticeController::addNotice(NoticeController::$pairingUpdate, ShopUtil::$shopGroupId, ShopUtil::$shopId);
+                    NoticeController::addNotice(
+                        NoticeController::$pairingUpdate,
+                        ShopUtil::$shopGroupId,
+                        ShopUtil::$shopId
+                    );
                     ApiUtil::sendApiResponse(200);
                 } else {
                     ApiUtil::sendApiResponse(403);
                 }
             }
         } else {
-            NoticeController::addNotice(NoticeController::$pairing, ShopUtil::$shopGroupId, ShopUtil::$shopId, array('result' => 0));
+            NoticeController::addNotice(
+                NoticeController::$pairing,
+                ShopUtil::$shopGroupId,
+                ShopUtil::$shopId,
+                array('result' => 0)
+            );
             ApiUtil::sendApiResponse(400);
         }
     }

@@ -44,7 +44,8 @@ spl_autoload_register('boxtalConnectAutoload');
 function boxtalConnectAutoload($className)
 {
     // If the specified $className does not include our namespace, duck out.
-    if (false === strpos($className, 'Boxtal\BoxtalConnectPrestashop') && false === strpos($className, 'Boxtal\BoxtalPhp')) {
+    if (false === strpos($className, 'Boxtal\BoxtalConnectPrestashop')
+        && false === strpos($className, 'Boxtal\BoxtalPhp')) {
         return;
     }
 

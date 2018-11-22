@@ -30,6 +30,8 @@
 
 namespace Boxtal\BoxtalConnectPrestashop\Util;
 
+use boxtalconnect;
+
 /**
  * Shipping method util class.
  *
@@ -136,10 +138,15 @@ class ShippingMethodUtil
      */
     public static function getShippingMethods()
     {
+        $boxtalconnect = boxtalconnect::getInstance();
         $sql = new \DbQuery();
         $sql->select('c.id_carrier, c.name, bc.parcel_point_networks');
         $sql->from('carrier', 'c');
-        $sql->innerJoin('carrier_lang', 'cl', 'c.id_carrier = cl.id_carrier AND cl.id_lang = ' . (int) \Context::getContext()->language->id);
+        $sql->innerJoin(
+            'carrier_lang',
+            'cl',
+            'c.id_carrier = cl.id_carrier AND cl.id_lang = ' . (int) $boxtalconnect->getContext()->language->id
+        );
 
         $bxCarrierJoin = 'c.id_carrier = bc.id_carrier';
 

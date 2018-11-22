@@ -133,7 +133,8 @@ class ConfigurationUtil
      */
     public static function parseConfiguration($body)
     {
-        return self::parseParcelPointNetworks($body) && self::parseMapConfiguration($body) && self::parseTrackingConfiguration($body);
+        return self::parseParcelPointNetworks($body) && self::parseMapConfiguration($body)
+            && self::parseTrackingConfiguration($body);
     }
 
     /**
@@ -146,9 +147,12 @@ class ConfigurationUtil
      */
     public static function hasConfiguration($shopGroupId, $shopId)
     {
-        return null !== self::get('BX_MAP_BOOTSTRAP_URL', $shopGroupId, $shopId) && null !== self::get('BX_MAP_TOKEN_URL', $shopGroupId, $shopId)
-            && null !== self::get('BX_MAP_LOGO_IMAGE_URL', $shopGroupId, $shopId) && null !== self::get('BX_MAP_LOGO_HREF_URL', $shopGroupId, $shopId)
-            && null !== self::get('BX_PP_NETWORKS', $shopGroupId, $shopId) && null !== self::get('BX_TRACKING_URL_PATTERN', $shopGroupId, $shopId);
+        return null !== self::get('BX_MAP_BOOTSTRAP_URL', $shopGroupId, $shopId)
+            && null !== self::get('BX_MAP_TOKEN_URL', $shopGroupId, $shopId)
+            && null !== self::get('BX_MAP_LOGO_IMAGE_URL', $shopGroupId, $shopId)
+            && null !== self::get('BX_MAP_LOGO_HREF_URL', $shopGroupId, $shopId)
+            && null !== self::get('BX_PP_NETWORKS', $shopGroupId, $shopId)
+            && null !== self::get('BX_TRACKING_URL_PATTERN', $shopGroupId, $shopId);
     }
 
     /**
@@ -264,7 +268,9 @@ class ConfigurationUtil
                         ShopUtil::$shopId,
                         array(
                             'status' => 'warning',
-                            'message' => $boxtalconnect->l('There\'s been a change in the parcel point network list, we\'ve adapted your shipping method configuration. Please check that everything is in order.'),
+                            'message' => $boxtalconnect->l('There\'s been a change in the parcel point network list, ' .
+                                'we\'ve adapted your shipping method configuration. Please check that everything is in' .
+                                ' order.'),
                         )
                     );
                 }
@@ -286,7 +292,8 @@ class ConfigurationUtil
                         ShopUtil::$shopId,
                         array(
                             'status' => 'info',
-                            'message' => $boxtalconnect->l('There\'s been a change in the parcel point network list, you can add the extra parcel point network(s) to your shipping method configuration.'),
+                            'message' => $boxtalconnect->l('There\'s been a change in the parcel point network list, ' .
+                                'you can add the extra parcel point network(s) to your shipping method configuration.'),
                         )
                     );
                 }
@@ -309,8 +316,10 @@ class ConfigurationUtil
      */
     private static function parseMapConfiguration($body)
     {
-        if (is_object($body) && property_exists($body, 'mapsBootstrapUrl') && property_exists($body, 'mapsTokenUrl')
-            && property_exists($body, 'mapsLogoImageUrl') && property_exists($body, 'mapsLogoHrefUrl')) {
+        if (is_object($body) && property_exists($body, 'mapsBootstrapUrl')
+            && property_exists($body, 'mapsTokenUrl')
+            && property_exists($body, 'mapsLogoImageUrl')
+            && property_exists($body, 'mapsLogoHrefUrl')) {
             //phpcs:ignore
             self::set('BX_MAP_BOOTSTRAP_URL', $body->mapsBootstrapUrl);
             //phpcs:ignore
@@ -345,7 +354,8 @@ class ConfigurationUtil
                     ShopUtil::$shopId,
                     array(
                         'status' => 'warning',
-                        'message' => $boxtalconnect->l('The Boxtal tracking url has changed, you should change it in your shipping methods as well. The new link is displayed on the Boxtal settings page.'),
+                        'message' => $boxtalconnect->l('The Boxtal tracking url has changed, you should change it in ' .
+                            'your shipping methods as well. The new link is displayed on the Boxtal settings page.'),
                     )
                 );
             }

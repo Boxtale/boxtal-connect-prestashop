@@ -4,3 +4,5 @@ composer.lock
 node_modules/
 legacy/
 package-lock.json
+.php_cs.cache
+.attach_pid*

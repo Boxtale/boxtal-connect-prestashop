@@ -57,8 +57,6 @@ class AdminShippingMethodController extends \ModuleAdminController
      */
     public function init()
     {
-        global $cookie;
-
         parent::init();
         if (\Tools::isSubmit('submitParcelPointNetworks')) {
             $this->handleParcelPointNetworksForm();
@@ -66,7 +64,7 @@ class AdminShippingMethodController extends \ModuleAdminController
         if (\Tools::isSubmit('submitTrackingEvents')) {
             $this->handleTrackingEventsForm();
         }
-        $boxtalconnect = \boxtalconnect::getInstance();
+        $boxtalconnect = boxtalconnect::getInstance();
         if (true === ShopUtil::$multistore && null === ShopUtil::$shopId) {
             $this->content = $boxtalconnect->displayTemplate('admin/multistoreAccessDenied.tpl');
             //phpcs:ignore
@@ -90,7 +88,7 @@ class AdminShippingMethodController extends \ModuleAdminController
         $smarty->assign('carriers', $carriers);
 
         //phpcs:ignore
-        $langId = \Context::getContext()->language->id;
+        $langId = $boxtalconnect->getContext()->language->id;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
         $smarty->assign('orderStatuses', $orderStatuses);
         $orderShipped = ConfigurationUtil::get('BX_ORDER_SHIPPED');
@@ -147,7 +145,8 @@ class AdminShippingMethodController extends \ModuleAdminController
     {
         $carriers = ShippingMethodUtil::getShippingMethods();
         foreach ((array) $carriers as $carrier) {
-            $parcelPointNetworks = \Tools::isSubmit('parcelPointNetworks_' . (int) $carrier['id_carrier']) ? \Tools::getValue('parcelPointNetworks_' . (int) $carrier['id_carrier']) : array();
+            $parcelPointNetworks = \Tools::isSubmit('parcelPointNetworks_' . (int) $carrier['id_carrier']) ?
+                \Tools::getValue('parcelPointNetworks_' . (int) $carrier['id_carrier']) : array();
             ShippingMethodUtil::setSelectedParcelPointNetworks((int) $carrier['id_carrier'], $parcelPointNetworks);
         }
     }
