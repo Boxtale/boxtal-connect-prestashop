@@ -2,8 +2,8 @@
 
 TRAVIS=${1-false}
 
-if [ ${TRAVIS} = "false" ]; then
+if [[ ${TRAVIS} = "false" ]]; then
     vendor/bin/php-cs-fixer fix . --config .php_cs.dist
 fi
 
-#vendor/bin/phpcs -s -p .
+vendor/bin/php-cs-fixer fix . --config .php_cs.dist -v --dry-run --stop-on-violation --using-cache=no
