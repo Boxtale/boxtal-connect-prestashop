@@ -30,4 +30,5 @@
   const bxMapLogoImageUrl = "{$mapLogoImageUrl nofilter}";
   const bxMapLogoHrefUrl = "{$mapLogoHrefUrl nofilter}";
   const bxAjaxUrl = "{$link->getModuleLink('boxtalconnect', 'ajax', array()) nofilter}";
+  const bxToken = "{$token|escape:'htmlall':'UTF-8'}";
 </script>

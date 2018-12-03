@@ -47,6 +47,10 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
      */
     public function initContent()
     {
+        if (!$this->isTokenValid()) {
+            ApiUtil::sendAjaxResponse(403);
+        }
+
         $this->ajax = true;
         parent::initContent();
         $route = Tools::getValue('route'); // Get route

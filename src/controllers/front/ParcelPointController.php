@@ -78,6 +78,7 @@ class ParcelPointController
 
         $smarty = $boxtalConnect->getSmarty();
         $smarty->assign('translation', \Tools::jsonEncode($translation));
+        $smarty->assign('token', \Tools::getToken(false));
         $smarty->assign('mapUrl', self::getMapUrl());
         $smarty->assign('mapLogoImageUrl', ConfigurationUtil::getMapLogoImageUrl());
         $smarty->assign('mapLogoHrefUrl', ConfigurationUtil::getMapLogoHrefUrl());

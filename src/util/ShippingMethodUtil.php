@@ -82,7 +82,7 @@ class ShippingMethodUtil
     public static function setSelectedParcelPointNetworks($carrierId, $parcelPointNetworks)
     {
         $data = array(
-            'id_carrier' => $carrierId,
+            'id_carrier' => (int) $carrierId,
             'id_shop_group' => ShopUtil::$shopGroupId,
             'id_shop' => ShopUtil::$shopId,
             'parcel_point_networks' => pSQL(serialize($parcelPointNetworks)),

@@ -179,7 +179,8 @@ const bxParcelPoint = {
         "application/x-www-form-urlencoded"
       );
       httpRequest.responseType = "json";
-      httpRequest.send("route=getPoints&carrier=" + encodeURIComponent(carrier) + "&cartId=" + encodeURIComponent(bxCartId));
+      httpRequest.send("route=getPoints&carrier=" + encodeURIComponent(carrier)
+        + "&cartId=" + encodeURIComponent(bxCartId) + "&token=" + encodeURIComponent(bxToken));
     });
   },
 
@@ -335,7 +336,8 @@ const bxParcelPoint = {
       );
       setPointRequest.responseType = "json";
       setPointRequest.send("route=setPoint&carrier=" + encodeURIComponent(carrier) + "&code=" + encodeURIComponent(code)
-        + "&name=" + encodeURIComponent(name) + "&network=" + encodeURIComponent(network) + "&cartId=" + encodeURIComponent(bxCartId));
+        + "&name=" + encodeURIComponent(name) + "&network=" + encodeURIComponent(network) + "&cartId=" + encodeURIComponent(bxCartId)
+        + "&token=" + encodeURIComponent(bxToken));
     });
   },
 
@@ -396,7 +398,8 @@ const bxParcelPoint = {
       "application/x-www-form-urlencoded"
     );
     getSelectedCarrierTextRequest.responseType = "json";
-    getSelectedCarrierTextRequest.send("route=getSelectedCarrierText&carrier=" + encodeURIComponent(selectedCarrierId) + "&cartId=" + encodeURIComponent(bxCartId));
+    getSelectedCarrierTextRequest.send("route=getSelectedCarrierText&carrier=" + encodeURIComponent(selectedCarrierId)
+      + "&cartId=" + encodeURIComponent(bxCartId) + "&token=" + encodeURIComponent(bxToken));
   },
 
   getSelectedInput: function() {

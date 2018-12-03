@@ -253,7 +253,7 @@ class BoxtalConnect extends Module
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
                     'bx-notices',
-                    'modules/' . $this->name . '/views/css/notices.min.js',
+                    'modules/' . $this->name . '/views/js/notices.min.js',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
