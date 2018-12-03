@@ -74,6 +74,7 @@ class BoxtalConnect extends Module
         $this->ps_versions_compliancy = array('min' => '1.5', 'max' => _PS_VERSION_);
         $this->bootstrap = true;
         $this->file = __FILE__;
+        $this->module_key = '4b8e97a28da14db747562f68331db85a';
         $this::$instance = $this;
         parent::__construct();
 
