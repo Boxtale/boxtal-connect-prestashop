@@ -55,13 +55,13 @@ class CartStorageUtil
         if (null === ShopUtil::$shopGroupId) {
             $sql->where('cs.id_shop_group IS NULL');
         } else {
-            $sql->where('cs.id_shop_group=' . ShopUtil::$shopGroupId);
+            $sql->where('cs.id_shop_group=' . (int) ShopUtil::$shopGroupId);
         }
 
         if (null === ShopUtil::$shopId) {
             $sql->where('cs.id_shop IS NULL');
         } else {
-            $sql->where('cs.id_shop=' . ShopUtil::$shopId);
+            $sql->where('cs.id_shop=' . (int) ShopUtil::$shopId);
         }
 
         $result = \Db::getInstance()->executeS($sql);

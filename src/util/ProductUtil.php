@@ -57,7 +57,7 @@ class ProductUtil
             $sql = new \DbQuery();
             $sql->select('l.language_code');
             $sql->from('lang', 'l');
-            $sql->where('l.id_lang = ' . $langId);
+            $sql->where('l.id_lang = ' . (int) $langId);
             $result = \Db::getInstance()->executeS($sql);
             $row = array_shift($result);
             $translations[\Tools::strtolower(str_replace('-', '_', $row['language_code']))]

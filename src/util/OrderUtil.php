@@ -61,7 +61,7 @@ class OrderUtil
         $sql->innerJoin('order_carrier', 'oc', 'o.id_order = oc.id_order');
         $sql->innerJoin('carrier', 'ca', 'oc.id_carrier = ca.id_carrier');
         $sql->where(
-            'os.shipped=0 AND o.id_shop_group=' . ShopUtil::$shopGroupId . ' AND o.id_shop=' . ShopUtil::$shopId
+            'os.shipped=0 AND o.id_shop_group=' . (int) ShopUtil::$shopGroupId . ' AND o.id_shop=' . (int) ShopUtil::$shopId
         );
         $sql->groupBy('o.reference');
         $sql->orderBy('creationDate desc');
@@ -98,7 +98,7 @@ class OrderUtil
         $sql = new \DbQuery();
         $sql->select('l.language_code, os.name');
         $sql->from('orders', 'o');
-        $sql->innerJoin('order_state_lang', 'os', 'o.current_state = os.id_order_state AND o.id_order = ' . $orderId);
+        $sql->innerJoin('order_state_lang', 'os', 'o.current_state = os.id_order_state AND o.id_order = ' . (int) $orderId);
         $sql->innerJoin('lang', 'l', 'os.id_lang = l.id_lang');
         $result = \Db::getInstance()->executeS($sql);
 
@@ -127,7 +127,7 @@ class OrderUtil
         $sql = new \DbQuery();
         $sql->select('o.current_state');
         $sql->from('orders', 'o');
-        $sql->where('o.id_order = ' . $orderId);
+        $sql->where('o.id_order = ' . (int) $orderId);
         $result = \Db::getInstance()->executeS($sql);
 
         if (!is_array($result)) {
@@ -151,7 +151,7 @@ class OrderUtil
         $sql = new \DbQuery();
         $sql->select('o.reference');
         $sql->from('orders', 'o');
-        $sql->where('o.id_order = ' . $orderId);
+        $sql->where('o.id_order = ' . (int) $orderId);
         $result = \Db::getInstance()->executeS($sql);
 
         if (!is_array($result)) {
@@ -176,7 +176,7 @@ class OrderUtil
         $sql->select('c.id_reference');
         $sql->from('orders', 'o');
         $sql->innerJoin('carrier', 'c', 'c.id_carrier = o.id_carrier');
-        $sql->where('o.id_order = ' . $orderId);
+        $sql->where('o.id_order = ' . (int) $orderId);
         $result = \Db::getInstance()->executeS($sql);
 
         if (!is_array($result)) {
@@ -201,7 +201,7 @@ class OrderUtil
         $sql->select('oc.id_carrier');
         $sql->from('orders', 'o');
         $sql->innerJoin('order_carrier', 'oc', 'o.id_order = oc.id_order');
-        $sql->where('o.id_order = ' . $orderId);
+        $sql->where('o.id_order = ' . (int) $orderId);
         $result = \Db::getInstance()->executeS($sql);
 
         if (!is_array($result)) {
@@ -226,7 +226,7 @@ class OrderUtil
         $sql->select('os.id_order_state, osl.name');
         $sql->from('order_state', 'os');
         $sql->innerJoin('order_state_lang', 'osl', 'os.id_order_state = osl.id_order_state');
-        $sql->where('osl.id_lang = ' . $langId);
+        $sql->where('osl.id_lang = ' . (int) $langId);
         $sql->where('os.deleted = 0');
 
         return \Db::getInstance()->executeS($sql);

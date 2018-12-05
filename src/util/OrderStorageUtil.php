@@ -52,8 +52,8 @@ class OrderStorageUtil
         $sql->from('bx_order_storage', 'os');
         $sql->where('os.id_order=' . (int) $orderId);
         $sql->where('os.key="' . pSQL($key) . '"');
-        $sql->where('os.id_shop_group=' . ShopUtil::$shopGroupId);
-        $sql->where('os.id_shop=' . ShopUtil::$shopId);
+        $sql->where('os.id_shop_group=' . (int) ShopUtil::$shopGroupId);
+        $sql->where('os.id_shop=' . (int) ShopUtil::$shopId);
 
         $result = \Db::getInstance()->executeS($sql);
 

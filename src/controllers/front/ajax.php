@@ -117,21 +117,25 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
     {
         $text = '';
         $selectedCarrierCleanId = ShippingMethodUtil::getCleanId($selectedCarrierId);
-        $boxtalConnect = BoxtalConnect::getInstance();
-        $pointsResponse = @unserialize(CartStorageUtil::get((int) $cartId, 'bxParcelPoints'));
-        if (false !== $pointsResponse) {
-            $chosenParcelPoint = ParcelPointController::getChosenPoint((int) $cartId, $selectedCarrierCleanId);
-            if (null === $chosenParcelPoint) {
-                $closestParcelPoint = ParcelPointController::getClosestPoint((int) $cartId, $selectedCarrierCleanId);
-                $text .= '<br/><span class="bx-parcel-client">' . $boxtalConnect->l('Closest parcel point:')
-                    . ' <span class="bw-parcel-name">' . $closestParcelPoint->parcelPoint->name . '</span></span>';
-            } else {
-                $text .= '<br/><span class="bx-parcel-client">' . $boxtalConnect->l('Your parcel point:')
-                    . ' <span class="bw-parcel-name">' . $chosenParcelPoint->parcelPoint->name . '</span></span>';
+        if (ShippingMethodUtil::hasSelectedParcelPointNetworks($selectedCarrierId)) {
+            $pointsResponse = @unserialize(CartStorageUtil::get($cartId, 'bxParcelPoints'));
+            if (false !== $pointsResponse) {
+                $chosenParcelPoint = ParcelPointController::getChosenPoint($cartId, $selectedCarrierCleanId);
+                $boxtalConnect = BoxtalConnect::getInstance();
+                if (null === $chosenParcelPoint) {
+                    $closestParcelPoint = ParcelPointController::getClosestPoint($cartId, $selectedCarrierCleanId);
+                    if (null === $closestParcelPoint) {
+                        ApiUtil::sendAjaxResponse(404);
+                    }
+                    $text .= '<br/><span class="bx-parcel-client">' . $boxtalConnect->l('Closest parcel point:')
+                        . ' <span class="bw-parcel-name">' . $closestParcelPoint->parcelPoint->name . '</span></span>';
+                } else {
+                    $text .= '<br/><span class="bx-parcel-client">' . $boxtalConnect->l('Your parcel point:')
+                        . ' <span class="bw-parcel-name">' . $chosenParcelPoint->parcelPoint->name . '</span></span>';
+                }
+                $text .= '<br/><span class="bx-select-parcel">' . $boxtalConnect->l('Choose another') . '</span>';
             }
-            $text .= '<br/><span class="bx-select-parcel">' . $boxtalConnect->l('Choose another') . '</span>';
         }
-
         ApiUtil::sendAjaxResponse(200, $text);
     }
 

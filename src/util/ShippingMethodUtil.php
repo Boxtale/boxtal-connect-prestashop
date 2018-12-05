@@ -132,6 +132,18 @@ class ShippingMethodUtil
     }
 
     /**
+     * Whether a shipping method has at least one parcel point network selected.
+     *
+     * @param string $id shipping method id
+     *
+     * @return bool
+     */
+    public static function hasSelectedParcelPointNetworks($id)
+    {
+        return count(self::getSelectedParcelPointNetworks($id)) > 0;
+    }
+
+    /**
      * Get parcel point networks associated with shipping methods.
      *
      * @return object shipping methods
@@ -153,15 +165,15 @@ class ShippingMethodUtil
         if (null === ShopUtil::$shopGroupId) {
             $bxCarrierJoin .= ' AND bc.id_shop_group IS NULL';
         } else {
-            $bxCarrierJoin .= ' AND bc.id_shop_group =' . ShopUtil::$shopGroupId;
+            $bxCarrierJoin .= ' AND bc.id_shop_group =' . (int) ShopUtil::$shopGroupId;
         }
 
         if (null === ShopUtil::$shopId) {
             $bxCarrierJoin .= ' AND bc.id_shop IS NULL';
             $sql->where('cl.id_shop IS NULL');
         } else {
-            $bxCarrierJoin .= ' AND bc.id_shop =' . ShopUtil::$shopId;
-            $sql->where('cl.id_shop =' . ShopUtil::$shopId);
+            $bxCarrierJoin .= ' AND bc.id_shop =' . (int) ShopUtil::$shopId;
+            $sql->where('cl.id_shop =' . (int) ShopUtil::$shopId);
         }
 
         $sql->leftJoin('bx_carrier', 'bc', $bxCarrierJoin);
@@ -194,7 +206,7 @@ class ShippingMethodUtil
         $sql = new \DbQuery();
         $sql->select('c.url');
         $sql->from('carrier', 'c');
-        $sql->where('c.id_carrier = ' . $carrierId);
+        $sql->where('c.id_carrier = ' . (int) $carrierId);
         $result = \Db::getInstance()->executeS($sql);
 
         return isset($result[0]['url']) && !empty($result[0]['url']) ? $result[0]['url'] : null;

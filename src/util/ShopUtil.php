@@ -56,7 +56,7 @@ class ShopUtil
         $sql = new \DbQuery();
         $sql->select('s.name');
         $sql->from('shop', 's');
-        $sql->where('s.id_shop="' . $shopId . '" AND s.id_shop_group="' . $shopGroupId . '"');
+        $sql->where('s.id_shop="' . (int) $shopId . '" AND s.id_shop_group="' . (int) $shopGroupId . '"');
         $shop = \Db::getInstance()->executeS($sql);
 
         return isset($shop[0]['name']) ? $shop[0]['name'] : null;
@@ -79,7 +79,7 @@ class ShopUtil
         if (null === $shopId) {
             $sql->where('s.id_shop IS NULL');
         } else {
-            $sql->where('s.id_shop=' . $shopId);
+            $sql->where('s.id_shop=' . (int) $shopId);
         }
         $shop = \Db::getInstance()->executeS($sql);
         if (isset($shop[0]['domain'], $shop[0]['domain_ssl'], $shop[0]['physical_uri'], $shop[0]['virtual_uri'])) {

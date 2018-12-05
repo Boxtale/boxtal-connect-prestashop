@@ -155,10 +155,10 @@ class NoticeController
         $sql->select('n.key, n.value, n.id_shop, n.id_shop_group');
         $sql->from('bx_notices', 'n');
         if (ShopUtil::$multistore && null !== ShopUtil::$shopGroupId) {
-            $sql->where('n.id_shop_group=' . ShopUtil::$shopGroupId);
+            $sql->where('n.id_shop_group=' . (int) ShopUtil::$shopGroupId);
         }
         if (ShopUtil::$multistore && null !== ShopUtil::$shopId) {
-            $sql->where('n.id_shop=' . ShopUtil::$shopId);
+            $sql->where('n.id_shop=' . (int) ShopUtil::$shopId);
         }
 
         return \Db::getInstance()->executeS($sql);
@@ -261,13 +261,13 @@ class NoticeController
         if (null === $shopGroupId) {
             $sql->where('n.id_shop_group IS NULL');
         } else {
-            $sql->where('n.id_shop_group=' . $shopGroupId);
+            $sql->where('n.id_shop_group=' . (int) $shopGroupId);
         }
 
         if (null === $shopId) {
             $sql->where('n.id_shop IS NULL');
         } else {
-            $sql->where('n.id_shop=' . $shopId);
+            $sql->where('n.id_shop=' . (int) $shopId);
         }
         $sql->where('n.key="' . pSQL($noticeKey) . '"');
         $result = \Db::getInstance()->executeS($sql);
