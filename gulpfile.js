@@ -27,7 +27,11 @@ gulp.task(
     'js', function () {
         return gulp.src([assetsDir + '/js/*.js', '!' + assetsDir + '/js/*.min.js'])
         .pipe(plumber({errorHandler: onError}))
-        .pipe(uglify())
+        .pipe(uglify({
+          output: {
+            comments: true
+          }
+        }))
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest(assetsDir + '/js'));
     }
