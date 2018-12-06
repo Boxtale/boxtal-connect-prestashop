@@ -66,7 +66,7 @@ class BoxtalConnect extends Module
     {
         $this->name = 'boxtalconnect';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.0.0';
+        $this->version = '1.0.1';
         $this->author = 'Boxtal';
         //phpcs:ignore
         $this->need_instance = 0;
@@ -232,11 +232,9 @@ class BoxtalConnect extends Module
 
     /**
      * Adds configure link to module page.
-     *
-     * @access public
-     * @return void
      */
-    public function getContent() {
+    public function getContent()
+    {
         $link = new Link();
         $shippingMethodConfiguration = $link->getAdminLink('AdminShippingMethod');
         Tools::redirectAdmin($shippingMethodConfiguration);
