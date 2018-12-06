@@ -231,6 +231,18 @@ class BoxtalConnect extends Module
     }
 
     /**
+     * Adds configure link to module page.
+     *
+     * @access public
+     * @return void
+     */
+    public function getContent() {
+        $link = new Link();
+        $shippingMethodConfiguration = $link->getAdminLink('AdminShippingMethod');
+        Tools::redirectAdmin($shippingMethodConfiguration);
+    }
+
+    /**
      * Get module instance.
      *
      * @return BoxtalConnect
