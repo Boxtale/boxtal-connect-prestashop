@@ -246,7 +246,8 @@ const bxParcelPoint = {
       .setHTML(info);
 
     const marker = new mapboxgl.Marker({
-      element: el
+      element: el,
+      anchor: 'bottom'
     })
       .setLngLat(new mapboxgl.LngLat(parseFloat(point.parcelPoint.location.position.longitude), parseFloat(point.parcelPoint.location.position.latitude)))
       .setPopup(popup)
@@ -282,6 +283,7 @@ const bxParcelPoint = {
 
     const marker = new mapboxgl.Marker({
       element: el,
+      anchor: 'bottom'
     })
       .setLngLat(new mapboxgl.LngLat(parseFloat(location.position.longitude), parseFloat(location.position.latitude)))
       .addTo(self.map);
