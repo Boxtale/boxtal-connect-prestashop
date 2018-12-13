@@ -26,7 +26,6 @@
 *}
 <script>
   bxCartId = {$bxCartId|escape:'htmlall':'UTF-8'};
-  bxImgDir = "{$bxImgDir|escape:'htmlall':'UTF-8'}";
 
   // more complete version of DOMContentLoaded, otherwise will not work for guest checkout with one page checkout
   var callback = function() {
