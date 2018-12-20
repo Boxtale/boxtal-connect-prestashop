@@ -27,16 +27,6 @@
 /**
  * Main plugin file.
  */
-use Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController;
-use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
-use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController;
-use Boxtal\BoxtalConnectPrestashop\Init\EnvironmentCheck;
-use Boxtal\BoxtalConnectPrestashop\Init\SetupWizard;
-use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
-use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
-use Boxtal\BoxtalConnectPrestashop\Util\EnvironmentUtil;
-use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -85,17 +75,17 @@ class BoxtalConnect extends Module
         $this->minPhpVersion = '5.3.0';
         $this->onboardingUrl = 'https://www.boxtal.com/onboarding';
 
-        ShopUtil::getShopContext();
+        Boxtal\BoxtalConnectPrestashop\Util\ShopUtil::getShopContext();
 
         if ($this->active) {
             $this->initEnvironmentCheck($this);
 
-            if (false === EnvironmentUtil::checkErrors($this)) {
+            if (false === Boxtal\BoxtalConnectPrestashop\Util\EnvironmentUtil::checkErrors($this)) {
                 $this->initSetupWizard($this);
                 $this->initShopController($this);
                 $this->initAdminAjaxController($this);
 
-                if (AuthUtil::canUsePlugin()) {
+                if (Boxtal\BoxtalConnectPrestashop\Util\AuthUtil::canUsePlugin()) {
                     $this->initFrontAjaxController($this);
                     $this->initOrderController($this);
                 }
@@ -216,7 +206,7 @@ class BoxtalConnect extends Module
         if (!parent::uninstall()) {
             return false;
         }
-        ConfigurationUtil::deleteConfiguration();
+        Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil::deleteConfiguration();
         \DB::getInstance()->execute(
             'SET FOREIGN_KEY_CHECKS = 0;
             DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'bx_notices`;
@@ -259,7 +249,7 @@ class BoxtalConnect extends Module
     {
         $controller = $this->getContext()->controller;
 
-        if (NoticeController::hasNotices()) {
+        if (Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController::hasNotices()) {
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
                     'bx-notices',
@@ -302,11 +292,11 @@ class BoxtalConnect extends Module
      */
     public function hookHeader($params)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!Boxtal\BoxtalConnectPrestashop\Util\AuthUtil::canUsePlugin()) {
             return null;
         }
 
-        return ParcelPointController::addScripts();
+        return Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController::addScripts();
     }
 
     /**
@@ -318,11 +308,11 @@ class BoxtalConnect extends Module
      */
     public function hookDisplayCarrierList($params)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!Boxtal\BoxtalConnectPrestashop\Util\AuthUtil::canUsePlugin()) {
             return null;
         }
 
-        return ParcelPointController::initPoints($params);
+        return Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController::initPoints($params);
     }
 
     /**
@@ -334,11 +324,11 @@ class BoxtalConnect extends Module
      */
     public function hookDisplayAfterCarrier($params)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!Boxtal\BoxtalConnectPrestashop\Util\AuthUtil::canUsePlugin()) {
             return null;
         }
 
-        return ParcelPointController::initPoints($params);
+        return Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController::initPoints($params);
     }
 
     /**
@@ -350,11 +340,11 @@ class BoxtalConnect extends Module
      */
     public function hooknewOrder($params)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!Boxtal\BoxtalConnectPrestashop\Util\AuthUtil::canUsePlugin()) {
             return;
         }
 
-        ParcelPointController::orderCreated($params);
+        Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController::orderCreated($params);
     }
 
     /**
@@ -386,7 +376,7 @@ class BoxtalConnect extends Module
      */
     public function hookDisplayAdminAfterHeader()
     {
-        $notices = NoticeController::getNoticeInstances();
+        $notices = Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController::getNoticeInstances();
         foreach ($notices as $notice) {
             $notice->render();
         }
@@ -401,11 +391,11 @@ class BoxtalConnect extends Module
      */
     public function hookAdminOrder($params)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!Boxtal\BoxtalConnectPrestashop\Util\AuthUtil::canUsePlugin()) {
             return null;
         }
 
-        $tracking = TrackingController::getOrderTracking($params['id_order']);
+        $tracking = Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController::getOrderTracking($params['id_order']);
         if (null === $tracking || !property_exists($tracking, 'shipmentsTracking')
             || empty($tracking->shipmentsTracking)) {
             return null;
@@ -443,7 +433,7 @@ class BoxtalConnect extends Module
             return $object;
         }
 
-        $object = new EnvironmentCheck($plugin);
+        $object = new Boxtal\BoxtalConnectPrestashop\Init\EnvironmentCheck($plugin);
 
         return $object;
     }
@@ -463,7 +453,7 @@ class BoxtalConnect extends Module
             return $object;
         }
 
-        $object = new SetupWizard($plugin);
+        $object = new Boxtal\BoxtalConnectPrestashop\Init\SetupWizard($plugin);
 
         return $object;
     }
@@ -501,7 +491,7 @@ class BoxtalConnect extends Module
      */
     public function initFrontAjaxController($plugin)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!Boxtal\BoxtalConnectPrestashop\Util\AuthUtil::canUsePlugin()) {
             return;
         }
 
@@ -517,7 +507,7 @@ class BoxtalConnect extends Module
      */
     public function initOrderController($plugin)
     {
-        if (!AuthUtil::canUsePlugin()) {
+        if (!Boxtal\BoxtalConnectPrestashop\Util\AuthUtil::canUsePlugin()) {
             return;
         }
 
