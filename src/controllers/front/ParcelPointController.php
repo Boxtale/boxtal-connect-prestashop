@@ -148,7 +148,6 @@ class ParcelPointController
                 $boxtalConnect = BoxtalConnect::getInstance();
                 $smarty = $boxtalConnect->getSmarty();
                 $smarty->assign('bxCartId', (int) $cart->id);
-                $host = \Tools::getShopProtocol() . \Tools::getHttpHost() . __PS_BASE_URI__;
 
                 return $boxtalConnect->displayTemplate('front/shipping-method/parcelPoint.tpl');
             }

@@ -395,7 +395,9 @@ class BoxtalConnect extends Module
             return null;
         }
 
-        $tracking = Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController::getOrderTracking($params['id_order']);
+        $tracking = Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController::getOrderTracking(
+            $params['id_order']
+        );
         if (null === $tracking || !property_exists($tracking, 'shipmentsTracking')
             || empty($tracking->shipmentsTracking)) {
             return null;

@@ -61,7 +61,8 @@ class OrderUtil
         $sql->innerJoin('order_carrier', 'oc', 'o.id_order = oc.id_order');
         $sql->innerJoin('carrier', 'ca', 'oc.id_carrier = ca.id_carrier');
         $sql->where(
-            'os.shipped=0 AND o.id_shop_group=' . (int) ShopUtil::$shopGroupId . ' AND o.id_shop=' . (int) ShopUtil::$shopId
+            'os.shipped=0 AND o.id_shop_group=' . (int) ShopUtil::$shopGroupId .
+            ' AND o.id_shop=' . (int) ShopUtil::$shopId
         );
         $sql->groupBy('o.reference');
         $sql->orderBy('creationDate desc');
@@ -98,7 +99,9 @@ class OrderUtil
         $sql = new \DbQuery();
         $sql->select('l.language_code, os.name');
         $sql->from('orders', 'o');
-        $sql->innerJoin('order_state_lang', 'os', 'o.current_state = os.id_order_state AND o.id_order = ' . (int) $orderId);
+        $sql->innerJoin(
+            'order_state_lang', 'os', 'o.current_state = os.id_order_state AND o.id_order = ' . (int) $orderId
+        );
         $sql->innerJoin('lang', 'l', 'os.id_lang = l.id_lang');
         $result = \Db::getInstance()->executeS($sql);
 
