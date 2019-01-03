@@ -1,6 +1,6 @@
 {
   "name": "boxtal-connect-prestashop",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "test": "cross-env NODE_CONFIG_DIR='test/e2e/config' BABEL_ENV=commonjs mocha \"test/e2e/tests\" --compilers js:babel-register --recursive"
   },

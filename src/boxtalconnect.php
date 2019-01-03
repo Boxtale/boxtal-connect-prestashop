@@ -56,7 +56,7 @@ class BoxtalConnect extends Module
     {
         $this->name = 'boxtalconnect';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.0.2';
+        $this->version = '1.0.3';
         $this->author = 'Boxtal';
         //phpcs:ignore
         $this->need_instance = 0;
