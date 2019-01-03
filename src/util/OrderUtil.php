@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2018 PrestaShop
+ * 2007-2019 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Boxtal <api@boxtal.com>
- * @copyright 2007-2018 PrestaShop SA / 2018-2018 Boxtal
+ * @copyright 2007-2019 PrestaShop SA / 2018-2019 Boxtal
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
@@ -100,7 +100,9 @@ class OrderUtil
         $sql->select('l.language_code, os.name');
         $sql->from('orders', 'o');
         $sql->innerJoin(
-            'order_state_lang', 'os', 'o.current_state = os.id_order_state AND o.id_order = ' . (int) $orderId
+            'order_state_lang',
+            'os',
+            'o.current_state = os.id_order_state AND o.id_order = ' . (int) $orderId
         );
         $sql->innerJoin('lang', 'l', 'os.id_lang = l.id_lang');
         $result = \Db::getInstance()->executeS($sql);

@@ -1,5 +1,5 @@
 {**
-* 2007-2018 PrestaShop
+* 2007-2019 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -19,7 +19,7 @@
 *
 * @author    Boxtal <api@boxtal.com>
 *
-* @copyright 2007-2018 PrestaShop SA / 2018-2018 Boxtal
+* @copyright 2007-2019 PrestaShop SA / 2018-2019 Boxtal
 *
 * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 * International Registered Trademark & Property of PrestaShop SA
