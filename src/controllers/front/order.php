@@ -55,7 +55,7 @@ class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
     {
         $entityBody = Tools::file_get_contents('php://input');
 
-        AuthUtil::authenticate($entityBody);
+        AuthUtil::authenticateAccessKey($entityBody);
 
         $route = Tools::getValue('route'); // Get route
 

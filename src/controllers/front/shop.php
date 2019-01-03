@@ -50,16 +50,12 @@ class BoxtalConnectShopModuleFrontController extends ModuleFrontController
     {
         $entityBody = Tools::file_get_contents('php://input');
 
-        AuthUtil::authenticate($entityBody);
-        $body = AuthUtil::decryptBody($entityBody);
-
-        if (null === $body) {
-            ApiUtil::sendApiResponse(400);
-        }
-
         $route = Tools::getValue('route'); // Get route
 
         if ('pair' === $route) {
+            AuthUtil::authenticate($entityBody);
+            $body = AuthUtil::decryptBody($entityBody);
+
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
                     case RestClient::$POST:
@@ -71,6 +67,9 @@ class BoxtalConnectShopModuleFrontController extends ModuleFrontController
                 }
             }
         } elseif ('update-configuration' === $route) {
+            AuthUtil::authenticateAccessKey($entityBody);
+            $body = AuthUtil::decryptBody($entityBody);
+
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
                     case RestClient::$POST:
@@ -82,10 +81,12 @@ class BoxtalConnectShopModuleFrontController extends ModuleFrontController
                 }
             }
         } elseif ('delete-configuration' === $route) {
+            AuthUtil::authenticateAccessKey($entityBody);
+
             if (isset($_SERVER['REQUEST_METHOD'])) {
                 switch ($_SERVER['REQUEST_METHOD']) {
                     case RestClient::$POST:
-                        $this->deleteConfigurationHandler($body);
+                        $this->deleteConfigurationHandler();
                         break;
 
                     default:
@@ -170,21 +171,10 @@ class BoxtalConnectShopModuleFrontController extends ModuleFrontController
     /**
      * Endpoint callback.
      *
-     * @param object $body request body
-     *
      * @void
      */
-    public function deleteConfigurationHandler($body)
+    public function deleteConfigurationHandler()
     {
-        if (null === $body) {
-            ApiUtil::sendApiResponse(400);
-        }
-
-        if (!is_object($body) || !property_exists($body, 'accessKey')
-            || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
-            ApiUtil::sendApiResponse(403);
-        }
-
         ConfigurationUtil::deleteConfiguration();
         ApiUtil::sendApiResponse(200);
     }
@@ -198,10 +188,6 @@ class BoxtalConnectShopModuleFrontController extends ModuleFrontController
      */
     public function updateConfigurationHandler($body)
     {
-        if (null === $body) {
-            ApiUtil::sendApiResponse(400);
-        }
-
         if (ConfigurationUtil::parseConfiguration($body)) {
             ApiUtil::sendApiResponse(200);
         }

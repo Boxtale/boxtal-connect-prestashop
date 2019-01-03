@@ -53,6 +53,27 @@ class AuthUtil
     }
 
     /**
+     * API request validation with access key check.
+     *
+     * @param string $body encrypted body
+     *
+     * @return mixed
+     */
+    public static function authenticateAccessKey($body)
+    {
+        $decryptedBody = self::decryptBody($body);
+        if (null === $decryptedBody) {
+            ApiUtil::sendApiResponse(401);
+        }
+
+        if (is_object($decryptedBody) && property_exists($decryptedBody, 'accessKey') && self::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId) === $decryptedBody->accessKey) {
+            return true;
+        }
+
+        ApiUtil::sendApiResponse(403);
+    }
+
+    /**
      * Is plugin paired.
      *
      * @param int $shopGroupId shop group id
