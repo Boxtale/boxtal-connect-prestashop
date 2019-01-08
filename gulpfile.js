@@ -1,13 +1,11 @@
 var gulp = require('gulp'),
   less = require('gulp-less'),
   plumber = require('gulp-plumber'),
-  path = require('path'),
-  uglify = require('gulp-uglify-es').default,
+  terser = require('gulp-terser'),
   rename = require('gulp-rename'),
   notify = require('gulp-notify'),
   cleanCSS = require('gulp-clean-css'),
   autoprefixer = require('gulp-autoprefixer'),
-  concat = require('gulp-concat'),
   assetsDir = 'src/views';
 
 /* Error Notification
@@ -27,9 +25,10 @@ gulp.task(
     'js', function () {
         return gulp.src([assetsDir + '/js/*.js', '!' + assetsDir + '/js/*.min.js'])
         .pipe(plumber({errorHandler: onError}))
-        .pipe(uglify({
+        .pipe(terser({
+          ie8: true,
           output: {
-            comments: true
+            comments: "some"
           }
         }))
         .pipe(rename({suffix: '.min'}))
