@@ -46,7 +46,7 @@ class OrderUtil
     {
         $sql = new \DbQuery();
         $sql->select(
-            'o.id_order, o.reference, c.firstname, c.lastname, c.company, a.address1, a.address2, a.city, ' .
+            'o.id_order, o.reference, a.firstname, a.lastname, a.company, a.address1, a.address2, a.city, ' .
             'a.postcode, co.iso_code as country_iso, s.iso_code as state_iso, c.email, a.phone, a.phone_mobile, ' .
             'osl.name as status, ca.name as shippingMethod, o.total_shipping_tax_excl as shippingAmount, ' .
             'o.date_add as creationDate, o.total_paid_tax_excl as orderAmount'
