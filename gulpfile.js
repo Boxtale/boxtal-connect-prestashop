@@ -28,7 +28,7 @@ gulp.task(
         .pipe(terser({
           ie8: true,
           output: {
-            comments: "some"
+            comments: /.*license.*/
           }
         }))
         .pipe(rename({suffix: '.min'}))
