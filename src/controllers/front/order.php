@@ -200,7 +200,7 @@ class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
         $boxtalConnect = BoxtalConnect::getInstance();
         if (!is_object($body) || !property_exists($body, 'accessKey')
             || $body->accessKey !== AuthUtil::getAccessKey(ShopUtil::$shopGroupId, ShopUtil::$shopId)) {
-            //ApiUtil::sendApiResponse(403);
+            ApiUtil::sendApiResponse(403);
         }
 
         if (!is_numeric($orderId)) {
