@@ -86,9 +86,14 @@ class ParcelPointController
         $controller = $boxtalConnect->getCurrentController();
         if (method_exists($controller, 'registerJavascript')) {
             $controller->registerJavascript(
+                'bx-promise-polyfill',
+                'modules/' . $boxtalConnect->name . '/views/js/promise-polyfill.min.js',
+                array('priority' => 98, 'server' => 'local')
+            );
+            $controller->registerJavascript(
                 'bx-mapbox-gl',
                 'modules/' . $boxtalConnect->name . '/views/js/mapbox-gl.min.js',
-                array('priority' => 100, 'server' => 'local')
+                array('priority' => 99, 'server' => 'local')
             );
             $controller->registerJavascript(
                 'bx-parcel-point',
@@ -96,6 +101,7 @@ class ParcelPointController
                 array('priority' => 100, 'server' => 'local')
             );
         } else {
+            $controller->addJs('modules/' . $boxtalConnect->name . '/views/js/promise-polyfill.min.js');
             $controller->addJs('modules/' . $boxtalConnect->name . '/views/js/mapbox-gl.min.js');
             $controller->addJs('modules/' . $boxtalConnect->name . '/views/js/parcel-point.min.js');
         }

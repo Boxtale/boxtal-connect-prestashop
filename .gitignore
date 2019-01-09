@@ -6,3 +6,4 @@ legacy/
 package-lock.json
 .php_cs.cache
 .attach_pid*
+src/views/js/*.min.js

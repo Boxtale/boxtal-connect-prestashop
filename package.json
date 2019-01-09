@@ -5,10 +5,12 @@
     "test": "cross-env NODE_CONFIG_DIR='test/e2e/config' BABEL_ENV=commonjs mocha \"test/e2e/tests\" --compilers js:babel-register --recursive"
   },
   "dependencies": {
-    "mapbox-gl": "0.47.0"
+    "mapbox-gl": "0.47.0",
+    "promise-polyfill": "^8.1.0"
   },
   "devDependencies": {
     "gulp": "^4.0.0",
+    "gulp-append-prepend": "^1.0.6",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-clean-css": "^3.9.3",
     "gulp-concat": "^2.6.1",
@@ -16,6 +18,7 @@
     "gulp-notify": "^3.2.0",
     "gulp-plumber": "^1.2.0",
     "gulp-rename": "^1.4.0",
-    "gulp-terser": "^1.1.7"
+    "gulp-terser": "^1.1.7",
+    "merge-stream": "^1.0.1"
   }
 }

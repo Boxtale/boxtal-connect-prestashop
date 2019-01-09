@@ -252,11 +252,17 @@ class BoxtalConnect extends Module
         if (Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController::hasNotices()) {
             if (method_exists($controller, 'registerJavascript')) {
                 $controller->registerJavascript(
+                    'bx-polyfills',
+                    'modules/' . $this->name . '/views/js/polyfills.min.js',
+                    array('priority' => 99, 'server' => 'local')
+                );
+                $controller->registerJavascript(
                     'bx-notices',
                     'modules/' . $this->name . '/views/js/notices.min.js',
                     array('priority' => 100, 'server' => 'local')
                 );
             } else {
+                $controller->addJs('modules/' . $this->name . '/views/js/polyfills.min.js');
                 $controller->addJs('modules/' . $this->name . '/views/js/notices.min.js');
             }
             if (method_exists($controller, 'registerStylesheet')) {

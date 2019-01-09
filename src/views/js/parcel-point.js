@@ -196,7 +196,8 @@ const bxParcelPoint = {
           if (200 !== httpRequest.status) {
             reject();
           } else {
-            resolve(httpRequest.response);
+            const response = typeof httpRequest.response === 'object' && httpRequest.response !== null ? httpRequest.response : JSON.parse(httpRequest.response);
+            resolve(response);
           }
         }
       };
@@ -408,7 +409,10 @@ const bxParcelPoint = {
         if (200 !== getSelectedCarrierTextRequest.status) {
           extraContent.innerHTML = "";
         } else {
-          extraContent.innerHTML = getSelectedCarrierTextRequest.response;
+          const response = typeof getSelectedCarrierTextRequest.response === 'object'
+            && getSelectedCarrierTextRequest.response !== null ?
+            getSelectedCarrierTextRequest.response : JSON.parse(getSelectedCarrierTextRequest.response);
+          extraContent.innerHTML = response.text;
         }
       }
     };

@@ -136,7 +136,7 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
                 $text .= '<br/><span class="bx-select-parcel">' . $boxtalConnect->l('Choose another') . '</span>';
             }
         }
-        ApiUtil::sendAjaxResponse(200, $text);
+        ApiUtil::sendAjaxResponse(200, array('text' => $text));
     }
 
     /**

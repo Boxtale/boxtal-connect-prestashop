@@ -2,8 +2,6 @@
 
 sudo chown -R www-data:www-data /var/www/html
 sudo node_modules/gulp/bin/gulp.js css
-sudo cp -R node_modules/mapbox-gl/dist/mapbox-gl.css src/views/css
-sudo cp -R node_modules/mapbox-gl/dist/mapbox-gl.js src/views/js
 sudo node_modules/gulp/bin/gulp.js js
 sudo mkdir -p src/lib
 sudo cp -R vendor/boxtal/boxtal-php-poc/src/* src/lib

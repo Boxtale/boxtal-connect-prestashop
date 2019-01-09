@@ -33,8 +33,6 @@ install:
   - npm install -g gulp
   - npm install -g gulp-cli
   - mkdir -p src/views/css
-  - cp -R node_modules/mapbox-gl/dist/mapbox-gl.css src/views/css
-  - cp -R node_modules/mapbox-gl/dist/mapbox-gl.js src/views/js
 
 before_script:
   - sudo a2enmod actions
