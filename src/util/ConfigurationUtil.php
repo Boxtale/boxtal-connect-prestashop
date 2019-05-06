@@ -246,6 +246,7 @@ class ConfigurationUtil
         self::deleteAllShops('BX_MAP_LOGO_HREF_URL');
         self::deleteAllShops('BX_PP_NETWORKS');
         self::deleteAllShops('BX_PAIRING_UPDATE');
+        self::deleteAllShops('BX_ORDER_PREPARED');
         self::deleteAllShops('BX_ORDER_SHIPPED');
         self::deleteAllShops('BX_ORDER_DELIVERED');
         self::deleteAllShops('BX_TRACKING_URL_PATTERN');
