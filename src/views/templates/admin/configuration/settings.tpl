@@ -25,6 +25,22 @@
 * International Registered Trademark & Property of PrestaShop SA
 *}
 <div class="panel">
+    <div class="table-responsive-row clearfix">
+      <p>{l s='Then configure your shipping policy in Prestashop :' mod='boxtalconnect'}</p>
+      <ul>
+          <li>{l s='Create your shipping methods in Shipping > Carriers' mod='boxtalconnect'}</li>
+          <li>{l s='Link it to a parcel point map in Shipping > Boxtal Connect' mod='boxtalconnect'}</li>
+          <li>{l s='Associate your order statuses to tracking events' mod='boxtalconnect'}</li>
+          <li>{l s='Copy the tracking URL by Boxtal and add it in your Shipping methods' mod='boxtalconnect'}</li>
+      </ul>
+      {if null !== $helpCenterUrl}
+          <p>{l s='You can find illustrated step by step guides in our [1]help center[/1]'
+              tags=["<a href=\"{$helpCenterUrl}\" target=\"_blank\">"]
+              mod='boxtalconnect'}</p>
+      {/if}
+    </div>
+</div>
+<div class="panel">
   <form method="POST">
     <div class="panel-heading">
       {l s='Parcel point map display' mod='boxtalconnect'}

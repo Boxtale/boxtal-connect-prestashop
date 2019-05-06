@@ -15,6 +15,12 @@ $_MODULE['<{boxtalconnect}prestashop>multistoreaccessdenied_5cc3ea3e0743c027ff22
 $_MODULE['<{boxtalconnect}prestashop>multistoreaccessdenied_7b3fdfa9929578d05faf1a2b34069f7f'] = 'Debes elegir una tienda para usar esta página.';
 $_MODULE['<{boxtalconnect}prestashop>accessdenied_08de2fdaabcd120b8ca1388d21179921'] = 'Acceso no autorizado';
 $_MODULE['<{boxtalconnect}prestashop>accessdenied_6c42300fcec12cf9769ccb104d165754'] = 'Primero debes conectar tu tienda a Boxtal para usar esta página.';
+$_MODULE['<{boxtalconnect}prestashop>settings_cedc08c156518213446450602476e4d1'] = 'Sigue las instrucciones de configuración :';
+$_MODULE['<{boxtalconnect}prestashop>settings_f59e0bbc2d15457c6b7a4453c8926d26'] = 'Crea tus métodos de envío en Transporte > Transportistas';
+$_MODULE['<{boxtalconnect}prestashop>settings_d6bb1140a32662141ad173e277f17da8'] = 'Si quieres proponer la entrega en punto de recogida , enlace a un mapa de puntos de recogida en Transporte > Boxtal Connect';
+$_MODULE['<{boxtalconnect}prestashop>settings_6be7d3eb6d5e99656ebcceae905ad792'] = 'Asocia los estados de tus pedidos a eventos de seguimiento';
+$_MODULE['<{boxtalconnect}prestashop>settings_9be223d4f40399012e02f001b61d1e34'] = 'Copia la URL de seguimiento de Boxtal y agréguala a tus métodos de envío';
+$_MODULE['<{boxtalconnect}prestashop>settings_dd2d0890169a1a933355374452218fa0'] = 'Para encontrar nuestro paso a paso ilustrado, ve a la sección dedicada a Prestashop de nuestro [1]centro de ayuda[/1]';
 $_MODULE['<{boxtalconnect}prestashop>settings_d329df906d29133b4f80e5fc25cdec32'] = 'Visualización del mapa de puntos de recogida';
 $_MODULE['<{boxtalconnect}prestashop>settings_a9159ea143699f26d365ec26b5f277af'] = 'Habilita una red de puntos de recogida en un método de entrega para mostrar el mapa de puntos de recogida para este método.';
 $_MODULE['<{boxtalconnect}prestashop>settings_b718adec73e04ce3ec720dd11a06a308'] = 'ID';

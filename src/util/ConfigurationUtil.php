@@ -133,8 +133,10 @@ class ConfigurationUtil
      */
     public static function parseConfiguration($body)
     {
-        return self::parseParcelPointNetworks($body) && self::parseMapConfiguration($body)
-            && self::parseTrackingConfiguration($body);
+        return self::parseParcelPointNetworks($body)
+            && self::parseMapConfiguration($body)
+            && self::parseTrackingConfiguration($body)
+            && self::parseHelpCenterConfiguration($body);
     }
 
     /**
@@ -218,6 +220,18 @@ class ConfigurationUtil
     }
 
     /**
+     * Get help center url.
+     *
+     * @return string help center url
+     */
+    public static function getHelpCenterUrl()
+    {
+        $url = self::get('BX_HELP_CENTER_URL');
+
+        return $url;
+    }
+
+    /**
      * Delete configuration.
      *
      * @void
@@ -235,6 +249,7 @@ class ConfigurationUtil
         self::deleteAllShops('BX_ORDER_SHIPPED');
         self::deleteAllShops('BX_ORDER_DELIVERED');
         self::deleteAllShops('BX_TRACKING_URL_PATTERN');
+        self::deleteAllShops('BX_HELP_CENTER_URL');
         NoticeController::removeAllNoticesForShop();
     }
 
@@ -367,5 +382,20 @@ class ConfigurationUtil
         }
 
         return false;
+    }
+
+    /**
+     * Parse help center configuration.
+     *
+     * @param object $body body
+     *
+     * @return bool
+     */
+    private static function parseHelpCenterConfiguration($body)
+    {
+        if (is_object($body) && property_exists($body, 'helpCenterUrl')) {
+            self::set('BX_HELP_CENTER_URL', $body->helpCenterUrl);
+        }
+        return true;
     }
 }

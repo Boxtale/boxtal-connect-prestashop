@@ -131,7 +131,9 @@ class AdminShippingMethodController extends \ModuleAdminController
         }
 
         $trackingUrlPattern = ConfigurationUtil::getTrackingUrlPattern();
+        $helpCenterUrl = ConfigurationUtil::getHelpCenterUrl();
         $smarty->assign('trackingUrlPattern', str_replace('%s', '@', $trackingUrlPattern));
+        $smarty->assign('helpCenterUrl', $helpCenterUrl);
 
         $this->content = $boxtalConnect->displayTemplate('admin/configuration/settings.tpl');
     }
