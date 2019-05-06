@@ -38,6 +38,12 @@ $_MODULE['<{boxtalconnect}prestashop>multistoreaccessdenied_5cc3ea3e0743c027ff22
 $_MODULE['<{boxtalconnect}prestashop>multistoreaccessdenied_7b3fdfa9929578d05faf1a2b34069f7f'] = 'Vous devez choisir une boutique pour utiliser cette page.';
 $_MODULE['<{boxtalconnect}prestashop>accessdenied_08de2fdaabcd120b8ca1388d21179921'] = 'Accès non autorisé';
 $_MODULE['<{boxtalconnect}prestashop>accessdenied_6c42300fcec12cf9769ccb104d165754'] = 'Vous devez d\'abord connecter votre boutique à Boxtal pour pouvoir utiliser cette page.';
+$_MODULE['<{boxtalconnect}prestashop>settings_cedc08c156518213446450602476e4d1'] = 'Pour configurer votre politique de livraison suivez les étapes suivantes :';
+$_MODULE['<{boxtalconnect}prestashop>settings_f59e0bbc2d15457c6b7a4453c8926d26'] = 'Créez vos méthodes de livraison dans Livraison > Transporteurs (par exemple : livraison à domicile, livraison en relais, livraison express)';
+$_MODULE['<{boxtalconnect}prestashop>settings_d6bb1140a32662141ad173e277f17da8'] = 'Si vous souhaitez proposer du relais, joignez-y nos cartes de point relais dans Livraison > Boxtal Connect';
+$_MODULE['<{boxtalconnect}prestashop>settings_6be7d3eb6d5e99656ebcceae905ad792'] = 'Associez vos statuts de commande à nos événements de suivi dans le menu Boxtal Connect';
+$_MODULE['<{boxtalconnect}prestashop>settings_9be223d4f40399012e02f001b61d1e34'] = 'Copiez l\'URL de suivi mis à disposition par Boxtal dans le paramétrage de vos transporteurs';
+$_MODULE['<{boxtalconnect}prestashop>settings_dd2d0890169a1a933355374452218fa0'] = 'Pour retrouver nos pas à pas illustrés, rendez-vous la rubrique dédiée à Prestashop de notre [1]centre d\'aide[/1]';
 $_MODULE['<{boxtalconnect}prestashop>settings_d329df906d29133b4f80e5fc25cdec32'] = 'Affichage de la carte des points relais';
 $_MODULE['<{boxtalconnect}prestashop>settings_a9159ea143699f26d365ec26b5f277af'] = 'Activez un réseau de points relais sur une méthode de livraison afin d\'afficher la carte des points relais pour cette méthode.';
 $_MODULE['<{boxtalconnect}prestashop>settings_b718adec73e04ce3ec720dd11a06a308'] = 'ID';
