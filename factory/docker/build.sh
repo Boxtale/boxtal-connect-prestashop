@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PHP_VERSION=${1-5.6}
-PS_VERSION=${2-latest}
+PS_VERSION=${2-1.7.3.4}
 MULTISTORE=${3-0}
 
 if [ ! -d "vendor" ]; then
