@@ -249,8 +249,11 @@ class BoxtalConnect extends Module
     {
         $controller = $this->getContext()->controller;
 
+        $hasRegisterSteelshitMethod = method_exists($controller, 'registerStylesheet');
+        $hasRegisterJavascriptMethod = method_exists($controller, 'registerJavascript');
+
         if (Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController::hasNotices()) {
-            if (method_exists($controller, 'registerJavascript')) {
+            if ($hasRegisterJavascriptMethod) {
                 $controller->registerJavascript(
                     'bx-polyfills',
                     'modules/' . $this->name . '/views/js/polyfills.min.js',
@@ -265,7 +268,7 @@ class BoxtalConnect extends Module
                 $controller->addJs('modules/' . $this->name . '/views/js/polyfills.min.js');
                 $controller->addJs('modules/' . $this->name . '/views/js/notices.min.js');
             }
-            if (method_exists($controller, 'registerStylesheet')) {
+            if ($hasRegisterSteelshitMethod) {
                 $controller->registerStylesheet(
                     'bx-notices',
                     'modules/' . $this->name . '/views/css/notices.css',
@@ -277,7 +280,7 @@ class BoxtalConnect extends Module
         }
 
         if ('AdminOrdersController' === get_class($controller) && false !== Tools::getValue('id_order')) {
-            if (method_exists($controller, 'registerStylesheet')) {
+            if ($hasRegisterSteelshitMethod) {
                 $controller->registerStylesheet(
                     'bx-tracking',
                     'modules/' . $this->name . '/views/css/tracking.css',
@@ -285,6 +288,18 @@ class BoxtalConnect extends Module
                 );
             } else {
                 $controller->addCSS('modules/' . $this->name . '/views/css/tracking.css', 'all');
+            }
+        }
+
+        if ('AdminShippingMethodController' === get_class($controller)) {
+            if ($hasRegisterSteelshitMethod) {
+                $controller->registerStylesheet(
+                    'bx-tracking',
+                    'modules/' . $this->name . '/views/css/settings.css',
+                    array('priority' => 100, 'server' => 'local')
+                );
+            } else {
+                $controller->addCSS('modules/' . $this->name . '/views/css/settings.css', 'all');
             }
         }
     }

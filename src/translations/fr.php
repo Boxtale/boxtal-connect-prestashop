@@ -36,8 +36,15 @@ $_MODULE['<{boxtalconnect}prestashop>configurationutil_56531cae28f11787de359acda
 $_MODULE['<{boxtalconnect}prestashop>environmentutil_e77b7f06e3bd5ea77adee8b52c852dcd'] = 'Boxtal Connect - La version PHP minimale requise pour ce plugin est %1$s. Vous utilisez la version %2$s.';
 $_MODULE['<{boxtalconnect}prestashop>multistoreaccessdenied_5cc3ea3e0743c027ff2200f3995bb012'] = 'Accès multiboutique non autorisé';
 $_MODULE['<{boxtalconnect}prestashop>multistoreaccessdenied_7b3fdfa9929578d05faf1a2b34069f7f'] = 'Vous devez choisir une boutique pour utiliser cette page.';
-$_MODULE['<{boxtalconnect}prestashop>accessdenied_08de2fdaabcd120b8ca1388d21179921'] = 'Accès non autorisé';
-$_MODULE['<{boxtalconnect}prestashop>accessdenied_6c42300fcec12cf9769ccb104d165754'] = 'Vous devez d\'abord connecter votre boutique à Boxtal pour pouvoir utiliser cette page.';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_338bdd9401ebacb7d4021f3701280336'] = 'Bravo ! Votre module Boxtal Connect est bien installé ! Vous êtes à 2 clics de faire de la livraison une force pour votre business.';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_903f91e5dabf9e786c8f640a36751b57'] = 'Tout d’abord, [1]connectez-vous à votre compte Boxtal ou créez votre compte Boxtal[/1] (c’est gratuit !) puis liez votre boutique';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_910655364dde8efb0619b260fa8fc870'] = 'https://www.youtube.com/embed/ZNBQoTQX15w';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_cedc08c156518213446450602476e4d1'] = 'Ensuite suivez les instructions de configurations :';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_f59e0bbc2d15457c6b7a4453c8926d26'] = 'Créez vos méthodes de livraison dans Livraison > Transporteurs (par exemple : livraison à domicile, livraison en relais, livraison express)';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_10a0a85644cfb02d3fc944cb2ae306e6'] = 'Si vous souhaitez proposer du relais, joignez-y nos cartes de point relais dans Livraison > Boxtal Connect';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_108d1a3c59dc798a474936099b0c64f2'] = 'Associez vos statuts de commande à nos événements de suivi dans le menu Boxtal Connect';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_9be223d4f40399012e02f001b61d1e34'] = 'Copiez l\'URL de suivi mis à disposition par Boxtal dans le paramétrage de vos transporteurs';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_ceff2469155e7eeab152f9a557805fb7'] = 'Vous êtes prêts à expédier vos premières commandes ! Bonnes expéditions avec Boxtal.';
 $_MODULE['<{boxtalconnect}prestashop>settings_cedc08c156518213446450602476e4d1'] = 'Pour configurer votre politique de livraison suivez les étapes suivantes :';
 $_MODULE['<{boxtalconnect}prestashop>settings_f59e0bbc2d15457c6b7a4453c8926d26'] = 'Créez vos méthodes de livraison dans Livraison > Transporteurs (par exemple : livraison à domicile, livraison en relais, livraison express)';
 $_MODULE['<{boxtalconnect}prestashop>settings_d6bb1140a32662141ad173e277f17da8'] = 'Si vous souhaitez proposer du relais, joignez-y nos cartes de point relais dans Livraison > Boxtal Connect';

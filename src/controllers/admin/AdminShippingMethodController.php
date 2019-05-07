@@ -65,17 +65,21 @@ class AdminShippingMethodController extends \ModuleAdminController
             $this->handleTrackingEventsForm();
         }
         $boxtalConnect = BoxtalConnect::getInstance();
+        $smarty = $boxtalConnect->getSmarty();
         if (true === ShopUtil::$multistore && null === ShopUtil::$shopId) {
             $this->content = $boxtalConnect->displayTemplate('admin/multistoreAccessDenied.tpl');
             //phpcs:ignore
             return;
         } elseif (!AuthUtil::canUsePlugin()) {
-            $this->content = $boxtalConnect->displayTemplate('admin/accessDenied.tpl');
+            $shopGroupId = ShopUtil::$shopGroupId;
+            $shopId = ShopUtil::$shopId;
+            $onboardingLink = ConfigurationUtil::getOnboardingLink($shopGroupId, $shopId);
+            $smarty->assign('onboardingLink', $onboardingLink);
+            $this->content = $boxtalConnect->displayTemplate('admin/onboarding.tpl');
             //phpcs:ignore
             return;
         }
 
-        $smarty = $boxtalConnect->getSmarty();
         $parcelPointNetworks = @unserialize(ConfigurationUtil::get('BX_PP_NETWORKS'));
         $smarty->assign('parcelPointNetworks', $parcelPointNetworks);
         $carriers = ShippingMethodUtil::getShippingMethods();
