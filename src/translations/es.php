@@ -13,8 +13,15 @@ $_MODULE['<{boxtalconnect}prestashop>configurationutil_56531cae28f11787de359acda
 $_MODULE['<{boxtalconnect}prestashop>environmentutil_e77b7f06e3bd5ea77adee8b52c852dcd'] = 'Boxtal Connect: la versión mínima de PHP requerida para este modulo es %1$s. Estás utilizando la versión %2$s';
 $_MODULE['<{boxtalconnect}prestashop>multistoreaccessdenied_5cc3ea3e0743c027ff2200f3995bb012'] = 'Acceso multitienda no autorizado';
 $_MODULE['<{boxtalconnect}prestashop>multistoreaccessdenied_7b3fdfa9929578d05faf1a2b34069f7f'] = 'Debes elegir una tienda para usar esta página.';
-$_MODULE['<{boxtalconnect}prestashop>accessdenied_08de2fdaabcd120b8ca1388d21179921'] = 'Acceso no autorizado';
-$_MODULE['<{boxtalconnect}prestashop>accessdenied_6c42300fcec12cf9769ccb104d165754'] = 'Primero debes conectar tu tienda a Boxtal para usar esta página.';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_338bdd9401ebacb7d4021f3701280336'] = 'Bravo ¡Tu módulo Boxtal Connect está instalado! Está as 2 clics de hacer del transporte una fuerza para tu negocio.';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_903f91e5dabf9e786c8f640a36751b57'] = 'Primero, [1]inicia sesión en tu cuenta de Boxtal o crea tu cuenta de Boxtal[/1] (¡es gratis!) Luego vincula tu tienda';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_910655364dde8efb0619b260fa8fc870'] = 'https://www.youtube.com/embed/ZNBQoTQX15w';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_cedc08c156518213446450602476e4d1'] = 'Luego sigue las instrucciones de configuración :';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_f59e0bbc2d15457c6b7a4453c8926d26'] = 'Crea tus métodos de envío en Transporte > Transportistas';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_10a0a85644cfb02d3fc944cb2ae306e6'] = 'Si quieres proponer la entrega en punto de recogida , enlace a un mapa de puntos de recogida en Transporte > Boxtal Connect';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_108d1a3c59dc798a474936099b0c64f2'] = 'Asocia los estados de tus pedidos a eventos de seguimiento';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_9be223d4f40399012e02f001b61d1e34'] = 'Copia la URL de seguimiento de Boxtal y agréguala a tus métodos de envío';
+$_MODULE['<{boxtalconnect}prestashop>onboarding_ceff2469155e7eeab152f9a557805fb7'] = '¡Estás listo para enviar tus primeros pedidos! Buenos envíos con Boxtal.';
 $_MODULE['<{boxtalconnect}prestashop>settings_cedc08c156518213446450602476e4d1'] = 'Sigue las instrucciones de configuración :';
 $_MODULE['<{boxtalconnect}prestashop>settings_f59e0bbc2d15457c6b7a4453c8926d26'] = 'Crea tus métodos de envío en Transporte > Transportistas';
 $_MODULE['<{boxtalconnect}prestashop>settings_d6bb1140a32662141ad173e277f17da8'] = 'Si quieres proponer la entrega en punto de recogida , enlace a un mapa de puntos de recogida en Transporte > Boxtal Connect';
