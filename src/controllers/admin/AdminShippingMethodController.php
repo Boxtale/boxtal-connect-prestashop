@@ -91,8 +91,27 @@ class AdminShippingMethodController extends \ModuleAdminController
         $langId = $boxtalConnect->getContext()->language->id;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
         $smarty->assign('orderStatuses', $orderStatuses);
+        $orderPrepared = ConfigurationUtil::get('BX_ORDER_PREPARED');
         $orderShipped = ConfigurationUtil::get('BX_ORDER_SHIPPED');
         $orderDelivered = ConfigurationUtil::get('BX_ORDER_DELIVERED');
+
+        if ('' !== $orderPrepared && null !== $orderPrepared) {
+            $isValidOrderPrepared = false;
+            foreach ($orderStatuses as $status) {
+                if ($status['id_order_state'] === $orderPrepared) {
+                    $isValidOrderPrepared = true;
+                }
+            }
+
+            if (false === $isValidOrderPrepared) {
+                $smarty->assign('orderPrepared', null);
+                ConfigurationUtil::set('BX_ORDER_PREPARED', null);
+            } else {
+                $smarty->assign('orderPrepared', $orderPrepared);
+            }
+        } else {
+            $smarty->assign('orderPrepared', $orderPrepared);
+        }
 
         if ('' !== $orderShipped && null !== $orderShipped) {
             $isValidOrderShipped = false;
@@ -160,6 +179,16 @@ class AdminShippingMethodController extends \ModuleAdminController
      */
     private function handleTrackingEventsForm()
     {
+
+        if (\Tools::isSubmit('orderPrepared')) {
+            $status = \Tools::getValue('orderPrepared');
+            if ('' === $status) {
+                ConfigurationUtil::set('BX_ORDER_PREPARED', null);
+            } else {
+                ConfigurationUtil::set('BX_ORDER_PREPARED', $status);
+            }
+        }
+
         if (\Tools::isSubmit('orderShipped')) {
             $status = \Tools::getValue('orderShipped');
             if ('' === $status) {

@@ -100,15 +100,26 @@
         </thead>
         <tbody>
           <tr>
+            <td>{l s='Order prepared' mod='boxtalconnect'}</td>
+            <td>
+              <select name="orderPrepared">
+                <option value="" {if null === $orderPrepared}selected{/if}>{l s='No status associated' mod='boxtalconnect'}</option>
+                {foreach from=$orderStatuses key=k item=status}
+                  <option value="{$status.id_order_state|escape:'htmlall':'UTF-8'}" {if $status.id_order_state === $orderPrepared}selected{/if}>{$status.name|escape:'htmlall':'UTF-8'}</option>
+                {/foreach}
+              </select>
+            </td>
+          </tr>
+          <tr>
             <td>{l s='Order shipped' mod='boxtalconnect'}</td>
-              <td>
-                <select name="orderShipped">
-                  <option value="" {if null === $orderShipped}selected{/if}>{l s='No status associated' mod='boxtalconnect'}</option>
-                  {foreach from=$orderStatuses key=k item=status}
-                    <option value="{$status.id_order_state|escape:'htmlall':'UTF-8'}" {if $status.id_order_state === $orderShipped}selected{/if}>{$status.name|escape:'htmlall':'UTF-8'}</option>
-                  {/foreach}
-                </select>
-              </td>
+            <td>
+              <select name="orderShipped">
+                <option value="" {if null === $orderShipped}selected{/if}>{l s='No status associated' mod='boxtalconnect'}</option>
+                {foreach from=$orderStatuses key=k item=status}
+                  <option value="{$status.id_order_state|escape:'htmlall':'UTF-8'}" {if $status.id_order_state === $orderShipped}selected{/if}>{$status.name|escape:'htmlall':'UTF-8'}</option>
+                {/foreach}
+              </select>
+          </td>
           </tr>
           <tr>
             <td>{l s='Order delivered' mod='boxtalconnect'}</td>

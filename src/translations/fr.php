@@ -54,6 +54,7 @@ $_MODULE['<{boxtalconnect}prestashop>settings_894e1987e01f179c217f38eb8b2922e9']
 $_MODULE['<{boxtalconnect}prestashop>settings_d8ffc6db4284e94c6855385c669128cf'] = 'Associez vos statuts de commandes à des événements de suivi.';
 $_MODULE['<{boxtalconnect}prestashop>settings_78a565a77ef1f3215bdd4c764851aa61'] = 'Événement de suivi';
 $_MODULE['<{boxtalconnect}prestashop>settings_a67db30ec5875093918d11ea01de8576'] = 'Statut de commande associé';
+$_MODULE['<{boxtalconnect}prestashop>settings_ca1ba1f09a725ec23fa12119b970e7c2'] = 'Commande préparée';
 $_MODULE['<{boxtalconnect}prestashop>settings_e28d759dc240c96b0b840313d0cfbbe8'] = 'Commande expédiée';
 $_MODULE['<{boxtalconnect}prestashop>settings_8a9f6cfabf9fd6f296829330859e60cc'] = 'Pas de statut associé';
 $_MODULE['<{boxtalconnect}prestashop>settings_280d65a8c45fc3b6ec6bf6ca08662e46'] = 'Commande livrée';

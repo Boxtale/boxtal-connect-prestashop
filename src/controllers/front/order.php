@@ -211,6 +211,38 @@ class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
         $langId = $boxtalConnect->getContext()->language->id;
         $orderStatuses = OrderUtil::getOrderStatuses($langId);
 
+
+        if ('prepared' === $route) {
+            $orderPrepared = ConfigurationUtil::get('BX_ORDER_PREPARED');
+            if ('' !== $orderPrepared && null !== $orderPrepared) {
+                $isValidOrderPrepared = false;
+                foreach ($orderStatuses as $status) {
+                    if ($status['id_order_state'] === $orderPrepared) {
+                        $isValidOrderPrepared = true;
+                    }
+                }
+
+                if (false === $isValidOrderPrepared) {
+                    ConfigurationUtil::set('BX_ORDER_PREPARED', null);
+                    NoticeController::addNotice(
+                        NoticeController::$custom,
+                        ShopUtil::$shopGroupId,
+                        ShopUtil::$shopId,
+                        array(
+                            'status' => 'warning',
+                            'message' => $boxtalConnect->l(
+                                'Boxtal connect: there\'s been a change in your order status list, we\'ve adapted ' .
+                                'your tracking event configuration. Please check that everything is in order.'
+                            ),
+                        )
+                    );
+                } else {
+                    $order = new \Order((int) $orderId);
+                    $order->setCurrentState($orderPrepared);
+                }
+            }
+        }
+
         if ('shipped' === $route) {
             $orderShipped = ConfigurationUtil::get('BX_ORDER_SHIPPED');
             if ('' !== $orderShipped && null !== $orderShipped) {
