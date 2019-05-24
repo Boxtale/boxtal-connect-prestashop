@@ -70,7 +70,7 @@ class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
                         break;
                 }
             }
-        } elseif ('shipped' === $route || 'delivered' === $route) {
+        } elseif ('shipped' === $route || 'delivered' === $route || 'prepared' === $route) {
             $orderId = Tools::getValue('orderId');
             $body = AuthUtil::decryptBody($entityBody);
             if (isset($_SERVER['REQUEST_METHOD'])) {
