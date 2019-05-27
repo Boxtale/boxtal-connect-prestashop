@@ -30,6 +30,10 @@ rm src/views/js/*.min.js
 rm -rf boxtalconnect/views/less
 ls -d boxtalconnect/views/js/* | grep -v ".*.min.js" | grep -v ".*.php" | xargs rm
 
+echo 'Adding missing index files ...'
+cp index.php boxtalconnect/views/css/
+cp index.php boxtalconnect/lib/
+
 echo 'Creating archive ...'
 rm -rf boxtalconnect.zip
 zip -r boxtalconnect.zip boxtalconnect

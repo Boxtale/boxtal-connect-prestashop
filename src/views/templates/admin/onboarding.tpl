@@ -31,7 +31,7 @@
   <div class="table-responsive-row clearfix">
       <div class="logo"></div>
     <p>{l s='First, [1]log in or sign up to a Boxtal account[/1] (it’s free !)'
-      tags=["<a href=\"{$onboardingLink}\" target=\"_blank\">"]
+      tags=["<a href=\"{$onboardingLink|escape:'htmlall':'utf-8'}\" target=\"_blank\">"]
       mod='boxtalconnect'}</p>
     <iframe
       id="tutorial-video"

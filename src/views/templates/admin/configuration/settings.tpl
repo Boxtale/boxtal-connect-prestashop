@@ -35,7 +35,7 @@
       </ul>
       {if null !== $helpCenterUrl}
           <p>{l s='You can find illustrated step by step guides in our [1]help center[/1]'
-              tags=["<a href=\"{$helpCenterUrl}\" target=\"_blank\">"]
+              tags=["<a href=\"{$helpCenterUrl|escape:'htmlall':'utf-8'}\" target=\"_blank\">"]
               mod='boxtalconnect'}</p>
       {/if}
     </div>
@@ -150,6 +150,6 @@
   <div class="row">
     <p>{l s='If you wish to display tracking for your shipments sent with Boxtal, here is the tracking url to add to your shipment methods:' mod='boxtalconnect'}</p>
     <p class="well">{$trackingUrlPattern|escape:'htmlall':'UTF-8'}</p>
-    <p>{l s="Your PrestaShop order ID will be set as tracking reference when the carrier you've chosen with Boxtal has picked up your shipment." mod='boxtalconnect'}</p>
+    <p>{l s='Your PrestaShop order ID will be set as tracking reference when the carrier you\'ve chosen with Boxtal has picked up your shipment.' mod='boxtalconnect'}</p>
   </div>
 </div>
