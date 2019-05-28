@@ -1,4 +1,4 @@
-# 1.0.6
+# 1.1.0
  - Added spanish translation
  - Added a pairing guide (replace the access denied page)
  - Added a configuration guide on top of the settings page
