@@ -29,7 +29,7 @@
  */
 use Boxtal\BoxtalConnectPrestashop\Controllers\Misc\NoticeController;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
-use Boxtal\BoxtalConnectPrestashop\Util\OrderStorageUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ParcelPointUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShopUtil;
 use Boxtal\BoxtalPhp\RestClient;
@@ -144,13 +144,12 @@ class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
                 $products[] = $product;
             }
 
-            $parcelPoint = null;
-            $parcelPointCode = OrderStorageUtil::get($orderId, 'bxParcelPointCode');
-            $parcelPointNetwork = OrderStorageUtil::get($orderId, 'bxParcelPointNetwork');
-            if ($parcelPointCode && $parcelPointNetwork) {
-                $parcelPoint = array(
-                    'code' => $parcelPointCode,
-                    'network' => $parcelPointNetwork,
+            $parcelPointData = null;
+            $parcelPoint = ParcelPointUtil::getOrderParcelPoint($orderId);
+            if ($parcelPoint !== null) {
+                $parcelPointData = array(
+                    'code' => $parcelPoint->code,
+                    'network' => $parcelPoint->network,
                 );
             }
 
@@ -179,7 +178,7 @@ class BoxtalConnectOrderModuleFrontController extends ModuleFrontController
                 'orderAmount' => MiscUtil::toFloatOrNull(MiscUtil::notEmptyOrNull($order, 'orderAmount')),
                 'recipient' => $recipient,
                 'products' => $products,
-                'parcelPoint' => $parcelPoint,
+                'parcelPoint' => $parcelPointData,
             );
         }
 

@@ -220,6 +220,19 @@ class ConfigurationUtil
     }
 
     /**
+     * Get parcel point networks.
+     *
+     * @return array of network => shipping method names
+     */
+    public static function getParcelPointNetworks()
+    {
+            $networks = self::get('BX_PP_NETWORKS');
+
+            return $networks ? unserialize($networks) : array();
+    }
+
+
+    /**
      * Get help center url.
      *
      * @return string help center url

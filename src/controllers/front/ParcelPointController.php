@@ -38,6 +38,7 @@ use Boxtal\BoxtalConnectPrestashop\Util\AddressUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\AuthUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ConfigurationUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
+use Boxtal\BoxtalConnectPrestashop\Util\ParcelPointUtil;
 use BoxtalConnect;
 
 /**
@@ -199,27 +200,9 @@ class ParcelPointController
                 if (property_exists($parcelPoint, 'parcelPoint')
                     && property_exists($parcelPoint->parcelPoint, 'network')
                     && in_array($parcelPoint->parcelPoint->network, $networks)) {
-                    return $parcelPoint;
+                    return ParcelPointUtil::normalizePoint($parcelPoint->parcelPoint);
                 }
             }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get chosen parcel point.
-     *
-     * @param int $cartId cart id
-     * @param string $id shipping method id
-     *
-     * @return mixed
-     */
-    public static function getChosenPoint($cartId, $id)
-    {
-        $point = @unserialize(CartStorageUtil::get($cartId, 'bxChosenParcelPoint' . $id));
-        if (false !== $point) {
-            return $point;
         }
 
         return null;
@@ -243,17 +226,17 @@ class ParcelPointController
         //phpcs:ignore
         $carrierId = $cart->id_carrier;
 
+        $orderPoint = null;
+        $chosenPoint = ParcelPointUtil::getChosenPoint($cart->id, $carrierId);
         $closestPoint = ParcelPointController::getClosestPoint($cart->id, $carrierId);
-        if (null !== $closestPoint) {
-            $point = ParcelPointController::getChosenPoint($cart->id, $carrierId);
-            if (null === $point) {
-                $point = $closestPoint;
-            }
 
-            CartStorageUtil::delete($cart->id);
-
-            OrderStorageUtil::set($order->id, 'bxParcelPointCode', $point->parcelPoint->code);
-            OrderStorageUtil::set($order->id, 'bxParcelPointNetwork', $point->parcelPoint->network);
+        if (null !== $chosenPoint) {
+            $orderPoint = $chosenPoint;
+        } elseif (null !== $closestPoint) {
+            $orderPoint = $closestPoint;
         }
+
+        CartStorageUtil::delete($cart->id);
+        ParcelPointUtil::setOrderParcelPoint($order->id, $orderPoint);
     }
 }

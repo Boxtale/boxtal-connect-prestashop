@@ -54,7 +54,13 @@ const bxParcelPoint = {
     });
 
     self.on("body", "click", ".bx-parcel-point-button", function () {
-      self.selectPoint(this.getAttribute("data-code"), this.getAttribute("data-name"), this.getAttribute("data-network"))
+      self.selectPoint(this.getAttribute("data-code"),
+                      this.getAttribute("data-name"),
+                      this.getAttribute("data-network"),
+                      this.getAttribute("data-street"),
+                      this.getAttribute("data-zipcode"),
+                      this.getAttribute("data-city"),
+                      this.getAttribute("data-country"))
         .then(function () {
           self.initCarriers();
           self.closeMap();
@@ -219,10 +225,22 @@ const bxParcelPoint = {
     }
   },
 
+  generateParcelPointTagData: function(parcelpoint) {
+      return ' data-code="'    + parcelpoint.code + '" ' +
+              'data-name="'    + parcelpoint.name + '" ' +
+              'data-network="' + parcelpoint.network + '" ' +
+              'data-zipcode="' + parcelpoint.location.zipCode + '" ' +
+              'data-country="' + parcelpoint.location.country + '" ' +
+              'data-city="'    + parcelpoint.location.city + '" ' +
+              'data-street="'  + parcelpoint.location.street + '" ';
+  },
+
   addParcelPointMarker: function (point) {
     const self = this;
     let info = "<div class='bx-marker-popup'><b>" + point.parcelPoint.name + '</b><br/>' +
-      '<a href="#" class="bx-parcel-point-button" data-code="' + point.parcelPoint.code + '" data-name="' + point.parcelPoint.name + '" data-network="' + point.parcelPoint.network + '"><b>' + bxTranslation.text.chooseParcelPoint + '</b></a><br/>' +
+      '<a href="#" class="bx-parcel-point-button" ' +
+      this.generateParcelPointTagData(point.parcelPoint) +
+      '><b>' + bxTranslation.text.chooseParcelPoint + '</b></a><br/>' +
       point.parcelPoint.location.street + ", " + point.parcelPoint.location.zipCode + " " + point.parcelPoint.location.city + "<br/>" + "<b>" + bxTranslation.text.openingHours +
       "</b><br/>" + '<div class="bx-parcel-point-schedule">';
 
@@ -317,7 +335,7 @@ const bxParcelPoint = {
       html += '<div class="bx-parcel-point-title"><a class="bx-show-info-' + point.parcelPoint.code + '">' + point.parcelPoint.name + '</a></div><br/>';
       html += point.parcelPoint.location.street + '<br/>';
       html += point.parcelPoint.location.zipCode + ' ' + point.parcelPoint.location.city + '<br/>';
-      html += '<a class="bx-parcel-point-button" data-code="' + point.parcelPoint.code + '" data-name="' + point.parcelPoint.name + '" data-network="' + point.parcelPoint.network + '"><b>' + bxTranslation.text.chooseParcelPoint + '</b></a>';
+      html += '<a class="bx-parcel-point-button" ' + this.generateParcelPointTagData(point.parcelPoint) + '"><b>' + bxTranslation.text.chooseParcelPoint + '</b></a>';
       html += '</td>';
       html += '</tr>';
     }
@@ -332,7 +350,7 @@ const bxParcelPoint = {
     return el;
   },
 
-  selectPoint: function (code, name, network) {
+  selectPoint: function (code, name, network, address, zipcode, city, country) {
     const self = this;
     return new Promise(function (resolve, reject) {
       const carrier = self.getSelectedCarrier();
@@ -355,9 +373,18 @@ const bxParcelPoint = {
         "application/x-www-form-urlencoded"
       );
       setPointRequest.responseType = "json";
-      setPointRequest.send("route=setPoint&carrier=" + encodeURIComponent(carrier) + "&code=" + encodeURIComponent(code)
-        + "&name=" + encodeURIComponent(name) + "&network=" + encodeURIComponent(network) + "&cartId=" + encodeURIComponent(bxCartId)
-        + "&token=" + encodeURIComponent(bxToken));
+      setPointRequest.send("route=setPoint"
+            + "&carrier=" + encodeURIComponent(carrier)
+            + "&code=" + encodeURIComponent(code)
+            + "&name=" + encodeURIComponent(name)
+            + "&address=" + encodeURIComponent(address)
+            + "&zipcode=" + encodeURIComponent(zipcode)
+            + "&city=" + encodeURIComponent(city)
+            + "&country=" + encodeURIComponent(country)
+            + "&network=" + encodeURIComponent(network)
+            + "&cartId=" + encodeURIComponent(bxCartId)
+            + "&token=" + encodeURIComponent(bxToken)
+        );
     });
   },
 

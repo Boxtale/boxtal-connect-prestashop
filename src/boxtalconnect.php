@@ -56,7 +56,7 @@ class BoxtalConnect extends Module
     {
         $this->name = 'boxtalconnect';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'Boxtal';
         //phpcs:ignore
         $this->need_instance = 0;
@@ -108,6 +108,7 @@ class BoxtalConnect extends Module
             || !$this->registerHook('newOrder')
             || !$this->registerHook('updateCarrier')
             || !$this->registerHook('adminOrder')
+            || !$this->registerHook('displayOrderDetail')
             || !$this->registerHook('displayAdminAfterHeader')) {
             return false;
         }
@@ -156,7 +157,7 @@ class BoxtalConnect extends Module
             `id_shop_group` int(11) unsigned NULL,
             `id_shop` int(11) unsigned NULL,
             `key` varchar(255) NOT NULL,
-            `value` varchar(255),
+            `value` mediumtext,
             PRIMARY KEY (`id_order_storage`),
             CONSTRAINT UC_bx_order_storage UNIQUE (`id_order`, `id_shop_group`, `id_shop`, `key`)
             ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8'
@@ -404,7 +405,7 @@ class BoxtalConnect extends Module
     }
 
     /**
-     * adminOrder hook. Used to display tracking in admin orders.
+     * adminOrder hook. Used to display tracking and parcelpoint in admin orders.
      *
      * @param array $params list of params used in the operation
      *
@@ -412,23 +413,19 @@ class BoxtalConnect extends Module
      */
     public function hookAdminOrder($params)
     {
-        if (!Boxtal\BoxtalConnectPrestashop\Util\AuthUtil::canUsePlugin()) {
-            return null;
-        }
+        return Boxtal\BoxtalConnectPrestashop\Controllers\Hook\AdminOrderController::trigger($params);
+    }
 
-        $tracking = Boxtal\BoxtalConnectPrestashop\Controllers\Misc\TrackingController::getOrderTracking(
-            $params['id_order']
-        );
-        if (null === $tracking || !property_exists($tracking, 'shipmentsTracking')
-            || empty($tracking->shipmentsTracking)) {
-            return null;
-        }
-
-        $smarty = $this->getSmarty();
-        $smarty->assign('tracking', $tracking);
-        $smarty->assign('dateFormat', $this->l('Y-m-d H:i:s'));
-
-        return $this->display(__FILE__, '/views/templates/hook/hookAdminOrder.tpl');
+    /**
+     * displayOrderDetail hook. Used to display parcelpoint in user orders.
+     *
+     * @param array $params list of params used in the operation
+     *
+     * @return string html
+     */
+    public function hookDisplayOrderDetail($params)
+    {
+        return Boxtal\BoxtalConnectPrestashop\Controllers\Hook\DisplayOrderDetailController::trigger($params);
     }
 
     /**

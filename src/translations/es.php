@@ -56,7 +56,14 @@ $_MODULE['<{boxtalconnect}prestashop>pairingsuccess_1ffbcb14b947566ebcec385693d1
 $_MODULE['<{boxtalconnect}prestashop>pairingsuccess_5f7118f4a1c594f3a9d8e07e42ae0e99'] = 'Ocultar este aviso';
 $_MODULE['<{boxtalconnect}prestashop>setupwizard_fc1161fa60bdd517dfabf5bfd30eed80'] = 'Inicia el asistente de configuración para conectar tu tienda %s a Boxtal.';
 $_MODULE['<{boxtalconnect}prestashop>setupwizard_b9b0827c59d3c50521315fe4a14314b0'] = 'Conecto mi tienda';
-$_MODULE['<{boxtalconnect}prestashop>hookadminorder_81e89e84098b87ac140512af5961fd69'] = 'Segumiento Boxtal';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_fc645810e50028ba3909abb9a4bc62ba'] = 'Boxtal Connect';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_76ca533be535028f45d738d3bacbd90d'] = 'Punto de entrega';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_2205dc082ba550b67ad71e3e2241d9a6'] = 'Punto de entrega';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_881c92eadf6af22a4d39feebdd68d5ff'] = 'La red de puntos de entrega seleccionada (%s) no corresponde a las redes elegidas por el transportista del pedido: %s';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_0bf70dcfc887cf38865fcdc4e3fc1f30'] = 'El transportista de este pedido no contiene ninguna red de puntos de entrega asociada';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_8bc4013b0f9938508bfa25cf52c4d984'] = 'Tu cliente ha seleccionado el punto de recogida [1]%s[/1] de la red %s.';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_ab1c161f66ff1761d00a46e24b8183fd'] = 'Dirección del punto de entrega :';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_f8ba73626ab6ff0a3aabefe8f93388e7'] = 'Ningún punto de entrega seleccionado para este pedido.';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_4a69a5d76667192921027a48d70ae372'] = 'Tu pedido ha sido enviado en 1 envío.';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_c5bd2f86770e57dc1134996154a4455c'] = 'Tu pedido ha sido enviado en %s envíos.';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_683aeac364f2c77b96925f3ce2063b66'] = 'Referencia de envío  s';
@@ -65,3 +72,5 @@ $_MODULE['<{boxtalconnect}prestashop>hookadminorder_2fc5d92691d9f3c42676dc873e78
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_f24ae8bb9b8a57fe28df53b5cd264216'] = 'Ref paquete [1]%s[/1]';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_833b46547d0203f67fd27f1ee8a80df0'] = 'Ref paquete %s';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_64f30c7fd0fe623a1a71dcb1ec52eaad'] = 'No hay eventos de seguimiento disponibles para este paquete.';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_629f55cb705e7f60beb4d3605798b56f'] = 'No hay eventos de seguimiento por el momento.';
+$_MODULE['<{boxtalconnect}prestashop>hookdisplayorderdetail_76ca533be535028f45d738d3bacbd90d'] = 'Punto de entrega';

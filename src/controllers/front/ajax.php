@@ -28,6 +28,7 @@
  * Contains code for the front ajax controller class.
  */
 use Boxtal\BoxtalConnectPrestashop\Controllers\Front\ParcelPointController;
+use Boxtal\BoxtalConnectPrestashop\Util\ParcelPointUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\CartStorageUtil;
 use Boxtal\BoxtalConnectPrestashop\Util\ShippingMethodUtil;
 use Boxtal\BoxtalPhp\RestClient;
@@ -40,6 +41,20 @@ use Boxtal\BoxtalConnectPrestashop\Util\ApiUtil;
  */
 class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
 {
+
+    private function getPostedParcelPoint()
+    {
+        return ParcelPointUtil::createParcelPoint(
+            Tools::getValue('network'),
+            Tools::getValue('code'),
+            Tools::getValue('name'),
+            Tools::getValue('address'),
+            Tools::getValue('zipcode'),
+            Tools::getValue('city'),
+            Tools::getValue('country')
+        );
+    }
+
     /**
      * Ajax front controller.
      *
@@ -90,10 +105,7 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
                     case RestClient::$POST:
                         $selectedCarrierId = Tools::getValue('carrier');
                         $cartId = Tools::getValue('cartId');
-                        $name = Tools::getValue('name');
-                        $code = Tools::getValue('code');
-                        $network = Tools::getValue('network');
-                        $this->setPointHandler($cartId, $selectedCarrierId, $name, $code, $network);
+                        $this->setPointHandler($cartId, $selectedCarrierId, $this->getPostedParcelPoint());
                         break;
 
                     default:
@@ -120,7 +132,7 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
         if (ShippingMethodUtil::hasSelectedParcelPointNetworks($selectedCarrierId)) {
             $pointsResponse = @unserialize(CartStorageUtil::get($cartId, 'bxParcelPoints'));
             if (false !== $pointsResponse) {
-                $chosenParcelPoint = ParcelPointController::getChosenPoint($cartId, $selectedCarrierCleanId);
+                $chosenParcelPoint = ParcelPointUtil::getChosenPoint($cartId, $selectedCarrierCleanId);
                 $boxtalConnect = BoxtalConnect::getInstance();
                 if (null === $chosenParcelPoint) {
                     $closestParcelPoint = ParcelPointController::getClosestPoint($cartId, $selectedCarrierCleanId);
@@ -128,10 +140,10 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
                         ApiUtil::sendAjaxResponse(404);
                     }
                     $text .= '<br/><span class="bx-parcel-client">' . $boxtalConnect->l('Closest parcel point:')
-                        . ' <span class="bw-parcel-name">' . $closestParcelPoint->parcelPoint->name . '</span></span>';
+                        . ' <span class="bw-parcel-name">' . $closestParcelPoint->name . '</span></span>';
                 } else {
                     $text .= '<br/><span class="bx-parcel-client">' . $boxtalConnect->l('Your parcel point:')
-                        . ' <span class="bw-parcel-name">' . $chosenParcelPoint->parcelPoint->name . '</span></span>';
+                        . ' <span class="bw-parcel-name">' . $chosenParcelPoint->name . '</span></span>';
                 }
                 $text .= '<br/><span class="bx-select-parcel">' . $boxtalConnect->l('Choose another') . '</span>';
             }
@@ -178,32 +190,18 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
      *
      * @param int $cartId cart id
      * @param string $selectedCarrierId selected carrier id
-     * @param string $name point name
-     * @param string $code point code
-     * @param string $network point network
+     * @param mixed $parcelPoint
      *
      * @void
      */
-    public function setPointHandler($cartId, $selectedCarrierId, $name, $code, $network)
+    public function setPointHandler($cartId, $selectedCarrierId, $parcelPoint)
     {
         $selectedCarrierCleanId = ShippingMethodUtil::getCleanId($selectedCarrierId);
 
-        if (null === $selectedCarrierCleanId || null === $cartId || null === $name || null === $code
-            || null === $network) {
+        if (null === $selectedCarrierCleanId || null === $cartId || null === $parcelPoint) {
             ApiUtil::sendAjaxResponse(400);
         }
-
-        $parcelPoint = new \stdClass();
-        $parcelPoint->parcelPoint = new \stdClass();
-        $parcelPoint->parcelPoint->network = $network;
-        $parcelPoint->parcelPoint->code = $code;
-        $parcelPoint->parcelPoint->name = $name;
-
-        CartStorageUtil::set(
-            (int) $cartId,
-            'bxChosenParcelPoint' . $selectedCarrierCleanId,
-            serialize($parcelPoint)
-        );
+        ParcelPointUtil::setChosenPoint((int) $cartId, $selectedCarrierCleanId, $parcelPoint);
 
         ApiUtil::sendAjaxResponse(200);
     }
