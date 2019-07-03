@@ -24,7 +24,7 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-function upgrade_module_1_1_1($module)
+function upgrade_module_1_2_0($module)
 {
     $module->registerHook('displayOrderDetail');
     $db = Db::getInstance();

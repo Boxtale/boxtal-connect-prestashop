@@ -4,6 +4,6 @@
  - Added a configuration guide on top of the settings page
  - Added a "prepared" state triggered when the shipping label of an order is created
 
- # 1.1.1
+ # 1.2.0
   - Selected parcel point is now displayed in admin order details
   - Selected parcel point is now displayed in client order details

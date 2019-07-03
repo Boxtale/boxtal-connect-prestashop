@@ -64,9 +64,9 @@ class ParcelPointUtil
     /**
      * Normalize the point format for retrocompatibility reasons
      *
-     * default format   : format used globally in the module since 1.1.1
-     * old order format : format used in order storage before 1.1.1
-     * old cart format  : format used in cart storage before 1.1.1
+     * default format   : format used globally in the module since 1.2.0
+     * old order format : format used in order storage before 1.2.0
+     * old cart format  : format used in cart storage before 1.2.0
      * api format       : format returned by boxtal api
      *
      * @param mixed $point in new or olf format
