@@ -53,14 +53,15 @@ const bxParcelPoint = {
       self.initCarriers();
     });
 
-    self.on("body", "click", ".bx-parcel-point-button", function () {
+    self.on("body", "click", ".bx-parcel-point-button", function (e) {
       self.selectPoint(this.getAttribute("data-code"),
-                      this.getAttribute("data-name"),
+                      unescape(this.getAttribute("data-name")),
                       this.getAttribute("data-network"),
-                      this.getAttribute("data-street"),
-                      this.getAttribute("data-zipcode"),
-                      this.getAttribute("data-city"),
-                      this.getAttribute("data-country"))
+                      unescape(this.getAttribute("data-street")),
+                      unescape(this.getAttribute("data-zipcode")),
+                      unescape(this.getAttribute("data-city")),
+                      unescape(this.getAttribute("data-country")),
+                      unescape(this.getAttribute("data-openinghours")))
         .then(function () {
           self.initCarriers();
           self.closeMap();
@@ -227,12 +228,13 @@ const bxParcelPoint = {
 
   generateParcelPointTagData: function(parcelpoint) {
       return ' data-code="'    + parcelpoint.code + '" ' +
-              'data-name="'    + parcelpoint.name + '" ' +
+              'data-name="'    + escape(parcelpoint.name) + '" ' +
               'data-network="' + parcelpoint.network + '" ' +
-              'data-zipcode="' + parcelpoint.location.zipCode + '" ' +
-              'data-country="' + parcelpoint.location.country + '" ' +
-              'data-city="'    + parcelpoint.location.city + '" ' +
-              'data-street="'  + parcelpoint.location.street + '" ';
+              'data-zipcode="' + escape(parcelpoint.location.zipCode) + '" ' +
+              'data-country="' + escape(parcelpoint.location.country) + '" ' +
+              'data-city="'    + escape(parcelpoint.location.city) + '" ' +
+              'data-street="'  + escape(parcelpoint.location.street) + '" ' +
+              'data-openinghours="'  + escape(JSON.stringify(parcelpoint.openingDays)) + '" ';
   },
 
   addParcelPointMarker: function (point) {
@@ -350,7 +352,7 @@ const bxParcelPoint = {
     return el;
   },
 
-  selectPoint: function (code, name, network, address, zipcode, city, country) {
+  selectPoint: function (code, name, network, address, zipcode, city, country, openingHours) {
     const self = this;
     return new Promise(function (resolve, reject) {
       const carrier = self.getSelectedCarrier();
@@ -381,6 +383,7 @@ const bxParcelPoint = {
             + "&zipcode=" + encodeURIComponent(zipcode)
             + "&city=" + encodeURIComponent(city)
             + "&country=" + encodeURIComponent(country)
+            + "&openingHours=" + encodeURIComponent(openingHours)
             + "&network=" + encodeURIComponent(network)
             + "&cartId=" + encodeURIComponent(bxCartId)
             + "&token=" + encodeURIComponent(bxToken)

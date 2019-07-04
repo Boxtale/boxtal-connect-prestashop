@@ -33,6 +33,41 @@ namespace Boxtal\BoxtalConnectPrestashop\Util;
 class ParcelPointUtil
 {
 
+    private static function normalizeOpeningHours($openingHours) {
+        $result = null;
+
+        if ($openingHours !== null && is_array($openingHours)) {
+            $result = array();
+            foreach ($openingHours as $openingHour) {
+                $validOpeningHours = property_exists($openingHour, 'weekday')
+                    && property_exists($openingHour, 'openingPeriods')
+                    && is_array($openingHour->openingPeriods);
+
+                if ($validOpeningHours) {
+                    $dayOpeningHours = new \stdClass();
+                    $dayOpeningHours->weekday = $openingHour->weekday;
+                    $dayOpeningHours->openingPeriods = array();
+                    foreach ($openingHour->openingPeriods as $period) {
+                        $open = property_exists($period, 'openingTime')
+                            ? $period->openingTime
+                            : (property_exists($period, 'open') ? $period->open : null);
+                        $close = property_exists($period, 'closingTime')
+                            ? $period->closingTime
+                            : (property_exists($period, 'close') ? $period->close : null);
+
+                        $hours = new \stdClass();
+                        $hours->open = $open;
+                        $hours->close = $close;
+                        $dayOpeningHours->openingPeriods[] = $hours;
+                    }
+                    $result[] = $dayOpeningHours;
+                }
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * Create a new parcel point object
      *
@@ -40,11 +75,14 @@ class ParcelPointUtil
      * @param string $code
      * @param string $name
      * @param string $address
-     * @param string $localization
+     * @param string $zipcode
+     * @param string $city
+     * @param string $country
+     * @param string $openingHours
      *
-     * @return mixed point in new format
+     * @return mixed point in standard format
      */
-    public static function createParcelPoint($network, $code, $name, $address, $zipcode, $city, $country)
+    public static function createParcelPoint($network, $code, $name, $address, $zipcode, $city, $country, $openingHours)
     {
         $point = null;
         if (null !== $network && null !== $code && null !== $name) {
@@ -56,6 +94,7 @@ class ParcelPointUtil
             $point->zipcode = $zipcode;
             $point->city = $city;
             $point->country = $country;
+            $point->openingHours = static::normalizeOpeningHours($openingHours);
         }
 
         return $point;
@@ -85,6 +124,8 @@ class ParcelPointUtil
             $hasZipcode = property_exists($point, 'zipcode');
             $hasCity = property_exists($point, 'city');
             $hasCountry = property_exists($point, 'country');
+            $hasOpeningHours = property_exists($point, 'openingHours');
+            $hasOpeningDays = property_exists($point, 'openingDays');
             $hasLocation = property_exists($point, 'location')
                 && property_exists($point->location, 'street')
                 && property_exists($point->location, 'zipCode')
@@ -96,12 +137,12 @@ class ParcelPointUtil
                 && property_exists($point->parcelPoint, 'name');
 
             $isDefaultFormat = $hasNetwork && $hasCode && $hasName && $hasAddress
-                && $hasZipcode && $hasCity && $hasCountry && !$hasLocation;
+                && $hasZipcode && $hasCity && $hasCountry && $hasOpeningHours && !$hasLocation;
             $isOldOrderFormat = $hasNetwork && $hasCode && $hasName && !$hasAddress
-                && !$hasZipcode && !$hasCity && !$hasCountry && !$hasLocation;
+                && !$hasZipcode && !$hasCity && !$hasCountry && !$hasOpeningHours && !$hasLocation;
             $isOldCartFormat = $hasParcelPoint;
             $isApiFormat = $hasNetwork && $hasCode && $hasName && !$hasAddress
-                && !$hasZipcode && !$hasCity && !$hasCountry && $hasLocation;
+                && !$hasZipcode && !$hasCity && !$hasCountry && !$hasOpeningHours && $hasLocation && $hasOpeningDays;
 
             if ($isApiFormat) {
                 $result = static::createParcelPoint(
@@ -111,15 +152,16 @@ class ParcelPointUtil
                     $point->location->street,
                     $point->location->zipCode,
                     $point->location->city,
-                    $point->location->country
+                    $point->location->country,
+                    $point->openingDays
                 );
             } elseif ($isDefaultFormat) {
                 $result = $point;
             } elseif ($isOldOrderFormat) {
-                $result = static::createParcelPoint($point->network, $point->code, $point->name, '', '', '', '');
+                $result = static::createParcelPoint($point->network, $point->code, $point->name, '', '', '', '', array());
             } elseif ($isOldCartFormat) {
                 $sPoint = $point->parcelPoint;
-                $result = static::createParcelPoint($sPoint->network, $sPoint->code, $sPoint->name, '', '', '', '');
+                $result = static::createParcelPoint($sPoint->network, $sPoint->code, $sPoint->name, '', '', '', '', array());
             }
         }
 

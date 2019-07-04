@@ -51,7 +51,8 @@ class BoxtalconnectAjaxModuleFrontController extends \ModuleFrontController
             Tools::getValue('address'),
             Tools::getValue('zipcode'),
             Tools::getValue('city'),
-            Tools::getValue('country')
+            Tools::getValue('country'),
+            @json_decode(Tools::getValue('openingHours'))
         );
     }
 
