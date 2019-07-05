@@ -237,29 +237,50 @@ const bxParcelPoint = {
               'data-openinghours="'  + escape(JSON.stringify(parcelpoint.openingDays)) + '" ';
   },
 
+  formatOpeningDays(openingDays) {
+      var parsedDays = [];
+
+      for (var i = 0; i < openingDays.length; i++) {
+          var openingDay = openingDays[i];
+
+          if (openingDay.weekday) {
+              var parsedDay = openingDay.weekday[0] + ' ';
+              var openingPeriods = openingDay.openingPeriods;
+              var parsedPeriods = [];
+
+              for (var j = 0; j < openingPeriods.length; j++) {
+                  var openingPeriod = openingPeriods[j];
+                  var open = openingPeriod.openingTime;
+                  var close = openingPeriod.closingTime;
+
+                  if (open !== '' && open !== undefined &&
+                      close !== '' && close !== undefined) {
+                      parsedPeriods.push(open + '-' + close);
+                  }
+              }
+
+              if (parsedPeriods.length === 0) {
+                  parsedDay += '/';
+              } else {
+                  parsedDay += parsedPeriods.join(' ');
+              }
+
+              parsedDays.push(parsedDay);
+          }
+      }
+
+      return parsedDays.join("\n");
+  },
+
   addParcelPointMarker: function (point) {
     const self = this;
     let info = "<div class='bx-marker-popup'><b>" + point.parcelPoint.name + '</b><br/>' +
-      '<a href="#" class="bx-parcel-point-button" ' +
-      this.generateParcelPointTagData(point.parcelPoint) +
-      '><b>' + bxTranslation.text.chooseParcelPoint + '</b></a><br/>' +
-      point.parcelPoint.location.street + ", " + point.parcelPoint.location.zipCode + " " + point.parcelPoint.location.city + "<br/>" + "<b>" + bxTranslation.text.openingHours +
-      "</b><br/>" + '<div class="bx-parcel-point-schedule">';
-
-    for (let i = 0, l = point.parcelPoint.openingDays.length; i < l; i++) {
-      const day = point.parcelPoint.openingDays[i];
-
-      if (day.openingPeriods.length > 0) {
-        info += '<span class="bx-parcel-point-day">' + bxTranslation.day[day.weekday] + '</span>';
-
-        for (let j = 0, t = day.openingPeriods.length; j < t; j++) {
-          const openingPeriod = day.openingPeriods[j];
-          info += ' ' + self.formatHours(openingPeriod.openingTime) + '-' + self.formatHours(openingPeriod.closingTime);
-        }
-        info += '<br/>';
-      }
-    }
-    info += '</div>';
+      point.parcelPoint.location.street + "<br/>" +
+      point.parcelPoint.location.zipCode + " " + point.parcelPoint.location.city + "<br/>" +
+      '<a href="#" class="bx-parcel-point-button" ' + this.generateParcelPointTagData(point.parcelPoint) + '><b>' + bxTranslation.text.chooseParcelPoint + '</b></a>' +
+      '<pre class="bx-parcel-point-schedule">' +
+      this.formatOpeningDays(point.parcelPoint.openingDays) +
+      '</pre>';
 
     const el = this.getMarkerHtmlElement(point.index + 1);
 

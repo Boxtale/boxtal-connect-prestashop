@@ -231,4 +231,34 @@ class ParcelPointUtil
 
         return static::normalizePoint($point);
     }
-}
+
+    public static function formatParcelPointOpeningHours($parcelpoint)
+    {
+        $parsedDays = [];
+
+        foreach ($parcelpoint->openingHours as $day) {
+                $parsedDay = substr($day->weekday, 0, 1) . ' ';
+                $openingPeriods = $day->openingPeriods;
+                $parsedPeriods = [];
+
+                foreach ($openingPeriods as $openingPeriod) {
+                    $open = $openingPeriod->open;
+                    $close = $openingPeriod->close;
+
+                    if ($open !== '' && $close !== '') {
+                        $parsedPeriods[] = $open . '-' . $close;
+                    }
+                }
+
+                if (count($parsedPeriods) === 0) {
+                    $parsedDay .= '/';
+                } else {
+                    $parsedDay .= implode(' ', $parsedPeriods);
+                }
+
+                $parsedDays[] = $parsedDay;
+        }
+
+        return implode("\n",$parsedDays);
+    }
+ }

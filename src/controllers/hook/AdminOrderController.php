@@ -76,6 +76,8 @@ class AdminOrderController
                 && !empty($parcelpoint->country);
 
             $smarty->assign('parcelpoint', $parcelpoint);
+            $smarty->assign('hasOpeningHours', count($parcelpoint->openingHours) > 0);
+            $smarty->assign('openingHours', ParcelPointUtil::formatParcelPointOpeningHours($parcelpoint));
             $smarty->assign('showParcelPointAddress', $showParcelPointAddress);
             $smarty->assign('parcelpointValidForCarrier', in_array($parcelpoint->network, $carrierNetworks));
             $smarty->assign('parcelpointShippingMethods', implode(', ', $parcelpointShippingMethods));

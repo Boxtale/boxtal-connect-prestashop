@@ -32,7 +32,7 @@
     <li>
       <a href="#boxtal-parcelpoint"{if $showParcelPoint} class="has-info"{/if}>
         <i class="icon-archive"></i>
-        {l s='Parcel point' mod='boxtalconnect'}
+        {l s='Pick-up point' mod='boxtalconnect'}
         <span class="badge">{$parcelpointBadge|escape:'html'}</span>
       </a>
     </li>
@@ -51,27 +51,32 @@
         <div class="alert alert-warning" role="alert">
           <p class="alert-text">
             {if $carrierHasNetworks}
-              {l s='The parcel point network (%s) do not match the order\'s shipping method networks : %s' sprintf=[$parcelpointShippingMethods, $carrierShippingMethods] mod='boxtalconnect'}
+              {l s='The pick-up point network (%s) do not match the order\'s shipping method networks : %s' sprintf=[$parcelpointShippingMethods, $carrierShippingMethods] mod='boxtalconnect'}
             {else}
-              {l s='The order\'s shipping method do not accept any parcel point network.' mod='boxtalconnect'}
+              {l s='The order\'s shipping method do not accept any pick-up point network.' mod='boxtalconnect'}
             {/if}
           </p>
         </div>
         {/if}
-        <p>{l s='Your client chose a parcel point with the code [1]%s[/1] from %s.' sprintf=[$parcelpoint->code, $parcelpointShippingMethods] tags=['<b>'] mod='boxtalconnect'}</p>
+        <p>{l s='Your client chose a pick-up point with the code [1]%s[/1] from %s.' sprintf=[$parcelpoint->code, $parcelpointShippingMethods] tags=['<b>'] mod='boxtalconnect'}</p>
         {if $showParcelPointAddress}
-            <h4>{l s='Parcel point address :' mod='boxtalconnect'}</h4>
+            <h4>{l s='Pick-up point address :' mod='boxtalconnect'}</h4>
             <p>
               {$parcelpoint->name|escape:'html'}<br/>
               {$parcelpoint->address|escape:'html'}<br/>
               {$parcelpoint->zipcode|escape:'html'} {$parcelpoint->city|escape:'html'} {$parcelpoint->country|escape:'html'}
             </p>
+            {if $hasOpeningHours}
+            <h4>{l s='Opening hours' mod='boxtalconnect'}</h4>
+            <pre style="color: inherit; font-size: inherit; margin-top: 10px;background-color: inherit; border: 0; padding: 0"
+                >{$openingHours}</pre>
+            {/if}
         {/if}
       {else}
         <div class="list-empty hidden-print">
             <div class="list-empty-msg">
               <i class="icon-warning-sign list-empty-icon"></i>
-              {l s='No parcelpoint for this order.' mod='boxtalconnect'}
+              {l s='No pick-up point for this order.' mod='boxtalconnect'}
           </div>
         </div>
       {/if}

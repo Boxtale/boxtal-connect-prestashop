@@ -73,6 +73,8 @@ class DisplayOrderDetailController
 
         $smarty = \BoxtalConnect::getInstance()->getSmarty();
         $smarty->assign('parcelpoint', $parcelpoint);
+        $smarty->assign('hasOpeningHours', count($parcelpoint->openingHours) > 0);
+        $smarty->assign('openingHours', ParcelPointUtil::formatParcelPointOpeningHours($parcelpoint));
 
         return \BoxtalConnect::getInstance()->displayTemplate(static::$templateFile);
     }

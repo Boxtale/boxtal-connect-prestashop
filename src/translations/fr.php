@@ -77,13 +77,13 @@ $_MODULE['<{boxtalconnect}prestashop>pairingupdate_7fa3b767c460b54a2be4d49030b34
 $_MODULE['<{boxtalconnect}prestashop>setupwizard_fc1161fa60bdd517dfabf5bfd30eed80'] = 'Lancez l’assistant de configuration pour connecter votre boutique à Boxtal.';
 $_MODULE['<{boxtalconnect}prestashop>setupwizard_b9b0827c59d3c50521315fe4a14314b0'] = 'Je connecte ma boutique';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_fc645810e50028ba3909abb9a4bc62ba'] = 'Boxtal Connect';
-$_MODULE['<{boxtalconnect}prestashop>hookadminorder_76ca533be535028f45d738d3bacbd90d'] = 'Point de dépôt';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_8171b8ce9d27b1eed6ec632a1252c7db'] = 'Point de retrait';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_2205dc082ba550b67ad71e3e2241d9a6'] = 'Suivi';
-$_MODULE['<{boxtalconnect}prestashop>hookadminorder_881c92eadf6af22a4d39feebdd68d5ff'] = 'Le réseau du point de dépôt choisi (%s) ne correspond pas aux réseaux choisis pour le transporteur de la commande : %s';
-$_MODULE['<{boxtalconnect}prestashop>hookadminorder_0bf70dcfc887cf38865fcdc4e3fc1f30'] = 'Le transporteur de cette commande n\'a aucun réseau de points de dépôts associés.';
-$_MODULE['<{boxtalconnect}prestashop>hookadminorder_8bc4013b0f9938508bfa25cf52c4d984'] = 'Votre client a choisi le point de dépôt [1]%s[/1] du réseau %s.';
-$_MODULE['<{boxtalconnect}prestashop>hookadminorder_ab1c161f66ff1761d00a46e24b8183fd'] = 'Adresse du point de dépôt :';
-$_MODULE['<{boxtalconnect}prestashop>hookadminorder_f8ba73626ab6ff0a3aabefe8f93388e7'] = 'Aucun point relais choisi pour cette commande.';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_981a22012e569acd315fb0cc791acc6c'] = 'Le réseau du point de retrait choisi (%s) ne correspond pas aux réseaux choisis pour le transporteur de la commande : %s';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_d045ebc14c39eb7fb390a568738b5f80'] = 'Le transporteur de cette commande n\'a aucun réseau de points de retrait associés.';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_0f61918b58c1b5850c07e4c59eafeb6f'] = 'Votre client a choisi le point de retrait [1]%s[/1] du réseau %s.';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_f6f954aca98cf559021c70c27971416d'] = 'Adresse du point de retrait :';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_31db9749573daeadb3b4e9b26c012f71'] = 'Aucun point de retrait choisi pour cette commande.';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_4a69a5d76667192921027a48d70ae372'] = 'Votre commande a été expédiée en 1 envoi.';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_c5bd2f86770e57dc1134996154a4455c'] = 'Votre commande a été expédiée en %s envois.';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_683aeac364f2c77b96925f3ce2063b66'] = 'Référence d\'expédition %s';
@@ -93,4 +93,5 @@ $_MODULE['<{boxtalconnect}prestashop>hookadminorder_f24ae8bb9b8a57fe28df53b5cd26
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_833b46547d0203f67fd27f1ee8a80df0'] = 'Colis réf. %s';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_64f30c7fd0fe623a1a71dcb1ec52eaad'] = 'Pas d\'événements de suivi disponible pour ce colis.';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_629f55cb705e7f60beb4d3605798b56f'] = 'Pas d\'événements de suivi à ce jour.';
-$_MODULE['<{boxtalconnect}prestashop>hookdisplayorderdetail_76ca533be535028f45d738d3bacbd90d'] = 'Point de dépôt';
+$_MODULE['<{boxtalconnect}prestashop>hookdisplayorderdetail_14afc5207242a5588fea378da8299d28'] = 'Point de retrait choisi pour la livraison de la commande';
+$_MODULE['<{boxtalconnect}prestashop>hookdisplayorderdetail_80a0c205cd57b22fca7f174253870300'] = 'Horaires d\'ouverture';
