@@ -185,8 +185,8 @@ class ParcelPointUtil
     /**
      * Get chosen parcel point.
      *
-     * @param int $cartId cart id
-     * @param string $id shipping method id
+     * @param int    $cartId cart id
+     * @param string $id     shipping method id
      *
      * @return mixed
      */
@@ -232,33 +232,39 @@ class ParcelPointUtil
         return static::normalizePoint($point);
     }
 
+    /**
+     * Format parcelpoint opening hours into string format
+     *
+     * @param mixed $parcelpoint parcel point to format
+     * 
+     * @return string
+     */
     public static function formatParcelPointOpeningHours($parcelpoint)
     {
         $parsedDays = [];
 
-        foreach ($parcelpoint->openingHours as $day) {
-                $parsedDay = substr($day->weekday, 0, 1) . ' ';
-                $openingPeriods = $day->openingPeriods;
-                $parsedPeriods = [];
+        $closedLabel = \BoxtalConnect::getInstance()->l('Closed     ');
+        
+        foreach ($parcelpoint->openingHours as $index => $day) {
+            $weekDay = \BoxtalConnect::getInstance()->l(strtolower($day->weekday));
+            $parsedDay = strtoupper(substr($weekDay, 0, 1)) . ' ';
+            $openingPeriods = $day->openingPeriods;
+            $parsedPeriods = [];
 
-                foreach ($openingPeriods as $openingPeriod) {
-                    $open = $openingPeriod->open;
-                    $close = $openingPeriod->close;
+            foreach ($openingPeriods as $openingPeriod) {
+                $open = $openingPeriod->open;
+                $close = $openingPeriod->close;
 
-                    if ($open !== '' && $close !== '') {
-                        $parsedPeriods[] = $open . '-' . $close;
-                    }
-                }
-
-                if (count($parsedPeriods) === 0) {
-                    $parsedDay .= '/';
+                if ($open !== '' && $close !== '') {
+                    $parsedPeriods[] = $open . '-' . $close;
                 } else {
-                    $parsedDay .= implode(' ', $parsedPeriods);
+                    $parsedPeriods[] = $closedLabel;
                 }
+            }
 
-                $parsedDays[] = $parsedDay;
+            $parsedDays[] = '<span' . ($index % 2 === 1 ? ' style="background-color: #d8d8d8;"' : '') . '>' . $parsedDay . implode(' ', $parsedPeriods) . '</span>';
         }
 
-        return implode("\n",$parsedDays);
+        return implode("\n", $parsedDays);
     }
- }
+}

@@ -13,6 +13,7 @@ $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_edacb0ca70ea995b797d10e5dc243
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_80a0c205cd57b22fca7f174253870300'] = 'Horaires d\'ouverture';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_953101cb5c329f2a0c5c24509664d800'] = 'Choisir ce point relais';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_5ac53f22b1fcd5f8e14148f33d0af42c'] = 'Fermer la carte';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_147016f4ab56d75f7c2c1969840ba9a6'] = 'Fermé      ';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_944ba223a5c1b5f4b495708e7cd5ee37'] = 'lundi';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_1a31a6f65cc993ff6bd9a5b85f0520b0'] = 'mardi';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_aae446086f8e81194ed115b566bf2e3d'] = 'mercredi';
@@ -93,5 +94,8 @@ $_MODULE['<{boxtalconnect}prestashop>hookadminorder_f24ae8bb9b8a57fe28df53b5cd26
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_833b46547d0203f67fd27f1ee8a80df0'] = 'Colis réf. %s';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_64f30c7fd0fe623a1a71dcb1ec52eaad'] = 'Pas d\'événements de suivi disponible pour ce colis.';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_629f55cb705e7f60beb4d3605798b56f'] = 'Pas d\'événements de suivi à ce jour.';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_80a0c205cd57b22fca7f174253870300'] = 'Horaires d\'ouverture';
+
+
 $_MODULE['<{boxtalconnect}prestashop>hookdisplayorderdetail_14afc5207242a5588fea378da8299d28'] = 'Point de retrait choisi pour la livraison de la commande';
 $_MODULE['<{boxtalconnect}prestashop>hookdisplayorderdetail_80a0c205cd57b22fca7f174253870300'] = 'Horaires d\'ouverture';

@@ -32,7 +32,7 @@
     {$parcelpoint->zipcode|escape:'html'} {$parcelpoint->city|escape:'html'} {$parcelpoint->country|escape:'html'}</p>
     {if $hasOpeningHours}
     <h4>{l s='Opening hours' mod='boxtalconnect'}</h4>
-    <pre style="color: inherit; font-size: inherit; margin-top: 10px;">{$openingHours}</pre>
+    <pre style="color: inherit; font-size: inherit; margin-top: 10px;">{$openingHours nofilter}</pre>
     {/if}
     </address>
 </section>

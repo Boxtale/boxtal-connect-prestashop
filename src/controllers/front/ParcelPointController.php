@@ -65,6 +65,7 @@ class ParcelPointController
                 'openingHours' => $boxtalConnect->l('Opening hours'),
                 'chooseParcelPoint' => $boxtalConnect->l('Choose this parcel point'),
                 'closeMap' => $boxtalConnect->l('Close map'),
+                'closedLabel' => $boxtalConnect->l('Closed     '),
             ),
             'day' => array(
                 'MONDAY' => $boxtalConnect->l('monday'),

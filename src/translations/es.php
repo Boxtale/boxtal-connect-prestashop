@@ -8,6 +8,14 @@ $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_ce29d048853d232614ff27018973c
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_b9b0827c59d3c50521315fe4a14314b0'] = 'Conecto mi tienda';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_e77b7f06e3bd5ea77adee8b52c852dcd'] = 'Boxtal Connect: la versión mínima de PHP requerida para este modulo es %1$s. Estás utilizando la versión %2$s';
 $_MODULE['<{boxtalconnect}prestashop>boxtalconnect_7c25d2ae2f7369e65350d126edd6bc36'] = 'La URL de seguimiento de Boxtal ha cambiado, también debes cambiarla en tus métodos de entrega. El nuevo enlace se muestra en la página de configuración de Boxtal.';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_147016f4ab56d75f7c2c1969840ba9a6'] = 'Cerrado    ';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_98617021b249af0ace0f84ee92ccc7cd'] = 'lunes';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_5f5140afce13197a89e848004f292f14'] = 'martes';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_aaebdc947e9f7d4ea362e5dc4fe7f825'] = 'miércoles';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_7a61b324afb4dd8b2fb4a38afc34f755'] = 'jueves';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_86fb6d343289267f3e9edb9b7403d936'] = 'viernes';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_fd5ae113ac00b67f69541bc8c7f21ef7'] = 'sábado';
+$_MODULE['<{boxtalconnect}prestashop>boxtalconnect_95fa12cb2100ce7081b71f7c44bc12a5'] = 'domingo';
 $_MODULE['<{boxtalconnect}prestashop>configurationutil_36166fa097de8ff3154b0e4c665c40e5'] = 'La lista de redes de puntos de recogida ha cambiado, hemos adaptado la configuración de tus métodos de entrega. Por favor, comprueba que todo está en orden.';
 $_MODULE['<{boxtalconnect}prestashop>configurationutil_56531cae28f11787de359acdae6c4afa'] = 'La lista de redes de puntos de recogida ha cambiado, puedes agregar la(s) nueva(s) red(es) en la configuración de tus métodos de entrega.';
 $_MODULE['<{boxtalconnect}prestashop>environmentutil_e77b7f06e3bd5ea77adee8b52c852dcd'] = 'Boxtal Connect: la versión mínima de PHP requerida para este modulo es %1$s. Estás utilizando la versión %2$s';
@@ -73,5 +81,6 @@ $_MODULE['<{boxtalconnect}prestashop>hookadminorder_f24ae8bb9b8a57fe28df53b5cd26
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_833b46547d0203f67fd27f1ee8a80df0'] = 'Ref paquete %s';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_64f30c7fd0fe623a1a71dcb1ec52eaad'] = 'No hay eventos de seguimiento disponibles para este paquete.';
 $_MODULE['<{boxtalconnect}prestashop>hookadminorder_629f55cb705e7f60beb4d3605798b56f'] = 'No hay eventos de seguimiento por el momento.';
+$_MODULE['<{boxtalconnect}prestashop>hookadminorder_80a0c205cd57b22fca7f174253870300'] = 'Horario de apertura';
 $_MODULE['<{boxtalconnect}prestashop>hookdisplayorderdetail_14afc5207242a5588fea378da8299d28'] = 'Punto de recogida elegido para el pedido';
 $_MODULE['<{boxtalconnect}prestashop>hookdisplayorderdetail_80a0c205cd57b22fca7f174253870300'] = 'Horario de apertura';

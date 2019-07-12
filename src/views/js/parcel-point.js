@@ -250,19 +250,22 @@ const bxParcelPoint = {
 
               for (var j = 0; j < openingPeriods.length; j++) {
                   var openingPeriod = openingPeriods[j];
-                  var open = openingPeriod.openingTime;
-                  var close = openingPeriod.closingTime;
+                  var open = openingPeriod.openingTime === undefined ? '' : openingPeriod.openingTime;
+                  var close = openingPeriod.closingTime === undefined ? '' : openingPeriod.closingTime;
 
-                  if (open !== '' && open !== undefined &&
-                      close !== '' && close !== undefined) {
+                  if (open !== '' && close !== '') {
                       parsedPeriods.push(open + '-' + close);
                   }
               }
 
-              if (parsedPeriods.length === 0) {
-                  parsedDay += '/';
-              } else {
-                  parsedDay += parsedPeriods.join(' ');
+              while (parsedPeriods.length < 2) {
+                parsedPeriods.push(bxTranslation.text.closedLabel);
+              }
+
+              parsedDay += parsedPeriods.join(' ');
+
+              if (i % 2 === 1) {
+                parsedDay = '<span style="background-color: #d8d8d8;">' + parsedDay + '</span>';
               }
 
               parsedDays.push(parsedDay);
