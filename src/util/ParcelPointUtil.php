@@ -24,16 +24,24 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-/**
- * Contains code for parcelpoint storage util class.
- */
-
 namespace Boxtal\BoxtalConnectPrestashop\Util;
 
+/**
+ * Parcel point util class
+ *
+ * Handle parcel points storage and formating
+ */
 class ParcelPointUtil
 {
-
-    private static function normalizeOpeningHours($openingHours) {
+    /**
+     * Normalize a parcel point opening hours
+     *
+     * @param mixed $openingHours opening hours in standard or non standard format
+     *
+     * @return mixed opening hours in standard format
+     */
+    private static function normalizeOpeningHours($openingHours)
+    {
         $result = null;
 
         if ($openingHours !== null && is_array($openingHours)) {
@@ -103,10 +111,10 @@ class ParcelPointUtil
     /**
      * Normalize the point format for retrocompatibility reasons
      *
-     * default format   : format used globally in the module since 1.2.0
-     * old order format : format used in order storage before 1.2.0
-     * old cart format  : format used in cart storage before 1.2.0
-     * api format       : format returned by boxtal api
+     * Default format   : format used globally in the module since 1.2.0
+     * Old order format : format used in order storage before 1.2.0
+     * Old cart format  : format used in cart storage before 1.2.0
+     * Api format       : format returned by boxtal api
      *
      * @param mixed $point in new or olf format
      *
@@ -158,10 +166,28 @@ class ParcelPointUtil
             } elseif ($isDefaultFormat) {
                 $result = $point;
             } elseif ($isOldOrderFormat) {
-                $result = static::createParcelPoint($point->network, $point->code, $point->name, '', '', '', '', array());
+                $result = static::createParcelPoint(
+                    $point->network,
+                    $point->code,
+                    $point->name,
+                    '',
+                    '',
+                    '',
+                    '',
+                    array()
+                );
             } elseif ($isOldCartFormat) {
                 $sPoint = $point->parcelPoint;
-                $result = static::createParcelPoint($sPoint->network, $sPoint->code, $sPoint->name, '', '', '', '', array());
+                $result = static::createParcelPoint(
+                    $sPoint->network,
+                    $sPoint->code,
+                    $sPoint->name,
+                    '',
+                    '',
+                    '',
+                    '',
+                    array()
+                );
             }
         }
 
@@ -171,10 +197,11 @@ class ParcelPointUtil
     /**
      * Set chosen parcel point.
      *
-     * @param int $cartId cart id
-     * @param int $carrierId shipping method id
-     * @param mixed $point parcel point to save
+     * @param int   $cartId    cart id
+     * @param int   $carrierId shipping method id
+     * @param mixed $point     parcel point to save
      *
+     * @return void
      */
     public static function setChosenPoint($cartId, $carrierId, $point)
     {
@@ -236,7 +263,7 @@ class ParcelPointUtil
      * Format parcelpoint opening hours into string format
      *
      * @param mixed $parcelpoint parcel point to format
-     * 
+     *
      * @return string
      */
     public static function formatParcelPointOpeningHours($parcelpoint)
@@ -262,7 +289,8 @@ class ParcelPointUtil
                 }
             }
 
-            $parsedDays[] = '<span' . ($index % 2 === 1 ? ' style="background-color: #d8d8d8;"' : '') . '>' . $parsedDay . implode(' ', $parsedPeriods) . '</span>';
+            $parsedDays[] = '<span' . ($index % 2 === 1 ? ' style="background-color: #d8d8d8;"' : '') . '>'
+                . $parsedDay . implode(' ', $parsedPeriods) . '</span>';
         }
 
         return implode("\n", $parsedDays);
