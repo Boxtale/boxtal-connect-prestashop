@@ -94,7 +94,7 @@ class BoxtalConnect extends Module
     }
 
     /**
-     * Remove all plugin's tabs from an parent tab
+     * Remove all plugin's tabs from a parent tab
      *
      * @param number $parentId id of parent's tab
      */
