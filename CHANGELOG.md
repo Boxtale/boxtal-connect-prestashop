@@ -9,5 +9,7 @@
   - Selected parcel point is now displayed in client order details
 
  # 1.2.1
-  - Fixed an issue when loading old parcel point values
+  - Fixed a possible issue when loading old parcel point values from database
   - Improved parcel point display
+  - Fixed an issue between smart cache js (prestashop 1.6) and mapbox-gl
+  - Module's tabs are now correctly cleaned on install and uninstall

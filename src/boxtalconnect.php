@@ -94,6 +94,24 @@ class BoxtalConnect extends Module
     }
 
     /**
+     * Remove all plugin's tabs from an parent tab
+     *
+     * @param number $parentId id of parent's tab
+     */
+    private function removeModuleTabs($parentId)
+    {
+        $tabsRow = Tab::getTabs(false, (int) $parentId);
+        foreach ($tabsRow as $tabRow) {
+            if (isset($tabRow['id_tab'])) {
+                $tab = new Tab((int)$tabRow['id_tab']);
+                if ($this->name === $tab->module) {
+                    $tab->delete();
+                }
+            }
+        }
+    }
+
+    /**
      * Install function.
      *
      * @return bool
@@ -163,6 +181,8 @@ class BoxtalConnect extends Module
             ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8'
         );
 
+        // remove previous tab
+        $this->removeModuleTabs(-1);
         // add invisible tab for admin ajax controller
         $invisibleTab = new \Tab();
         $invisibleTab->active = 1;
@@ -179,12 +199,15 @@ class BoxtalConnect extends Module
             return false;
         }
 
+        // remove previous tab
+        $adminParentShippingTabId = (int) Tab::getIdFromClassName('AdminParentShipping');
+        $this->removeModuleTabs($adminParentShippingTabId);
         // add the new tab
         $tab = new Tab();
         //phpcs:ignore
         $tab->class_name = 'AdminShippingMethod';
         //phpcs:ignore
-        $tab->id_parent = (int) Tab::getIdFromClassName('AdminParentShipping');
+        $tab->id_parent = $adminParentShippingTabId;
         $tab->module = $this->name;
         $tab->name = array();
         foreach (\Language::getLanguages(true) as $lang) {
@@ -217,6 +240,9 @@ class BoxtalConnect extends Module
             DELETE FROM `' . _DB_PREFIX_ . 'configuration` WHERE name like "BX_%";
             SET FOREIGN_KEY_CHECKS = 1;'
         );
+
+        $this->removeModuleTabs((int) Tab::getIdFromClassName('AdminParentShipping'));
+        $this->removeModuleTabs(-1);
 
         return true;
     }
