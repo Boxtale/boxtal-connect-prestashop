@@ -252,7 +252,7 @@ class ParcelPointUtil
             $code = OrderStorageUtil::get($orderId, 'bxParcelPointCode');
             $network = OrderStorageUtil::get($orderId, 'bxParcelPointNetwork');
             if ($code !== null && $network !== null) {
-                $point = static::createParcelPoint($network, $code, '', '', '', '', '');
+                $point = static::createParcelPoint($network, $code, '', '', '', '', '', array());
             }
         }
 
