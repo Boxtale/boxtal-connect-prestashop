@@ -68,8 +68,13 @@
             </p>
             {if $hasOpeningHours}
             <h4>{l s='Opening hours' mod='boxtalconnect'}</h4>
-            <pre style="color: inherit; font-size: inherit; margin-top: 10px;background-color: inherit; border: 0; padding: 0"
-                >{$openingHours nofilter}</pre>
+<pre style="color: inherit; font-size: inherit; margin-top: 10px;background-color: inherit; border: 0; padding: 0">
+{foreach $openingHours as $index => $openingHour}
+{if $index % 2 === 1}<span style="background-color: #d8d8d8;">{/if}
+{$openingHour|escape:'html'}
+{if $index % 2 === 1}</span>{/if}
+{/foreach}
+</pre>
             {/if}
         {/if}
       {else}

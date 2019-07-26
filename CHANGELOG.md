@@ -7,3 +7,7 @@
  # 1.2.0
   - Selected parcel point is now displayed in admin order details
   - Selected parcel point is now displayed in client order details
+
+ # 1.2.1
+  - Fixed an issue when loading old parcel point values
+  - Improved parcel point display

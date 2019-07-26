@@ -264,7 +264,7 @@ class ParcelPointUtil
      *
      * @param mixed $parcelpoint parcel point to format
      *
-     * @return string
+     * @return array of string
      */
     public static function formatParcelPointOpeningHours($parcelpoint)
     {
@@ -289,10 +289,10 @@ class ParcelPointUtil
                 }
             }
 
-            $parsedDays[] = '<span' . ($index % 2 === 1 ? ' style="background-color: #d8d8d8;"' : '') . '>'
-                . $parsedDay . implode(' ', $parsedPeriods) . '</span>';
+            $parsedDays[] = $parsedDay . implode(' ', $parsedPeriods);
+            // '<span' . ($index % 2 === 1 ? ' style="background-color: #d8d8d8;"' : '') . '></span>';
         }
 
-        return implode("\n", $parsedDays);
+        return $parsedDays;
     }
 }
