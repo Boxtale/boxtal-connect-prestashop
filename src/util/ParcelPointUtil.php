@@ -272,7 +272,7 @@ class ParcelPointUtil
 
         $closedLabel = \BoxtalConnect::getInstance()->l('Closed     ');
         
-        foreach ($parcelpoint->openingHours as $index => $day) {
+        foreach ($parcelpoint->openingHours as $day) {
             $weekDay = \BoxtalConnect::getInstance()->l(strtolower($day->weekday));
             $parsedDay = strtoupper(substr($weekDay, 0, 1)) . ' ';
             $openingPeriods = $day->openingPeriods;
@@ -290,7 +290,6 @@ class ParcelPointUtil
             }
 
             $parsedDays[] = $parsedDay . implode(' ', $parsedPeriods);
-            // '<span' . ($index % 2 === 1 ? ' style="background-color: #d8d8d8;"' : '') . '></span>';
         }
 
         return $parsedDays;
