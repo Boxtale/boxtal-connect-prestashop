@@ -11,5 +11,4 @@
  # 1.2.1
   - Fixed a possible issue when loading old parcel point values from database
   - Improved parcel point display
-  - Fixed an issue between smart cache js (prestashop 1.6) and mapbox-gl
   - Module's tabs are now correctly cleaned on install and uninstall
